@@ -4,7 +4,9 @@ const adminSchema = new mongoose.Schema({
     name: String,
     username: String,
     password: String,
-    role: {type: String, enum: ["admin", "superadmin"]}
+    gender: String,
+    role: String,
+    image: String
 }, {timestamps: true})
 
 const adminModel = mongoose.model("Admin", adminSchema)
