@@ -1,0 +1,156 @@
+<body>
+    <div class="content-wrapper">
+        <div class="row">
+            <div class="col-lg-12 grid-margin stretch-card">
+                <div class="card">
+                    <div class="card-body">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <h4 class="card-title">Adminlar</h4>
+                            <button type="button" class="btn btn-success mb-3" data-bs-toggle="modal"
+                                data-bs-target="#addAdminModal">
+                                + Admin qo‘shish
+                            </button>
+                        </div>
+
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Rasm</th>
+                                        <th>Name</th>
+                                        <th>Username</th>
+                                        <th>Jinsi</th>
+                                        <th>Role</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {{#each admins}}
+                                    <tr>
+                                        <td class="py-1">
+                                            <img src="{{image}}" alt="image" />
+                                        </td>
+                                        <td>{{name}}</td>
+                                        <td>{{username}}</td>
+                                        <td>{{gender}}</td>
+                                        <td>{{role}}</td>
+                                        <td>
+                                            <button class="btn btn-danger btn-sm delete-btn" data-bs-toggle="modal"
+                                                data-bs-target="#deleteAdminModal" data-id="{{_id}}">
+                                                O‘chirish
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    {{/each}}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin qo'shish modal oynasi -->
+    <div class="modal fade" id="addAdminModal" tabindex="-1" aria-labelledby="addAdminModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content" style="border-radius: 12px; box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);">
+                <div class="modal-header">
+                    <h4 class="modal-title text-success" id="addAdminModalLabel">Yangi Admin Qo‘shish</h4>
+                    <button style="border: none" type="button" class="btn-close" data-bs-dismiss="modal"
+                        aria-label="Close">x</button>
+                </div>
+                <div class="modal-body">
+                    <!-- Admin qo'shish formasi -->
+                    <form action="/create-admin" method="POST" enctype="multipart/form-data">
+                        <div class="mb-3">
+                            <label class="form-label">Ism</label>
+                            <input type="text" class="form-control" name="name" required
+                                style="border: 2px solid #17c964; border-radius: 6px; padding: 10px; font-size: 16px; background-color: #f8f9fa; transition: 0.3s; height: 45px;">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Username</label>
+                            <input type="text" class="form-control" name="username" required
+                                style="border: 2px solid #17c964; border-radius: 6px; padding: 10px; font-size: 16px; background-color: #f8f9fa; transition: 0.3s; height: 45px;">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Parol</label>
+                            <input type="password" class="form-control" name="password" required
+                                style="border: 2px solid #17c964 ; border-radius: 6px; padding: 10px; font-size: 16px; background-color: #f8f9fa; transition: 0.3s; height: 45px;">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Jinsi</label>
+                            <select class="form-select" name="gender" required
+                                style="width: 100%; border: 2px solid #17c964; border-radius: 6px; padding: 10px; font-size: 16px; background-color: #f8f9fa; transition: 0.3s; height: 45px;">
+                                <option value="" disabled selected>Tanlang...</option>
+                                <option value="Erkak">Erkak</option>
+                                <option value="Ayol">Ayol</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Roli</label>
+                            <select class="form-select" name="role" required
+                                style="width: 100%; border: 2px solid #17c964; border-radius: 6px; padding: 10px; font-size: 16px; background-color: #f8f9fa; transition: 0.3s; height: 45px;">
+                                <option value="" disabled selected>Tanlang...</option>
+                                <option value="superAdmin">Super Admin</option>
+                                <option value="admin">Admin</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Rasm yuklash</label>
+                            <input type="file" class="form-control" name="image" required
+                                style="border: 2px solid #17c964; border-radius: 6px; padding: 10px; font-size: 16px; background-color: #f8f9fa; transition: 0.3s; height: 45px; cursor: pointer;">
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
+                                style="height: 45px;">Bekor qilish</button>
+                            <button type="submit" class="btn btn-success"
+                                style="background-color: #198754; border: none; height: 45px;">Qo‘shish</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Delete tasdiqlash modal oynasi -->
+    <!-- Delete tasdiqlash modal oynasi -->
+    <div class="modal fade" id="deleteAdminModal" tabindex="-1" aria-labelledby="deleteAdminModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content" style="border-radius: 12px; box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);">
+                <div class="modal-header">
+                    <h5 class="modal-title text-danger" id="deleteAdminModalLabel">Adminni o‘chirish</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Haqiqatan ham ushbu adminni o‘chirmoqchimisiz?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Bekor qilish</button>
+                    <!-- O'chirish formasi -->
+                    <form id="deleteForm" method="POST">
+                        <input type="hidden" name="_method" value="DELETE">
+                        <button type="submit" class="btn btn-danger">O‘chirish</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+
+ <script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const deleteButtons = document.querySelectorAll(".delete-btn");
+        const deleteForm = document.getElementById("deleteForm");
+
+        deleteButtons.forEach(button => {
+            button.addEventListener("click", function () {
+                const adminId = this.getAttribute("data-id");
+                deleteForm.setAttribute("action", `/admin/${adminId}/delete`);
+            });
+        });
+    });
+</script>
