@@ -1,0 +1,16 @@
+<body>
+    <div class="content-wrapper">
+        <div class="col-xl-3 d-flex grid-margin stretch-card">
+            {{#each buses}}
+            <div class="card">
+                <img src="{{image}}" class="card-img-top" alt="Avtobus rasmi">
+                <div class="card-body">
+                    <h5 class="card-title">{{model}}</h5>
+                    <p class="card-text"><strong>O'rindiqlar soni:</strong>{{seats.length}}</p>
+                    <p class="card-text"><strong>Yo'nalish:</strong> Toshkent → Samarqand</p>
+                </div>
+            </div>
+            {{/each}}
+        </div>
+    </div>
+</body>
