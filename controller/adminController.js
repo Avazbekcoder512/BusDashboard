@@ -12,7 +12,7 @@ const supabase = createClient(
 exports.createAdmin = async (req, res) => {
     try {
         console.log(req.body);
-        
+
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
             return res.status(400).send({
@@ -20,7 +20,7 @@ exports.createAdmin = async (req, res) => {
             });
         }
         const data = matchedData(req);
-        
+
 
         const condidat = await adminModel.findOne({ username: data.username })
         if (condidat) {
@@ -94,6 +94,7 @@ exports.getAllAdmin = async (req, res) => {
         }
 
         return res.render("admins", {
+            title: "Dashboard",
             admins
         })
 
@@ -107,7 +108,7 @@ exports.getAllAdmin = async (req, res) => {
 
 exports.deleteAdmin = async (req, res) => {
     try {
-        const { id } = req.params
+        const { id } = req.params;
 
         if (!id.match(/^[0-9a-fA-F]{24}$/)) {
             return res.status(400).send({
@@ -115,22 +116,46 @@ exports.deleteAdmin = async (req, res) => {
             });
         }
 
-        const admin = await adminModel.findById(id)
-
+        const admin = await adminModel.findById(id);
         if (!admin) {
             return res.status(404).send({
-                error: "Admin topilmadi"
-            })
+                error: "Admin not found!"
+            });
         }
 
-        await adminModel.findByIdAndDelete(id)
+        const fileUrl = admin.image
+
+        if (fileUrl) {
+            const filePath = fileUrl.replace(`${supabase.storageUrl}/object/public/mbus_bucket/`, '');
+
+            const { data: fileExists, error: checkError } = await supabase
+                .storage
+                .from('mbus_bucket')
+                .list('', { prefix: filePath });
+
+            if (checkError) {
+                console.error(`Fayl mavjudligini tekshirishda xatolik: ${checkError.message}`);
+            } else if (fileExists && fileExists.length > 0) {
+                const { error: deleteError } = await supabase
+                    .storage
+                    .from('Images')
+                    .remove([filePath]);
+
+                if (deleteError) {
+                    throw new Error(`Faylni o'chirishda xatolik: ${deleteError.message}`);
+                }
+            }
+        }
+
+        await adminModel.findByIdAndDelete(id);
+
         return res.status(200).send({
-            message: "Admin muvaffaqiyatli o'chrilidi!"
-        })
+            message: "Admin deleted successfully!"
+        });
     } catch (error) {
-        console.log(error);
-        return re.status(500).send({
-            error: "Serverda xatolik!"
-        })
+        console.error(error);
+        return res.status(500).send({
+            error: error.message || "An error occurred while deleting the admin!"
+        });
     }
 }

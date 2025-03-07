@@ -51,7 +51,6 @@
         </div>
     </div>
 
-    <!-- Admin qo'shish modal oynasi -->
     <div class="modal fade" id="addAdminModal" tabindex="-1" aria-labelledby="addAdminModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content" style="border-radius: 12px; box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);">
@@ -61,7 +60,6 @@
                         aria-label="Close">x</button>
                 </div>
                 <div class="modal-body">
-                    <!-- Admin qo'shish formasi -->
                     <form action="/create-admin" method="POST" enctype="multipart/form-data">
                         <div class="mb-3">
                             <label class="form-label">Ism</label>
@@ -113,9 +111,6 @@
         </div>
     </div>
 
-
-    <!-- Delete tasdiqlash modal oynasi -->
-    <!-- Delete tasdiqlash modal oynasi -->
     <div class="modal fade" id="deleteAdminModal" tabindex="-1" aria-labelledby="deleteAdminModalLabel"
         aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
@@ -129,7 +124,6 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Bekor qilish</button>
-                    <!-- O'chirish formasi -->
                     <form id="deleteForm" method="POST">
                         <input type="hidden" name="_method" value="DELETE">
                         <button type="submit" class="btn btn-danger">O‘chirish</button>
