@@ -12,7 +12,9 @@ const generateToken = (id, role) => {
 
 exports.loginPage = async (req, res) => {
     return res.render("login", {
-        token: res.cookie.authToken
+        token: res.cookie.authToken,
+        layout: false,
+        title: "Login"
     })
 }
 
