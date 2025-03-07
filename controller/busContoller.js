@@ -79,13 +79,43 @@ exports.createBus = async (req, res) => {
     }
 }
 
-exports.getAllBus = async (req, res) => {
+exports.getAllBuses = async (req, res) => {
     try {
-        const bus = await busModel.find()
+        const buses = await busModel.find()
 
-        if (!bus.length) {
+        if (!buses.length) {
             return res.status(404).send({
                 error: "Avtobuslar topilmadi!"
+            })
+        }
+
+        return res.render('buses', {
+            title: "Buses",
+            buses
+        })
+    } catch (error) {
+        console.log(error);
+        return res.status(500).send({
+            error: "Serverda xatolik!"
+        })
+    }
+}
+
+exports.getOneBus = async (req, res) => {
+    try {
+        const { id } = req.params
+
+        if (!id.match(/^[0-9a-fA-F]{24}$/)) {
+            return res.status(400).send({
+                error: "Invalid ID format!"
+            });
+        }
+
+        const bus = await busModel.findById(id).populate("seats")
+
+        if (!bus) {
+            return res.status(404).send({
+                error: "Avtobus topilmadi!"
             })
         }
 
