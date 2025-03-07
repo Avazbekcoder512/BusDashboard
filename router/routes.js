@@ -4,12 +4,14 @@ const { createAdminSchema } = require("../validator/adminValidate")
 const { login, loginPage } = require("../controller/authController")
 const { loginValidate } = require("../validator/authValidate")
 const multer = require('multer')
+const { createBusSchema } = require("../validator/busValidate")
+const { createBus, getAllBus } = require("../controller/busContoller")
 const upload = multer()
 
 const router = require("express").Router()
 
 router
-
+// login router
 .get('/login', loginPage)
 .post('/login', checkSchema(loginValidate), login)
 
@@ -17,6 +19,10 @@ router
 .get("/", getAllAdmin)
 .post('/create-admin', upload.single("image"), checkSchema(createAdminSchema), createAdmin)
 .post('/admin/:id/delete', deleteAdmin)
+
+// Bus router
+.post('/create-bus', checkSchema(createBusSchema), createBus)
+.get('/bus', getAllBus)
 
 
 module.exports = router
