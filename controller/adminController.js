@@ -138,7 +138,7 @@ exports.deleteAdmin = async (req, res) => {
             } else if (fileExists && fileExists.length > 0) {
                 const { error: deleteError } = await supabase
                     .storage
-                    .from('Images')
+                    .from('mbus_bucket')
                     .remove([filePath]);
 
                 if (deleteError) {
