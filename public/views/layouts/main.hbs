@@ -27,6 +27,13 @@
             + Avtobus qo‘shish
           </button>
           {{/if}}
+
+          {{#if routes}}
+          <button type="button" class="btn btn-success mb-3" data-bs-toggle="modal" data-bs-target="#addRouteModal"
+            style="margin-top: 16px;">
+            + Yo'nalish qo‘shish
+          </button>
+          {{/if}}
           <button style="width: 50px; height: 50px; border-radius: 50%; border: none;">
             <img style="width: 100%; height: 100%; object-fit: cover;"
               src="https://kpwxamepfkueoebpkamd.supabase.co/storage/v1/object/public/mbus_bucket/gender/male.png"
@@ -88,14 +95,14 @@
 
           {{#if routes}}
           <li class="nav-item">
-            <a class="nav-link" href="/#routes" style="background-color: #007bff; color: white;">
+            <a class="nav-link" href="/routes" style="background-color: #007bff; color: white;">
               <i class="fa-solid fa-route" style="font-size: 20px; margin-right: 10px;"></i>
               <span class="menu-title">Yo'nalishlar</span>
             </a>
           </li>
           {{else}}
           <li class="nav-item">
-            <a class="nav-link" href="/#routes">
+            <a class="nav-link" href="/routes">
               <i class="fa-solid fa-route" style="font-size: 20px; margin-right: 10px;"></i>
               <span class="menu-title">Yo'nalishlar</span>
             </a>

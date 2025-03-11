@@ -1,0 +1,99 @@
+<div class="content-wrapper">
+    <div class="row">
+        <div class="col-lg-12 grid-margin stretch-card">
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="card-title" style="text-align: center;">Yo'nalishlar</h4>
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Reys nomi</th>
+                                    <th>Qayerdan</th>
+                                    <th>Qayerga</th>
+                                    <th>Ketish vaqti</th>
+                                    <th>Chipta narxi</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {{#each routes}}
+                                <tr>
+                                    <td>{{name}}</td>
+                                    <td>{{startPoint}}</td>
+                                    <td>{{endPoint}}</td>
+                                    <td>{{time}}</td>
+                                    <td>{{seatPrice}} so'm</td>
+                                    <td>
+                                        <button class="btn btn-danger btn-sm delete-btn" data-bs-toggle="modal"
+                                            data-bs-target="#deleteRouteModal" data-id="{{_id}}">
+                                            O‘chirish
+                                        </button>
+                                    </td>
+                                </tr>
+                                {{/each}}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="addRouteModal" tabindex="-1" aria-labelledby="addAdminModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content" style="border-radius: 12px; box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);">
+            <div class="modal-header">
+                <h4 class="modal-title text-success" id="addAdminModalLabel">Yangi Yo'nalish Qo‘shish</h4>
+                <button style="border: none" type="button" class="btn-close" data-bs-dismiss="modal"
+                    aria-label="Close">x</button>
+            </div>
+            <div class="modal-body">
+                <form action="/create-bus" method="POST" enctype="multipart/form-data">
+                    <div class="mb-3">
+                        <label class="form-label" for="name">Reys nomi</label>
+                        <input type="text" class="form-control" name="name" id="name" required
+                            style="border: 2px solid #17c964; border-radius: 6px; padding: 10px; font-size: 16px; background-color: #f8f9fa; transition: 0.3s; height: 45px;">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" for="startPoint">Qayerdan</label>
+                        <input type="text" class="form-control" name="startPoint" id="startPoint" required
+                            style="border: 2px solid #17c964; border-radius: 6px; padding: 10px; font-size: 16px; background-color: #f8f9fa; transition: 0.3s; height: 45px;">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" for="endPoint">Qayerga</label>
+                        <input type="text" class="form-control" name="endPoint" id="endPoint" required
+                            style="border: 2px solid #17c964; border-radius: 6px; padding: 10px; font-size: 16px; background-color: #f8f9fa; transition: 0.3s; height: 45px;">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" for="time">Ketish vaqti</label>
+                        <input type="time" class="form-control" name="time" id="time" required
+                            style="border: 2px solid #17c964; border-radius: 6px; padding: 10px; font-size: 16px; background-color: #f8f9fa; transition: 0.3s; height: 45px;">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" for="seatPrice">Chipta narxi</label>
+                        <input type="number" min="0" max="1000000" class="form-control" name="seatPrice" id="seatPrice" required
+                            style="border: 2px solid #17c964; border-radius: 6px; padding: 10px; font-size: 16px; background-color: #f8f9fa; transition: 0.3s; height: 45px;">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Avtobus</label>
+                        <select class="form-select" name="startPoint" required
+                            style="width: 100%; border: 2px solid #17c964; border-radius: 6px; padding: 10px; font-size: 16px; background-color: #f8f9fa; transition: 0.3s; height: 45px;">
+                            <option value="" disabled selected>Tanlang...</option>
+                            {{#each routes}}
+                            <option value="{{buses._id}}">{{buses.model}}</option>
+                            {{/each}}
+                        </select>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
+                            style="height: 45px;">Bekor qilish</button>
+                        <button type="submit" class="btn btn-success"
+                            style="background-color: #198754; border: none; height: 45px;">Qo‘shish</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
