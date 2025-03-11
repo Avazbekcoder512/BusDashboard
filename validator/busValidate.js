@@ -13,7 +13,6 @@ exports.createBusSchema = {
         isString: {
             errorMessage: "Status string bo'lishi kerak",
         },
-        notEmpty: { errorMessage: "Status talab qilinadi!" },
     },
     image: {
         custom: {

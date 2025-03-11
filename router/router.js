@@ -6,6 +6,8 @@ const { loginValidate } = require("../validator/authValidate")
 const multer = require('multer')
 const { createBusSchema, updateBusSchema } = require("../validator/busValidate")
 const { createBus, getOneBus, getAllBuses, updateOneBus, deleteOneBus } = require("../controller/busContoller")
+const { createRouteSchema } = require("../validator/routeValidate")
+const { createRoute, getAllRoutes } = require("../controller/routeController")
 const upload = multer()
 
 const router = require("express").Router()
@@ -26,6 +28,10 @@ router
 .get('/bus/:id', getOneBus)
 .post('/bus/:id/update', checkSchema(updateBusSchema), updateOneBus)
 .post('/bus/:id/delete', deleteOneBus)
+
+// Route uchun
+.post('/create-route', checkSchema(createRouteSchema), createRoute)
+.get('/routes', getAllRoutes)
 
 
 module.exports = router

@@ -2,6 +2,7 @@ const { validationResult, matchedData } = require("express-validator");
 const busModel = require("../models/bus");
 const { createClient } = require("@supabase/supabase-js");
 const seatModel = require("../models/seat");
+const routeModel = require("../models/route");
 require('dotenv').config()
 
 const supabase = createClient(
@@ -71,7 +72,7 @@ exports.createBus = async (req, res) => {
 
         return res.status(201).send({
             message: "Avtobus muvaffaqiyatli yaratildi!",
-            bus
+            bus: bus
         })
     } catch (error) {
         console.log(error);
@@ -84,6 +85,7 @@ exports.createBus = async (req, res) => {
 exports.getAllBuses = async (req, res) => {
     try {
         const buses = await busModel.find()
+        const routes = await routeModel.find()
 
         if (!buses.length) {
             return res.status(404).send({
@@ -91,8 +93,14 @@ exports.getAllBuses = async (req, res) => {
             })
         }
 
+        if (!routes.length) {
+            return res.status(404).send({
+                error: "Yo'nalish topilmadi!"
+            })
+        }
+
         return res.render('buses', {
-            title: "Buses",
+            title: "Avtobuslar",
             buses
         })
     } catch (error) {

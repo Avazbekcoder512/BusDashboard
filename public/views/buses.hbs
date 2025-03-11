@@ -39,22 +39,23 @@
                 <div class="modal-body">
                     <form action="/create-bus" method="POST" enctype="multipart/form-data">
                         <div class="mb-3">
-                            <label class="form-label">Avtobus modeli</label>
-                            <input type="text" class="form-control" name="model" required
+                            <label class="form-label" for="model">Avtobus modeli</label>
+                            <input type="text" class="form-control" id="model" name="model" required
                                 style="border: 2px solid #17c964; border-radius: 6px; padding: 10px; font-size: 16px; background-color: #f8f9fa; transition: 0.3s; height: 45px;">
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">Yo'nalish</label>
-                            <select class="form-select" name="gender" required
+                            <label class="form-label">Avtobus</label>
+                            <select class="form-select" name="startPoint" required
                                 style="width: 100%; border: 2px solid #17c964; border-radius: 6px; padding: 10px; font-size: 16px; background-color: #f8f9fa; transition: 0.3s; height: 45px;">
                                 <option value="" disabled selected>Tanlang...</option>
-                                <option value="Erkak">Erkak</option>
-                                <option value="Ayol">Ayol</option>
+                                {{#each routes}}
+                                <option value="{{_id}}">{{name}}</option>
+                                {{/each}}
                             </select>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">Rasm yuklash</label>
-                            <input type="file" class="form-control" name="image" required
+                            <label class="form-label" for="image">Rasm yuklash</label>
+                            <input type="file" class="form-control" id="image" name="image" required
                                 style="border: 2px solid #17c964; border-radius: 6px; padding: 10px; font-size: 16px; background-color: #f8f9fa; transition: 0.3s; height: 45px; cursor: pointer;">
                         </div>
                         <div class="modal-footer">
@@ -85,12 +86,13 @@
                                 style="border: 2px solid #17c964; border-radius: 6px; padding: 10px; font-size: 16px; background-color: #f8f9fa; transition: 0.3s; height: 45px;">
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">Yo'nalish</label>
-                            <select class="form-select" name="gender" required
+                            <label class="form-label">Avtobus</label>
+                            <select class="form-select" name="startPoint" required
                                 style="width: 100%; border: 2px solid #17c964; border-radius: 6px; padding: 10px; font-size: 16px; background-color: #f8f9fa; transition: 0.3s; height: 45px;">
                                 <option value="" disabled selected>Tanlang...</option>
-                                <option value="Erkak">Erkak</option>
-                                <option value="Ayol">Ayol</option>
+                                {{#each routes}}
+                                <option value="{{_id}}">{{name}}</option>
+                                {{/each}}
                             </select>
                         </div>
                         <div class="mb-3">
@@ -115,11 +117,11 @@
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content" style="border-radius: 12px; box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);">
                 <div class="modal-header">
-                    <h5 class="modal-title text-danger" id="deleteAdminModalLabel">Adminni o‘chirish</h5>
+                    <h5 class="modal-title text-danger" id="deleteAdminModalLabel">Avtobusni o‘chirish</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">x</button>
                 </div>
                 <div class="modal-body">
-                    <p>Haqiqatan ham ushbu adminni o‘chirmoqchimisiz?</p>
+                    <p>Haqiqatdan ham ushbu avtobusni o‘chirmoqchimisiz?</p>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Bekor qilish</button>

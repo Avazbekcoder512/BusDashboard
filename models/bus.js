@@ -1,6 +1,7 @@
 const mongoose = require('mongoose')
 
 const busSchema = new mongoose.Schema({
+    number: String,
     model: String,
     image: String,
     seats: [{ type: mongoose.Schema.Types.ObjectId, ref: "Seat" }],

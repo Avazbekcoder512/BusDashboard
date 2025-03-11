@@ -7,7 +7,7 @@ const { allowInsecurePrototypeAccess } = require('@handlebars/allow-prototype-ac
 const bodyParser = require("body-parser")
 const cookieParser = require("cookie-parser")
 const session = require("express-session")
-const router = require('./router/routes')
+const router = require('./router/router')
 const cors = require('cors')
 
 Connect()

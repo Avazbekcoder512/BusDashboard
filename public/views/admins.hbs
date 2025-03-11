@@ -62,23 +62,23 @@
                 <div class="modal-body">
                     <form action="/create-admin" method="POST" enctype="multipart/form-data">
                         <div class="mb-3">
-                            <label class="form-label">Ism</label>
-                            <input type="text" class="form-control" name="name" required
+                            <label class="form-label" for="name">Ism</label>
+                            <input type="text" class="form-control" id="name" name="name" required
                                 style="border: 2px solid #17c964; border-radius: 6px; padding: 10px; font-size: 16px; background-color: #f8f9fa; transition: 0.3s; height: 45px;">
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">Username</label>
-                            <input type="text" class="form-control" name="username" required
+                            <label class="form-label" for="username">Username</label>
+                            <input type="text" class="form-control" id="username" name="username" required
                                 style="border: 2px solid #17c964; border-radius: 6px; padding: 10px; font-size: 16px; background-color: #f8f9fa; transition: 0.3s; height: 45px;">
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">Parol</label>
-                            <input type="password" class="form-control" name="password" required
+                            <label class="form-label" for="password">Parol</label>
+                            <input type="password" class="form-control" id="password" name="password" required
                                 style="border: 2px solid #17c964 ; border-radius: 6px; padding: 10px; font-size: 16px; background-color: #f8f9fa; transition: 0.3s; height: 45px;">
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">Jinsi</label>
-                            <select class="form-select" name="gender" required
+                            <label class="form-label" for="gender">Jinsi</label>
+                            <select class="form-select" id="gender" name="gender" required
                                 style="width: 100%; border: 2px solid #17c964; border-radius: 6px; padding: 10px; font-size: 16px; background-color: #f8f9fa; transition: 0.3s; height: 45px;">
                                 <option value="" disabled selected>Tanlang...</option>
                                 <option value="Erkak">Erkak</option>
@@ -86,8 +86,8 @@
                             </select>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">Roli</label>
-                            <select class="form-select" name="role" required
+                            <label class="form-label" for="role">Roli</label>
+                            <select class="form-select" id="role" name="role" required
                                 style="width: 100%; border: 2px solid #17c964; border-radius: 6px; padding: 10px; font-size: 16px; background-color: #f8f9fa; transition: 0.3s; height: 45px;">
                                 <option value="" disabled selected>Tanlang...</option>
                                 <option value="superAdmin">Super Admin</option>
@@ -95,8 +95,8 @@
                             </select>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">Rasm yuklash</label>
-                            <input type="file" class="form-control" name="image" required
+                            <label class="form-label" for="image">Rasm yuklash</label>
+                            <input type="file" class="form-control" id="image" name="image" required
                                 style="border: 2px solid #17c964; border-radius: 6px; padding: 10px; font-size: 16px; background-color: #f8f9fa; transition: 0.3s; height: 45px; cursor: pointer;">
                         </div>
                         <div class="modal-footer">
@@ -120,7 +120,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">x</button>
                 </div>
                 <div class="modal-body">
-                    <p>Haqiqatan ham ushbu adminni o‘chirmoqchimisiz?</p>
+                    <p>Haqiqatdan ham ushbu adminni o‘chirmoqchimisiz?</p>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Bekor qilish</button>
