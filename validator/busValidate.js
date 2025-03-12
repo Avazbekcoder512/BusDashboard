@@ -28,6 +28,14 @@ exports.createBusSchema = {
                 return true;
             },
         },
+    },
+    route: {
+        isString: {
+            errorMessage: "Avtobus modeli string bo'lishi shart!",
+        },
+        notEmpty: {
+            errorMessage: "Avtobus modeli talab qilinadi!",
+        },
     }
 };
 

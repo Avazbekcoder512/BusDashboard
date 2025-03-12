@@ -15,6 +15,7 @@
 </head>
 
 <body>
+  {{#if token}}
   <div class="container-scroller">
     <nav class="navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
       <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-between"
@@ -34,11 +35,27 @@
             + Yo'nalish qo‘shish
           </button>
           {{/if}}
-          <button style="width: 50px; height: 50px; border-radius: 50%; border: none;">
-            <img style="width: 100%; height: 100%; object-fit: cover;"
-              src="https://kpwxamepfkueoebpkamd.supabase.co/storage/v1/object/public/mbus_bucket/gender/male.png"
-              alt="rasm">
-          </button>
+          <div style="position: relative; display: inline-block;">
+            <button id="profileBtn" onclick="toggleDropdown()"
+              style="width: 50px; height: 50px; border-radius: 50%; border: none; background: transparent; cursor: pointer; padding: 5px; transition: transform 0.2s ease;">
+              <img
+                style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);"
+                src="https://kpwxamepfkueoebpkamd.supabase.co/storage/v1/object/public/mbus_bucket/gender/male.png"
+                alt="Profile">
+            </button>
+
+            <div id="dropdown"
+              style="display: none; position: absolute; right: 0; top: 60px; background: white; box-shadow: 0px 6px 12px rgba(0,0,0,0.15); border-radius: 8px; width: 150px; overflow: hidden;">
+              <a href="/profile"
+                style="display: flex; align-items: center; gap: 10px; padding: 12px; text-decoration: none; color: #333; font-size: 14px; transition: background 0.3s ease; font-family: Arial, sans-serif;">
+                <i class="fa-solid fa-user"></i> Profil
+              </a>
+              <a href="/logout"
+                style="display: flex; align-items: center; gap: 10px; padding: 12px; text-decoration: none; color: #d9534f; font-size: 14px; transition: background 0.3s ease; font-family: Arial, sans-serif;">
+                <i class="fa-solid fa-right-from-bracket"></i> Logout
+              </a>
+            </div>
+          </div>
         </div>
       </div>
     </nav>
@@ -131,6 +148,27 @@
       </div>
     </div>
   </div>
+
+  <script>
+    function toggleDropdown() {
+      var dropdown = document.getElementById("dropdown");
+      dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
+    }
+
+    document.addEventListener("click", function (event) {
+      var dropdown = document.getElementById("dropdown");
+      var profileBtn = document.getElementById("profileBtn");
+      if (!profileBtn.contains(event.target) && !dropdown.contains(event.target)) {
+        dropdown.style.display = "none"; // Tashqariga bosilganda yopiladi
+      }
+    });
+  </script>
+
+  {{else}}
+  <script>
+    window.location.href = './login'
+  </script>
+  {{/if}}
 
   <script src="vendors/js/vendor.bundle.base.js"></script>
 

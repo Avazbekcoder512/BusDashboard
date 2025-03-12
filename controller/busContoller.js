@@ -12,6 +12,8 @@ const supabase = createClient(
 
 exports.createBus = async (req, res) => {
     try {
+        console.log(req.body);
+        
         const errors = validationResult(req)
         if (!errors.isEmpty()) {
             return res.status(400).send({
@@ -20,6 +22,8 @@ exports.createBus = async (req, res) => {
         }
 
         const data = matchedData(req)
+        console.log(data);
+        
 
         if (!req.file) {
             return res.status(400).send({
@@ -70,6 +74,8 @@ exports.createBus = async (req, res) => {
         bus.seats = seats;
         await bus.save();
 
+        // await routeModel.findByIdAndUpdate(data.i)
+
         return res.status(201).send({
             message: "Avtobus muvaffaqiyatli yaratildi!",
             bus: bus
@@ -85,7 +91,8 @@ exports.createBus = async (req, res) => {
 exports.getAllBuses = async (req, res) => {
     try {
         const buses = await busModel.find()
-        const routes = await routeModel.find()
+        const route = await routeModel.find()
+        const token = req.cookies.authToken
 
         if (!buses.length) {
             return res.status(404).send({
@@ -93,7 +100,7 @@ exports.getAllBuses = async (req, res) => {
             })
         }
 
-        if (!routes.length) {
+        if (!route.length) {
             return res.status(404).send({
                 error: "Yo'nalish topilmadi!"
             })
@@ -101,7 +108,9 @@ exports.getAllBuses = async (req, res) => {
 
         return res.render('buses', {
             title: "Avtobuslar",
-            buses
+            buses,
+            token,
+            route
         })
     } catch (error) {
         console.log(error);

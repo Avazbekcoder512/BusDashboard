@@ -1,7 +1,7 @@
 const { checkSchema } = require("express-validator")
 const { getAllAdmin, createAdmin, deleteAdmin } = require("../controller/adminController")
 const { createAdminSchema } = require("../validator/adminValidate")
-const { login, loginPage } = require("../controller/authController")
+const { login, loginPage, logout } = require("../controller/authController")
 const { loginValidate } = require("../validator/authValidate")
 const multer = require('multer')
 const { createBusSchema, updateBusSchema } = require("../validator/busValidate")
@@ -16,6 +16,7 @@ router
 // login router
 .get('/login', loginPage)
 .post('/login', checkSchema(loginValidate), login)
+.get('/logout', logout)
 
 // Admin router
 .get("/", getAllAdmin)
@@ -23,7 +24,7 @@ router
 .post('/admin/:id/delete', deleteAdmin)
 
 // Bus router
-.post('/create-bus', checkSchema(createBusSchema), createBus)
+.post('/create-bus', upload.single("image"), checkSchema(createBusSchema), createBus)
 .get('/buses', getAllBuses)
 .get('/bus/:id', getOneBus)
 .post('/bus/:id/update', checkSchema(updateBusSchema), updateOneBus)
