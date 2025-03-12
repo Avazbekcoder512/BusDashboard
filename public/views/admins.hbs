@@ -102,8 +102,18 @@
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
                                 style="height: 45px;">Bekor qilish</button>
-                            <button type="submit" class="btn btn-success"
-                                style="background-color: #198754; border: none; height: 45px;">Qo‘shish</button>
+                            <form id="deleteForm" method="POST"
+                                onsubmit="showspinner(event, 'deleteButton', 'deleteText', 'deleteSpinner')">
+                                <input type="hidden" name="_method" value="DELETE">
+                                <button id="deleteButton" type="submit" class="btn btn-danger d-flex align-items-center"
+                                    style="position: relative; display: flex; align-items: center; justify-content: center;">
+                                    <span id="deleteText">O‘chirish</span>
+                                    <div id="deleteSpinner" style="display: none; width: 18px; height: 18px; 
+                border: 3px solid rgba(255, 255, 255, 0.3); border-top: 3px solid white; 
+                border-radius: 50%; animation: spin 1s linear infinite;">
+                                    </div>
+                                </button>
+                            </form>
                         </div>
                     </form>
                 </div>
@@ -124,9 +134,17 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Bekor qilish</button>
-                    <form id="deleteForm" method="POST">
+                    <form id="deleteForm" method="POST"
+                        onsubmit="showspinner(event, 'deleteButton', 'deleteText', 'deleteSpinner')">
                         <input type="hidden" name="_method" value="DELETE">
-                        <button type="submit" class="btn btn-danger">O‘chirish</button>
+                        <button id="deleteButton" type="submit" class="btn btn-danger d-flex align-items-center"
+                            style="position: relative; display: flex; align-items: center; justify-content: center;">
+                            <span id="deleteText">O‘chirish</span>
+                            <div id="deleteSpinner" style="display: none; width: 20px; height: 20px; 
+                border: 3px solid rgba(255, 255, 255, 0.3); border-top: 3px solid white; 
+                border-radius: 50%; animation: spin 1s linear infinite;">
+                            </div>
+                        </button>
                     </form>
                 </div>
             </div>
@@ -135,7 +153,30 @@
 </body>
 
 
- <script>
+<script>
+    function showspinner(event, buttonId, textId, spinnerId) {
+        const button = document.getElementById(buttonId);
+        const text = document.getElementById(textId);
+        const spinner = document.getElementById(spinnerId);
+        const form = event.target.closest('form')
+
+        if (!form.checkValidity()) {
+            return;
+        }
+
+        event.preventDefault();
+
+        button.disabled = true;
+        text.style.display = "none";
+        spinner.style.display = "inline-block";
+
+        setTimeout(() => {
+            if (event.target.form) {
+                event.target.form.submit();
+            }
+        }, 1000);
+    }
+
     document.addEventListener("DOMContentLoaded", function () {
         const deleteButtons = document.querySelectorAll(".delete-btn");
         const deleteForm = document.getElementById("deleteForm");
@@ -143,7 +184,7 @@
         deleteButtons.forEach(button => {
             button.addEventListener("click", function () {
                 const adminId = this.getAttribute("data-id");
-                deleteForm.setAttribute("action", `/admin/${adminId}/delete`);
+                deleteForm.setAttribute("action", `admin/${adminId}/delete`);
             });
         });
     });

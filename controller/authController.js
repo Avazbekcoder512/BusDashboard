@@ -19,9 +19,7 @@ exports.loginPage = async (req, res) => {
 }
 
 exports.login = async (req, res) => {
-    try {
-        console.log(req.body);
-        
+    try {        
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
             return res.status(400).send({
@@ -36,14 +34,10 @@ exports.login = async (req, res) => {
             const checkPassword = await bcrypt.compare(data.password, user.password)
 
             if (!checkPassword) {
-                return res.status(403).send({
-                    error: "Parol xato!"
-                })
+                return res.redirect('/login')
             }
 
-            const authToken = generateToken(user._id, user.role)
-            console.log(authToken);
-            
+            const authToken = generateToken(user._id, user.role)            
 
             res.cookie("authToken", authToken, { secure: true })
 
@@ -66,11 +60,31 @@ exports.login = async (req, res) => {
             res.cookie("authToken", authToken, { secure: true })
 
             return res.redirect("/")
+        } 
+        if (!user) {
+            return res.redirect("/login")
         }
     } catch (error) {
         console.log(error);
         return res.status(500).send({
             error: "Serverda xatolik!"
         })
+    }
+}
+
+exports.logout = async (req, res) => {
+    try {
+        const token = req.cookies.authToken
+        if (!token) {
+            return res.redirect('/login')
+        }
+
+        res.clearCookie('authToken')
+        return res.redirect('/login')
+    } catch (error) {
+        console.log(error);
+        return res.status(500).send({
+            error: "Serverda xatolik!"
+        }) 
     }
 }

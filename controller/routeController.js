@@ -35,6 +35,7 @@ exports.createRoute = async (req, res) => {
 exports.getAllRoutes = async (req, res) => {
     try {
         const routes = await routeModel.find()
+        const token = req.cookies.authToken
 
         if (!routes.length) {
             return res.status(404).send({
@@ -44,6 +45,7 @@ exports.getAllRoutes = async (req, res) => {
 
         return res.render("routes", {
             title: "Yo'nalishlar",
+            token,
             routes
         })
     } catch (error) {

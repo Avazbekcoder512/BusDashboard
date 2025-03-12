@@ -15,6 +15,8 @@ const hbs = create({ defaultLayout: "main", extname: "hbs", handlebars: allowIns
 
 const app = express()
 app.use(express.json())
+app.use(cookieParser())
+app.use(express.urlencoded({extended: true}))
 app.engine("hbs", hbs.engine)
 app.set("view engine", "hbs")
 app.set("views", "./public/views")
@@ -24,7 +26,7 @@ app.use(express.static("public"))
 
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
-app.use(cookieParser())
+
 app.use(session({ secret: "Admin", resave: false, saveUninitialized: false, }))
 
 const PORT = process.env.PORT || 5000

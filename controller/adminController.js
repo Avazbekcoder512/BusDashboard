@@ -83,6 +83,10 @@ exports.createAdmin = async (req, res) => {
 
 exports.getAllAdmin = async (req, res) => {
     try {
+        const token = req.cookies.authToken
+        if (!token) {
+            return res.redirect('/login')
+        }
         const admins = await adminModel.find()
 
         if (admins.length == 0) {
@@ -93,12 +97,13 @@ exports.getAllAdmin = async (req, res) => {
 
         return res.render("admins", {
             title: "Dashboard",
-            admins
+            admins,
+            token
         })
 
     } catch (error) {
         console.log(error);
-        return re.status(500).send({
+        return res.status(500).send({
             error: "Serverda xatolik!"
         })
     }
