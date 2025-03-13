@@ -59,7 +59,7 @@ exports.createBus = async (req, res) => {
             model: data.model,
             image: fileUrl,
             seats: [],
-            status: data.status
+            // status: data.status
         })
 
         const seatsCount = 51
@@ -73,8 +73,6 @@ exports.createBus = async (req, res) => {
 
         bus.seats = seats;
         await bus.save();
-
-        // await routeModel.findByIdAndUpdate(data.i)
 
         return res.status(201).send({
             message: "Avtobus muvaffaqiyatli yaratildi!",

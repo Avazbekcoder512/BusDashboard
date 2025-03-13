@@ -9,11 +9,20 @@ exports.createBusSchema = {
             errorMessage: "Avtobus modeli talab qilinadi!",
         },
     },
-    status: {
+    number: {
         isString: {
-            errorMessage: "Status string bo'lishi kerak",
+            errorMessage: "Avtobus raqami string bo'lishi kerak"
         },
+        isLength: {
+            options: {min: 8, max: 8},
+            errorMessage: "Avtobus raqami 8 ta belgidan kam bo'lmasligi va oshib ketmasligi kerak!"
+        }
     },
+    // status: {
+    //     isString: {
+    //         errorMessage: "Status string bo'lishi kerak",
+    //     },
+    // },
     image: {
         custom: {
             options: async (value, { req }) => {
@@ -28,15 +37,15 @@ exports.createBusSchema = {
                 return true;
             },
         },
-    },
-    route: {
-        isString: {
-            errorMessage: "Avtobus modeli string bo'lishi shart!",
-        },
-        notEmpty: {
-            errorMessage: "Avtobus modeli talab qilinadi!",
-        },
     }
+    // route: {
+    //     isString: {
+    //         errorMessage: "Avtobus modeli string bo'lishi shart!",
+    //     },
+    //     notEmpty: {
+    //         errorMessage: "Avtobus modeli talab qilinadi!",
+    //     },
+    // }
 };
 
 exports.updateBusSchema = {
