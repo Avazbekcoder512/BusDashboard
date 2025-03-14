@@ -12,27 +12,57 @@ exports.createRoute = async (req, res) => {
 
         const data = matchedData(req)
 
-        const route = routeModel.create({
-            name: data.name,
-            from: data.from,
-            to: data.to,
-            departure_time: data.departure_time,
-            arrival_time: data.arrival_time,
-            price: data.price,
-            distance: data.distance,
-            bus_id: data.bus_id
-        })
+        for (let i = 0; i < 2; i++) {
+            const departureDate = new Date();
+            departureDate.setDate(departureDate.getDate() + i);
+            const formattedDepartureDate = departureDate.toISOString().split("T")[0];
+
+            const arrivalDate = new Date(departureDate);
+            arrivalDate.setDate(arrivalDate.getDate() + (data.arrival_days || 1));
+            const formattedArrivalDate = arrivalDate.toISOString().split("T")[0];
+
+            await routeModel.create({
+                name: data.from + ' ' + data.to,
+                from: data.from,
+                to: data.to,
+                departure_time: data.departure_time,
+                arrival_time: data.arrival_time,
+                departure_date: formattedDepartureDate,
+                arrival_date: formattedArrivalDate,
+                price: data.price,
+                bus_id: data.bus_id,
+            });
+
+            const returnDepartureDate = new Date(formattedArrivalDate);
+            returnDepartureDate.setDate(returnDepartureDate.getDate());
+            const formattedReturnDepartureDate = returnDepartureDate.toISOString().split("T")[0];
+
+            const returnArrivalDate = new Date(returnDepartureDate);
+            returnArrivalDate.setDate(returnArrivalDate.getDate() + 1);
+            const formattedReturnArrivalDate = returnArrivalDate.toISOString().split("T")[0];
+
+            await routeModel.create({
+                name: data.to + ' ' + data.from,
+                from: data.to,
+                to: data.from,
+                departure_time: data.arrival_time,
+                arrival_time: data.departure_time,
+                departure_date: formattedReturnDepartureDate,
+                arrival_date: formattedReturnArrivalDate,
+                price: data.price,
+                bus_id: data.bus_id,
+            });
+        }
 
         return res.status(201).send({
-            message: "Yo'nali muvaffaqiyatli yaratildi!",
-            data: route
-        })
+            message: "Yo'nalish muvaffaqiyatli yaratildi!",
+        });
 
     } catch (error) {
         console.log(error);
         return res.status(500).send({
-            error: "SErverda xatolik!"
-        })
+            error: "Serverda xatolik!"
+        });
     }
 }
 
@@ -47,11 +77,15 @@ exports.getAllRoutes = async (req, res) => {
             })
         }
 
-        return res.render("routes", {
-            title: "Yo'nalishlar",
-            token,
+        return res.status(200).send({
             routes
         })
+
+        // return res.render("routes", {
+        //     title: "Yo'nalishlar",
+        //     token,
+        //     routes
+        // })
     } catch (error) {
         console.log(error);
         return res.status(500).send({
@@ -97,7 +131,7 @@ exports.updateRouter = async (req, res) => {
             bus_id: data.bus_id || route.bus_id
         }
 
-        await routeModel.findByIdAndUpdate(id, newRoute, {new: true})
+        await routeModel.findByIdAndUpdate(id, newRoute, { new: true })
 
         return res.status(201).send({
             message: "Yo'nalish muvaffaqiyatli yangilandi!",

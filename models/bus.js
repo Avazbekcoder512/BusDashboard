@@ -3,11 +3,9 @@ const mongoose = require('mongoose')
 const busSchema = new mongoose.Schema({
     number: String,
     model: String,
-    image: String,
+    seats_count: Number,
     seats: [{ type: mongoose.Schema.Types.ObjectId, ref: "Seat" }],
-    route: { type: mongoose.Schema.Types.ObjectId, ref: "Route" },
-    driver: { type: mongoose.Schema.Types.ObjectId, ref: "Driver" },
-    status: { type: String, enum: ["active", "inactive", "completed", "maintenance"], default: "active" }
+    image: String,
 }, { timestamps: true })
 
 const busModel = mongoose.model("Bus", busSchema)

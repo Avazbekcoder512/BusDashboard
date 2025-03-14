@@ -4,12 +4,12 @@ const routeSchema = new mongoose.Schema({
     name: String,
     from: String,
     to: String,
-    departure_time: Date,
-    arrival_time: Date,
+    departure_time: String,
+    arrival_time: String,
+    departure_date: String,
+    arrival_date: String,
     price: Number,
-    distance: Number,
     bus_id: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Bus' }],
-    status: { type: String, enum: ["Pending", "Active", "Completed"], default: "Pending" }
 }, { timestamps: true })
 
 const routeModel = mongoose.model("Route", routeSchema)

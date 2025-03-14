@@ -11,9 +11,7 @@ const supabase = createClient(
 );
 
 exports.createBus = async (req, res) => {
-    try {
-        console.log(req.body);
-        
+    try {        
         const errors = validationResult(req)
         if (!errors.isEmpty()) {
             return res.status(400).send({
@@ -22,47 +20,47 @@ exports.createBus = async (req, res) => {
         }
 
         const data = matchedData(req)
-        console.log(data);
         
 
-        if (!req.file) {
-            return res.status(400).send({
-                error: "Iltimos, rasm faylni yuklang!",
-            });
-        }
+        // if (!req.file) {
+        //     return res.status(400).send({
+        //         error: "Iltimos, rasm faylni yuklang!",
+        //     });
+        // }
 
-        const maxFileSize = 5 * 1024 * 1024;
-        if (req.file.size > maxFileSize) {
-            return res.status(400).send({
-                error: "Rasm hajmi 5 MB dan oshmasligi kerak!",
-            });
-        }
+        // const maxFileSize = 5 * 1024 * 1024;
+        // if (req.file.size > maxFileSize) {
+        //     return res.status(400).send({
+        //         error: "Rasm hajmi 5 MB dan oshmasligi kerak!",
+        //     });
+        // }
 
-        const { buffer, originalname } = req.file;
-        const fileName = `buses/${Date.now()}-${originalname}`;
+        // const { buffer, originalname } = req.file;
+        // const fileName = `buses/${Date.now()}-${originalname}`;
 
-        const { data: uploadData, error: uploadError } = await supabase.storage
-            .from("mbus_bucket")
-            .upload(fileName, buffer, {
-                cacheControl: "3600",
-                upsert: false,
-                contentType: req.file.mimetype,
-            });
+        // const { data: uploadData, error: uploadError } = await supabase.storage
+        //     .from("mbus_bucket")
+        //     .upload(fileName, buffer, {
+        //         cacheControl: "3600",
+        //         upsert: false,
+        //         contentType: req.file.mimetype,
+        //     });
 
-        if (uploadError) {
-            throw new Error(`Fayl yuklanmadi: ${uploadError.message}`);
-        }
+        // if (uploadError) {
+        //     throw new Error(`Fayl yuklanmadi: ${uploadError.message}`);
+        // }
 
-        const fileUrl = `${supabase.storageUrl}/object/public/mbus_bucket/${fileName}`;
+        // const fileUrl = `${supabase.storageUrl}/object/public/mbus_bucket/${fileName}`;
 
         const bus = await busModel.create({
             model: data.model,
-            image: fileUrl,
+            number: data.number,
+            seats_count: data.seats_count,
+            // image: fileUrl,
             seats: [],
-            // status: data.status
         })
 
-        const seatsCount = 51
+        const seatsCount = data.seats_count
 
         let seats = [];
         for (let i = 1; i <= seatsCount; i++) {
@@ -104,12 +102,16 @@ exports.getAllBuses = async (req, res) => {
             })
         }
 
-        return res.render('buses', {
-            title: "Avtobuslar",
-            buses,
-            token,
-            route
+        return res.status(200).send({
+            buses
         })
+
+        // return res.render('buses', {
+        //     title: "Avtobuslar",
+        //     buses,
+        //     token,
+        //     route
+        // })
     } catch (error) {
         console.log(error);
         return res.status(500).send({
