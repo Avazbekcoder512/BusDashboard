@@ -1,12 +1,4 @@
 exports.createRouteSchema = {
-    name: {
-        isString: {
-            errorMessage: "Yo'nalish nomi stringda kiritilishi shart!",
-        },
-        notEmpty: {
-            errorMessage: "Yo'nalish nomini kiritish shart!",
-        },
-    },
     from: {
         isString: {
             errorMessage: "Boshlang'ich manzil stringda kiritilishi shart!",
@@ -23,23 +15,30 @@ exports.createRouteSchema = {
             errorMessage: "Yakuniy manzilni kiritish shart!"
         }
     },
-    // time: {
-    //     matches: {
-    //         options: [/^([01]\d|2[0-3]):([0-5]\d)(:[0-5]\d)?$/],
-    //         errorMessage: "Vaqt noto'g'ri formatda!"
-    //     },
-    //     notEmpty: {
-    //         errorMessage: "Vaqtni kiritish shart!"
-    //     }
-    // }
     departure_time: {
         notEmpty: {
-            errorMessage: "Yakuniy manzilni kiritish shart!"
+            errorMessage: "Jo'nash vaqtini kiritish shart!"
         }
     },
     arrival_time: {
         notEmpty: {
-            errorMessage: "Yakuniy manzilni kiritish shart!"
+            errorMessage: "Yetib borish vaqti kiritish shart!"
+        }
+    },
+    departure_date: {
+        isString: {
+            errorMessage: "Reysning jo'nash sanasini stringda kiritilishi shart!",
+        },
+        notEmpty: {
+            errorMessage: "Reysning jo'nash sanasi kiritish shart!"
+        }
+    },
+    arrival_date: {
+        isString: {
+            errorMessage: "Reysning yetib borish sanasini stringda kiritilishi shart!",
+        },
+        notEmpty: {
+            errorMessage: "Reysning yetib borish sanasi kiritish shart!"
         }
     },
     price: {
@@ -51,13 +50,14 @@ exports.createRouteSchema = {
             errorMessage: "Narxi kiritish shart!"
         }
     },
-    distance: {
-        isInt: {
-            options: { min: 0 },
-            errorMessage: "Masofani raqamda kiriting!"
-        },
-        notEmpty: {
-            errorMessage: "Masofani kiritish shart!"
+    bus_id: {
+        custom: {
+            options: async (value, { req }) => {
+                if (!value || !value.match(/^[0-9a-fA-F]{24}$/)) {
+                    throw new Error("Avtobus ID xato!");
+                }
+                return true;
+            },
         }
     }
 };
