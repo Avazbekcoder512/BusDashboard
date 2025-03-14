@@ -4,11 +4,13 @@ const routeSchema = new mongoose.Schema({
     name: String,
     from: String,
     to: String,
+    departure_time: Date,
+    arrival_time: Date,
     price: Number,
-    date: Date,
-    time: {type: String,  match: /^([01]\d|2[0-3]):([0-5]\d)$/},
-    buses: [{type: mongoose.Schema.Types.ObjectId, ref: 'Bus'}]
-}, {timestamps: true})
+    distance: Number,
+    bus_id: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Bus' }],
+    status: { type: String, enum: ["Pending", "Active", "Completed"], default: "Pending" }
+}, { timestamps: true })
 
 const routeModel = mongoose.model("Route", routeSchema)
 module.exports = routeModel

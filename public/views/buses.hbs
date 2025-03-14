@@ -3,8 +3,9 @@
     <div class="content-wrapper">
         <div class="col-xl-3 d-flex grid-margin stretch-card">
             {{#each buses}}
-            <div class="card">
-                <img src="{{image}}" class="card-img-top" alt="Avtobus rasmi">
+            <div class="card" style="margin-right: 10px;">
+                <img src="{{image}}" class="card-img-top" alt="Avtobus rasmi"
+                    style="width: 100%; height: 250px; object-fit: cover;">
                 <div class="card-body">
                     <a href="#" style="text-decoration: none;">
                         <h5 class="card-title">{{model}}</h5>
@@ -50,14 +51,9 @@
                                 style="border: 2px solid #17c964; border-radius: 6px; padding: 10px; font-size: 16px; background-color: #f8f9fa; transition: 0.3s; height: 45px;">
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">Yo'nalish</label>
-                            <select class="form-select" name="route" required
-                                style="width: 100%; border: 2px solid #17c964; border-radius: 6px; padding: 10px; font-size: 16px; background-color: #f8f9fa; transition: 0.3s; height: 45px;">
-                                <option value="" disabled selected>Tanlang...</option>
-                                {{#each route}}
-                                <option value="{{_id}}">{{name}}</option>
-                                {{/each}}
-                            </select>
+                            <label class="form-label" for="number">Avtobus raqami</label>
+                            <input type="text" class="form-control" id="number" name="number" required
+                                style="border: 2px solid #17c964; border-radius: 6px; padding: 10px; font-size: 16px; background-color: #f8f9fa; transition: 0.3s; height: 45px;">
                         </div>
                         <div class="mb-3">
                             <label class="form-label" for="image">Rasm yuklash</label>
