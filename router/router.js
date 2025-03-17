@@ -6,8 +6,10 @@ const { loginValidate } = require("../validator/authValidate")
 const multer = require('multer')
 const { createBusSchema, updateBusSchema } = require("../validator/busValidate")
 const { createBus, getOneBus, getAllBuses, updateOneBus, deleteOneBus } = require("../controller/busContoller")
-const { createRouteSchema } = require("../validator/routeValidate")
-const { createRoute, getAllRoutes } = require("../controller/routeController")
+const { createRouteSchema, updateRouteSchema } = require("../validator/routeValidate")
+const { createRoute, getAllRoutes, getOneRoutes, updateRoute, deleteRoute } = require("../controller/routeController")
+const { createTripSchema } = require("../validator/tripValidate")
+const { createTrip, getAllTrips } = require("../controller/tripController")
 const upload = multer()
 
 const router = require("express").Router()
@@ -30,9 +32,17 @@ router
 .post('/bus/:id/update', checkSchema(updateBusSchema), updateOneBus)
 .post('/bus/:id/delete', deleteOneBus)
 
-// Route uchun
+// Route router
 .post('/create-route', checkSchema(createRouteSchema), createRoute)
 .get('/routes', getAllRoutes)
+.get('/route/:id', getOneRoutes)
+.post('/route/:id/update', checkSchema(updateRouteSchema), updateRoute)
+.post('/route/:id/delete', deleteRoute)
+
+// Trip router
+.post('/create-trip', checkSchema(createTripSchema), createTrip)
+.get('/trips', getAllTrips)
+
 
 
 module.exports = router

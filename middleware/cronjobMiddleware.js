@@ -1,84 +1,88 @@
-const cron = require('node-cron');
-const routeModel = require('../models/route');
+const cron = require("node-cron");
+const routeModel = require("../models/route");
 
-
-const updateRouteStatus = async () => {
-    try {
-        const now = new Date();
-
-        const pendingTrips = await routeModel.find({
-            departure_time: { $lte: now },
-            status: "Pending"
-        });
-    
-        for (let route of pendingTrips) {
-            route.status = "Active";  
-            await route.save();
-        }
-
-    } catch (error) {
-        console.error("❌ updateRouteStatus xatolik:", error);
-    }
+const calculateTravelDays = (distance) => {
+    return distance > 600 ? 1 : 0;
 };
 
-const checkAndUpdateRoutes = async () => {
+const createDailyRoutes = async () => {
     try {
-        const now = new Date();
+        const routes = await routeModel.find();
 
-        const completedRoutes = await routeModel.find({
-            arrival_time: { $lte: now },
-            status: "Active"
-        });
+        if (routes.length === 0) {
+            console.log("❌ Hech qanday reys mavjud emas!");
+            return;
+        }
 
-        if (completedRoutes.length === 0) return;
+        for (const route of routes) {
+            for (let i = 1; i <= 2; i++) {
+                const departureDate = new Date();
+                departureDate.setDate(departureDate.getDate() + i);
+                const formattedDepartureDate = departureDate.toISOString().split("T")[0];
 
-        await routeModel.updateMany(
-            { arrival_time: { $lte: now }, status: "Active" },
-            { $set: { status: "Completed" } }
-        );
+                const travelDays = calculateTravelDays(route.distance);
+                const arrivalDate = new Date(departureDate);
+                arrivalDate.setDate(arrivalDate.getDate() + travelDays);
+                const formattedArrivalDate = arrivalDate.toISOString().split("T")[0];
 
-        console.log(`✅ ${completedRoutes.length} ta marshrut "Completed" holatiga o‘zgartirildi.`);
+                await routeModel.create({
+                    name: route.name,
+                    from: route.from,
+                    to: route.to,
+                    departure_time: route.departure_time,
+                    arrival_time: route.arrival_time,
+                    departure_date: formattedDepartureDate,
+                    arrival_date: formattedArrivalDate,
+                    price: route.price,
+                    bus_id: route.bus_id,
+                    distance: route.distance
+                });
 
-        for (let route of completedRoutes) {
-            let returnDate = new Date(route.arrival_time);
+                const returnDepartureDate = new Date(formattedArrivalDate);
+                const formattedReturnDepartureDate = returnDepartureDate.toISOString().split("T")[0];
 
-            if (route.distance >= 200) {  
-                returnDate.setDate(returnDate.getDate() + 1);
+                const returnArrivalDate = new Date(returnDepartureDate);
+                returnArrivalDate.setDate(returnArrivalDate.getDate() + travelDays);
+                const formattedReturnArrivalDate = returnArrivalDate.toISOString().split("T")[0];
+
+                await routeModel.create({
+                    name: `${route.to}-${route.from}`,
+                    from: route.to,
+                    to: route.from,
+                    departure_time: route.arrival_time,
+                    arrival_time: route.departure_time,
+                    departure_date: formattedReturnDepartureDate,
+                    arrival_date: formattedReturnArrivalDate,
+                    price: route.price,
+                    bus_id: route.bus_id,
+                    distance: route.distance
+                });
             }
-
-            let returnDepartureTime = returnDate.toISOString().split('T')[0] + " 08:00";
-            let returnArrivalTime = returnDate.toISOString().split('T')[0] + " 22:00";
-
-            const returnRoute = new routeModel({
-                from: route.to,   
-                to: route.from,   
-                departure_time: returnDepartureTime,  
-                arrival_time: returnArrivalTime,  
-                bus_id: route.bus_id,
-                price: route.price,
-                distance: route.distance,
-                status: "Pending"
-            });
-
-            await returnRoute.save();
         }
 
-        console.log(`🔄 ${completedRoutes.length} ta qaytish marshruti yaratildi.`);
+        console.log("✅ Ertaga va Indinga reyslar yaratildi!");
+
     } catch (error) {
-        console.error("❌ checkAndUpdateRoutes xatolik:", error);
+        console.error("❌ Xatolik yuz berdi:", error);
     }
 };
 
-const startRouteStatus = () => {
-    cron.schedule("* * * * *", async () => {
-        // console.log("⏳ Marshrut statuslari yangilanmoqda...");
-        await updateRouteStatus();
-    });
+const deleteOldRoutes = async () => {
+    try {
+        const today = new Date().toISOString().split("T")[0];
 
-    cron.schedule("* * * * *", async () => {
-        // console.log("🔄 Qaytish marshrutlari tekshirilmoqda...");
-        await checkAndUpdateRoutes();
-    });
+        const result = await routeModel.deleteMany({ arrival_date: { $lt: today } });
+
+        console.log(`🗑 ${result.deletedCount} ta o‘tib ketgan reyslar o‘chirildi.`);
+    } catch (error) {
+        console.error("❌ O‘tib ketgan reyslarni o‘chirishda xatolik yuz berdi:", error);
+    }
 };
 
-module.exports = { startRouteStatus };
+cron.schedule("0 0 * * *", async () => {
+    console.log("🔄 Yangi reyslarni yaratish va eskilarini o‘chirish boshlandi...");
+    await deleteOldRoutes();
+    await createDailyRoutes();
+});
+
+module.exports = { createDailyRoutes, deleteOldRoutes };

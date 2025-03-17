@@ -8,7 +8,7 @@ const cookieParser = require("cookie-parser");
 const session = require("express-session");
 const router = require('./router/router');
 const cors = require('cors');
-const { startRouteStatus } = require('./middleware/cronjobMiddleware');
+const { deleteOldRoutes, createDailyRoutes } = require('./middleware/cronjobMiddleware');
 
 Connect();
 
@@ -33,9 +33,10 @@ app.set("views", "./public/views");
 
 app.use(session({ secret: "Admin", resave: false, saveUninitialized: false }));
 
-startRouteStatus();
+// createDailyRoutes()
+// deleteOldRoutes()
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
-    console.log(`Server ${PORT} portda ishga tushdi...`);
+    console.log(`Server ishga tushdi...`);
 });
