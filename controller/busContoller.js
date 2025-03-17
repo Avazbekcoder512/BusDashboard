@@ -86,7 +86,7 @@ exports.createBus = async (req, res) => {
 
 exports.getAllBuses = async (req, res) => {
     try {
-        const buses = await busModel.find()
+        const buses = await busModel.find().populate('seats')
         const route = await routeModel.find()
         const token = req.cookies.authToken
 
@@ -176,70 +176,72 @@ exports.updateOneBus = async (req, res) => {
 
         const data = matchedData(req)
 
-        let fileUrl = bus.image;
-        if (req.file) {
-            try {
-                const maxFileSize = 5 * 1024 * 1024;
-                if (req.file.size > maxFileSize) {
-                    return res.status(400).send({
-                        error: "Rasm hajmi 5 MB dan oshmasligi kerak!",
-                    });
-                }
+        // let fileUrl = bus.image;
+        // if (req.file) {
+        //     try {
+        //         const maxFileSize = 5 * 1024 * 1024;
+        //         if (req.file.size > maxFileSize) {
+        //             return res.status(400).send({
+        //                 error: "Rasm hajmi 5 MB dan oshmasligi kerak!",
+        //             });
+        //         }
 
-                if (fileUrl) {
-                    const filePath = fileUrl.replace(
-                        `${supabase.storageUrl}/object/public/mbus_bucket/`,
-                        ""
-                    );
+        //         if (fileUrl) {
+        //             const filePath = fileUrl.replace(
+        //                 `${supabase.storageUrl}/object/public/mbus_bucket/`,
+        //                 ""
+        //             );
 
-                    const { data: fileExists, error: checkError } = await supabase.storage
-                        .from("mbus_bucket")
-                        .list("", { prefix: filePath });
+        //             const { data: fileExists, error: checkError } = await supabase.storage
+        //                 .from("mbus_bucket")
+        //                 .list("", { prefix: filePath });
 
-                    if (checkError) {
-                        console.error(
-                            `Fayl mavjudligini tekshirishda xatolik: ${checkError.message}`
-                        );
-                    } else if (fileExists && fileExists.length > 0) {
-                        const { error: deleteError } = await supabase.storage
-                            .from("mbus_bucket")
-                            .remove([filePath]);
+        //             if (checkError) {
+        //                 console.error(
+        //                     `Fayl mavjudligini tekshirishda xatolik: ${checkError.message}`
+        //                 );
+        //             } else if (fileExists && fileExists.length > 0) {
+        //                 const { error: deleteError } = await supabase.storage
+        //                     .from("mbus_bucket")
+        //                     .remove([filePath]);
 
-                        if (deleteError) {
-                            throw new Error(
-                                `Faylni o'chirishda xatolik: ${deleteError.message}`
-                            );
-                        }
-                    }
-                }
+        //                 if (deleteError) {
+        //                     throw new Error(
+        //                         `Faylni o'chirishda xatolik: ${deleteError.message}`
+        //                     );
+        //                 }
+        //             }
+        //         }
 
-                const { buffer, originalname } = req.file;
-                const fileName = `buses/${Date.now()}-${originalname}`;
-                const { data: uploadData, error: uploadError } = await supabase.storage
-                    .from("mbus_bucket")
-                    .upload(fileName, buffer, {
-                        cacheControl: "3600",
-                        upsert: true,
-                        contentType: req.file.mimetype,
-                    });
+        //         const { buffer, originalname } = req.file;
+        //         const fileName = `buses/${Date.now()}-${originalname}`;
+        //         const { data: uploadData, error: uploadError } = await supabase.storage
+        //             .from("mbus_bucket")
+        //             .upload(fileName, buffer, {
+        //                 cacheControl: "3600",
+        //                 upsert: true,
+        //                 contentType: req.file.mimetype,
+        //             });
 
-                if (uploadError) {
-                    throw new Error(`Fayl yuklanmadi: ${uploadError.message}`);
-                }
+        //         if (uploadError) {
+        //             throw new Error(`Fayl yuklanmadi: ${uploadError.message}`);
+        //         }
 
-                fileUrl = `${supabase.storageUrl}/object/public/mbus_bucket/${fileName}`;
-            } catch (err) {
-                console.error(`Faylni yangilashda xatolik: ${err.message}`);
-                throw new Error(
-                    "Yangi faylni yuklash yoki eski faylni o‘chirishda muammo!"
-                );
-            }
-        }
+        //         fileUrl = `${supabase.storageUrl}/object/public/mbus_bucket/${fileName}`;
+        //     } catch (err) {
+        //         console.error(`Faylni yangilashda xatolik: ${err.message}`);
+        //         throw new Error(
+        //             "Yangi faylni yuklash yoki eski faylni o‘chirishda muammo!"
+        //         );
+        //     }
+        // }
 
 
         const updateBus = {
-            model: data.model || bus.model,
-            image: fileUrl || bus.image
+            bus_number: data.bus_number || bus.bus_number,
+            bus_model: data.bus_model || bus.bus_model,
+            seats_count: data.seats_count || bus.seats_count
+            // image: fileUrl || bus.image
         }
 
         await busModel.findByIdAndUpdate(id, updateBus, { new: true })

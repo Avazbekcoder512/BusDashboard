@@ -6,8 +6,7 @@ const ticketSchema = new mongoose.Schema({
     passenger: {type: mongoose.Schema.Types.ObjectId, ref: "User"},
     price: Number,
     status: {type: String, enum: ["booked", "canceled"], default: "booked"},
-    ticketNumber: {type: String, unique: true},
-    purchaseDate: { type: Date, default: Date.now },
+    ticketNumber: String,
 }, {timestamps: true})
 
 const ticketModel = mongoose.model("Ticket", ticketSchema)
