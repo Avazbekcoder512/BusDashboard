@@ -30,7 +30,8 @@ exports.createRoute = async (req, res) => {
 
 exports.getAllRoutes = async (req, res) => {
     try {
-        const routes = await routeModel.find()
+        const routes = await routeModel.find().populate("trips")
+        const token = req.cookies.authToken
 
         if (!routes.length) {
             return res.status(404).send({
@@ -38,12 +39,13 @@ exports.getAllRoutes = async (req, res) => {
             })
         }
 
-        // return res.render('/routes', {
+        return res.render('routes', {
+            routes,
+            token
+        })
+        // return res.status(200).send({
         //     routes
         // })
-        return res.status(200).send({
-            routes
-        })
     } catch (error) {
         console.log(error);
         return res.status(500).send({
@@ -55,6 +57,7 @@ exports.getAllRoutes = async (req, res) => {
 exports.getOneRoutes = async (req, res) => {
     try {
         const { id } = req.params
+        const token = req.cookies.authToken
 
         if (!id.match(/^[0-9a-fA-F]{24}$/)) {
             return res.status(400).send({
@@ -62,7 +65,7 @@ exports.getOneRoutes = async (req, res) => {
             });
         }
 
-        const route = await routeModel.findById(id)
+        const route = await routeModel.findById(id).populate('trips')
 
         if (!route) {
             return res.status(404).send({
@@ -70,9 +73,16 @@ exports.getOneRoutes = async (req, res) => {
             })
         }
 
-        return res.status(200).send({
-            route
+        return res.render('route', {
+            route,
+            token,
+            layout: false,
+            title: "Yo'nalish"
         })
+
+        // return res.status(200).send({
+        //     route
+        // })
     } catch (error) {
         console.log(error);
         return res.status(500).send({
@@ -110,7 +120,7 @@ exports.updateRoute = async (req, res) => {
             from: data.from || route.from,
             to: data.to || route.to
         }
-        
+
         await routeModel.findByIdAndUpdate(id, newRoute)
 
     } catch (error) {

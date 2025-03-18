@@ -8,23 +8,34 @@
                     <div class="table-responsive">
                         <table class="table table-striped">
                             <thead>
-                                <tr>
-                                    <th>Reys nomi</th>
+                                <tr style="text-align: center;">
+                                    <th>Yo'nalish nomi</th>
                                     <th>Qayerdan</th>
                                     <th>Qayerga</th>
-                                    <th>Ketish vaqti</th>
-                                    <th>Chipta narxi</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {{#each routes}}
-                                <tr>
-                                    <td>{{name}}</td>
-                                    <td>{{from}}</td>
-                                    <td>{{to}}</td>
-                                    <td>{{time}}</td>
-                                    <td>{{price}} so'm</td>
+                                <tr style="text-align: center; cursor: pointer;">
+                                    <td>
+                                        <a href="/route/{{_id}}"
+                                            style="text-decoration: none; color: inherit; display: block; width: 100%;">
+                                            {{name}}
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <a href="/route/{{_id}}"
+                                            style="text-decoration: none; color: inherit; display: block; width: 100%;">
+                                            {{from}}
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <a href="/route/{{_id}}"
+                                            style="text-decoration: none; color: inherit; display: block; width: 100%;">
+                                            {{to}}
+                                        </a>
+                                    </td>
                                     <td>
                                         <button class="btn btn-danger btn-sm delete-btn" data-bs-toggle="modal"
                                             data-bs-target="#deleteRouteModal" data-id="{{_id}}">
@@ -34,6 +45,7 @@
                                 </tr>
                                 {{/each}}
                             </tbody>
+
                         </table>
                     </div>
                 </div>

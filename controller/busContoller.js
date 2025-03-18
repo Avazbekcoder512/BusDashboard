@@ -102,16 +102,16 @@ exports.getAllBuses = async (req, res) => {
             })
         }
 
-        return res.status(200).send({
-            buses
-        })
-
-        // return res.render('buses', {
-        //     title: "Avtobuslar",
-        //     buses,
-        //     token,
-        //     route
+        // return res.status(200).send({
+        //     buses
         // })
+
+        return res.render('buses', {
+            title: "Avtobuslar",
+            buses,
+            token,
+            route
+        })
     } catch (error) {
         console.log(error);
         return res.status(500).send({
