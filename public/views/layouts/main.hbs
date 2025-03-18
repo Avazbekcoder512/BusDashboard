@@ -126,6 +126,24 @@
           </li>
           {{/if}}
 
+          
+          {{#if trips}}
+          <li class="nav-item">
+            <a class="nav-link" href="/trips" style="background-color: #007bff; color: white;">
+              <i class="fa-solid fa-clock" style="font-size: 20px; margin-right: 10px;"></i>
+              <span class="menu-title">Reyslar</span>
+            </a>
+          </li>
+          {{else}}
+          <li class="nav-item">
+            <a class="nav-link" href="/trips">
+              <i class="fa-solid fa-clock" style="font-size: 20px; margin-right: 10px;"></i>
+              <span class="menu-title">Reyslar</span>
+            </a>
+          </li>
+          {{/if}}
+
+
           {{#if passengers}}
           <li class="nav-item">
             <a class="nav-link" href="/#passengers" style="background-color: #007bff; color: white;">

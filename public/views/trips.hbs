@@ -1,0 +1,74 @@
+{{#if token}}
+<div class="content-wrapper">
+    <div class="row">
+        <div class="col-lg-12 grid-margin stretch-card">
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="card-title" style="text-align: center;">Yo'nalishlar</h4>
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr style="text-align: center;">
+                                    <th>Ketish kuni</th>
+                                    <th>Ketish vaqti</th>
+                                    <th>Kelish kuni</th>
+                                    <th>Kelish vaqti</th>
+                                    <th>Chipta narxi</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {{#each trips}}
+                                <tr style="text-align: center; cursor: pointer;">
+                                    <td>
+                                        <a href="/trip/{{_id}}"
+                                            style="text-decoration: none; color: inherit; display: block; width: 100%;">
+                                            {{departure_date}}
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <a href="/trip/{{_id}}"
+                                            style="text-decoration: none; color: inherit; display: block; width: 100%;">
+                                            {{departure_time}}
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <a href="/trip/{{_id}}"
+                                            style="text-decoration: none; color: inherit; display: block; width: 100%;">
+                                            {{arrival_date}}
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <a href="/trip/{{_id}}"
+                                            style="text-decoration: none; color: inherit; display: block; width: 100%;">
+                                            {{arrival_time}}
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <a href="/trip/{{_id}}"
+                                            style="text-decoration: none; color: inherit; display: block; width: 100%;">
+                                            {{ticket_price}}
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-danger btn-sm delete-btn" data-bs-toggle="modal"
+                                            data-bs-target="#deleteRouteModal" data-id="{{_id}}">
+                                            O‘chirish
+                                        </button>
+                                    </td>
+                                </tr>
+                                {{/each}}
+                            </tbody>
+
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{{else}}
+<script>
+    window.location.href = './login'
+</script>
+{{/if}}

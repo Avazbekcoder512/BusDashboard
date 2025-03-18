@@ -9,7 +9,7 @@ const { createBus, getOneBus, getAllBuses, updateOneBus, deleteOneBus } = requir
 const { createRouteSchema, updateRouteSchema } = require("../validator/routeValidate")
 const { createRoute, getAllRoutes, getOneRoutes, updateRoute, deleteRoute } = require("../controller/routeController")
 const { createTripSchema } = require("../validator/tripValidate")
-const { createTrip, getAllTrips } = require("../controller/tripController")
+const { createTrip, getAllTrips, getOneTrip } = require("../controller/tripController")
 const upload = multer()
 
 const router = require("express").Router()
@@ -42,6 +42,7 @@ router
 // Trip router
 .post('/create-trip', checkSchema(createTripSchema), createTrip)
 .get('/trips', getAllTrips)
+.get('/trip/:id', getOneTrip)
 
 
 

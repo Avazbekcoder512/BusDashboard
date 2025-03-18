@@ -8,7 +8,7 @@ const cookieParser = require("cookie-parser");
 const session = require("express-session");
 const router = require('./router/router');
 const cors = require('cors');
-const { deleteOldRoutes, createDailyRoutes } = require('./middleware/cronjobMiddleware');
+const { deleteOldRoutes, createWeeklyRoutes,  } = require('./middleware/cronjobMiddleware');
 
 Connect();
 
@@ -33,7 +33,7 @@ app.set("views", "./public/views");
 
 app.use(session({ secret: "Admin", resave: false, saveUninitialized: false }));
 
-// createDailyRoutes()
+// createWeeklyRoutes()
 // deleteOldRoutes()
 
 const PORT = process.env.PORT || 5000;
