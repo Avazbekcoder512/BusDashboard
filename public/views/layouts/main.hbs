@@ -19,9 +19,16 @@
   <div class="container-scroller">
     <nav class="navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
       <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-between"
-        style="width: 96%; margin: 0 auto;">
-        <h1>Dashboard</h1>
+        style="width: 100%; margin: 0 auto;">
+        <h1 style="margin-left: 20px;">Dashboard</h1>
         <div style="display: flex; align-items: center; gap: 30px;">
+          {{#if admins}}
+          <button type="button" class="btn btn-success mb-3" data-bs-toggle="modal" data-bs-target="#addAdminModal"
+            style="margin-top: 16px;">
+            + Admin qo‘shish
+          </button>
+          {{/if}}
+
           {{#if buses}}
           <button type="button" class="btn btn-success mb-3" data-bs-toggle="modal" data-bs-target="#addBusesModel"
             style="margin-top: 16px;">
@@ -35,12 +42,16 @@
             + Yo'nalish qo‘shish
           </button>
           {{/if}}
-          <div style="position: relative; display: inline-block;">
+          <div style="position: relative; display: inline-block; margin-right: 20px;">
             <button id="profileBtn" onclick="toggleDropdown()"
               style="width: 50px; height: 50px; border-radius: 50%; border: none; background: transparent; cursor: pointer; padding: 5px; transition: transform 0.2s ease;">
               <img
                 style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);"
+                {{#if (eq gender "Erkak")}}
                 src="https://kpwxamepfkueoebpkamd.supabase.co/storage/v1/object/public/mbus_bucket/gender/male.png"
+                {{else}}
+                src="https://kpwxamepfkueoebpkamd.supabase.co/storage/v1/object/public/mbus_bucket/gender/female.png"
+                {{/if}}
                 alt="Profile">
             </button>
 
@@ -126,7 +137,7 @@
           </li>
           {{/if}}
 
-          
+
           {{#if trips}}
           <li class="nav-item">
             <a class="nav-link" href="/trips" style="background-color: #007bff; color: white;">
@@ -177,7 +188,7 @@
       var dropdown = document.getElementById("dropdown");
       var profileBtn = document.getElementById("profileBtn");
       if (!profileBtn.contains(event.target) && !dropdown.contains(event.target)) {
-        dropdown.style.display = "none"; // Tashqariga bosilganda yopiladi
+        dropdown.style.display = "none";
       }
     });
   </script>

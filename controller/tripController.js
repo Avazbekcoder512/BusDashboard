@@ -12,8 +12,8 @@ exports.createTrip = async (req, res) => {
         const data = matchedData(req)
 
         const trip = await tripModel.create({
-            routes: data.routes,
-            bus_id: data.bus_id,
+            route: data.route,
+            bus: data.bus,
             departure_date: data.departure_date,
             departure_time: data.departure_time,
             arrival_date: data.arrival_date,
@@ -21,7 +21,7 @@ exports.createTrip = async (req, res) => {
             ticket_price: data.ticket_price,
         });
 
-        await routeModel.findByIdAndUpdate(data.routes, {
+        await routeModel.findByIdAndUpdate(data.route, {
             $push: { trips: trip.id }
         })
 
@@ -35,8 +35,9 @@ exports.createTrip = async (req, res) => {
 
 exports.getAllTrips = async (req, res) => {
     try {
-        const trips = await tripModel.find().populate('routes')
+        const trips = await tripModel.find().populate('route')
         const token = req.cookies.authToken
+        const gender = req.cookies.gender
 
         if (!trips.length) {
             return res.status(404).send({
@@ -51,7 +52,8 @@ exports.getAllTrips = async (req, res) => {
         return res.render("trips", {
             title: "Reyslar",
             token,
-            trips
+            trips,
+            gender
         })
     } catch (error) {
         console.log(error);
@@ -72,7 +74,7 @@ exports.getOneTrip = async (req, res) => {
             });
         }
 
-        const trip = await tripModel.findById(id).populate('routes')
+        const trip = await tripModel.findById(id).populate('route')
 
         if (!trip) {
             return res.status(404).send({
@@ -124,8 +126,8 @@ exports.updateTrip = async (req, res) => {
         const data = matchedData(req)
 
         const newTrip = {
-            routes: data.routes || trip.routes,
-            bus_id: data.bus_id || trip.bus_id,
+            route: data.route || trip.route,
+            bus: data.bus || trip.bus,
             departure_date: data.departure_date || trip.departure_date,
             departure_time: data.departure_time || trip.departure_time,
             arrival_date: data.arrival_date || trip.arrival_date,

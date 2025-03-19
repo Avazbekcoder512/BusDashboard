@@ -39,9 +39,11 @@ exports.login = async (req, res) => {
                 return res.redirect('/login')
             }
 
-            const authToken = generateToken(user._id, user.role)            
+            const authToken = generateToken(user._id, user.role)
+            const gender = user.gender        
 
             res.cookie("authToken", authToken, { secure: true })
+            res.cookie('gender', gender)
 
             return res.redirect("/")
         }
@@ -58,8 +60,10 @@ exports.login = async (req, res) => {
             }
 
             const authToken = generateToken(user._id, user.role)
+            const gender = user.gender        
 
             res.cookie("authToken", authToken, { secure: true })
+            res.cookie('gender', gender)
 
             return res.redirect("/")
         } 
@@ -82,6 +86,7 @@ exports.logout = async (req, res) => {
         }
 
         res.clearCookie('authToken')
+        res.clearCookie('gender')
         return res.redirect('/login')
     } catch (error) {
         console.log(error);

@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Order Cards</title>
+    <link type="image/x-icon" href="../../favicon-3.png" rel="icon" />
     <style>
         body {
             background-color: #f8f9fa;
@@ -115,16 +116,14 @@
 <body>
 
     <div class="card">
-        <!-- Yo'nalish nomi, Qayerdan, Qayerga -->
+        <h3>Yo'nalish</h3>
         <div class="route-info">
-            <p><strong>Yo'nalish nomi:</strong> {{trip.routes.name}}</p>
-            <p><strong>Qayerdan:</strong> {{trip.routes.from}}</p>
-            <p><strong>Qayerga:</strong> {{trip.routes.to}}</p>
-            <div class="edit-btn-container">
-                <button class="edit-btn">Tahrirlash</button>
-            </div>
+            <p><strong>Yo'nalish nomi:</strong> {{trip.route.name}}</p>
+            <p><strong>Qayerdan:</strong> {{trip.route.from}}</p>
+            <p><strong>Qayerga:</strong> {{trip.route.to}}</p>
         </div>
 
+        <h3>Reys</h3>
         <div class="trip">
             <p><strong>Ketish kuni:</strong> {{trip.departure_date}}</p>
             <p><strong>Ketish vaqti:</strong> {{trip.departure_time}}</p>
@@ -136,9 +135,8 @@
             </div>
         </div>
 
-        <!-- Orqaga tugmasi joyida qoldi -->
         <div class="buttons">
-            <button class="back-btn">Orqaga</button>
+            <a href="/trips"><button class="back-btn" type="submit">Orqaga</button></a>
         </div>
     </div>
 

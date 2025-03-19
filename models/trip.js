@@ -1,8 +1,8 @@
 const mongoose = require('mongoose')
 
 const tripSchema = new mongoose.Schema({
-    routes: { type: mongoose.Schema.Types.ObjectId, ref: "Route" },
-    bus_id: { type: mongoose.Schema.Types.ObjectId, ref: "Bus" },
+    route: { type: mongoose.Schema.Types.ObjectId, ref: "Route" },
+    bus: { type: mongoose.Schema.Types.ObjectId, ref: "Bus" },
     departure_date: String,
     departure_time: String,
     arrival_date: String,

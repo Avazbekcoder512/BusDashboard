@@ -1,5 +1,6 @@
 const { validationResult, matchedData } = require("express-validator");
 const routeModel = require("../models/route");
+const tripModel = require("../models/trip");
 
 
 exports.createRoute = async (req, res) => {
@@ -16,10 +17,7 @@ exports.createRoute = async (req, res) => {
             to: data.to
         })
 
-        return res.status(201).send({
-            message: "Yo'nalish muvaffaqiyatli yaratildi!",
-            route
-        })
+        return res.redirect('/routes')
     } catch (error) {
         console.log(error);
         return res.status(500).send({
@@ -32,6 +30,7 @@ exports.getAllRoutes = async (req, res) => {
     try {
         const routes = await routeModel.find().populate("trips")
         const token = req.cookies.authToken
+        const gender = req.cookies.gender
 
         if (!routes.length) {
             return res.status(404).send({
@@ -41,7 +40,9 @@ exports.getAllRoutes = async (req, res) => {
 
         return res.render('routes', {
             routes,
-            token
+            token,
+            gender,
+            title: "Yo'nalishlar"
         })
         // return res.status(200).send({
         //     routes
@@ -77,7 +78,6 @@ exports.getOneRoutes = async (req, res) => {
             route,
             token,
             layout: false,
-            title: "Yo'nalish"
         })
 
         // return res.status(200).send({
@@ -149,11 +149,11 @@ exports.deleteRoute = async (req, res) => {
             })
         }
 
+        await tripModel.deleteMany({ route: id})
+
         await routeModel.findByIdAndDelete(id)
 
-        return res.status(200).send({
-            message: "Masofa muvaffaqiyatli o'chirildi!"
-        })
+        return res.redirect('/routes')
     } catch (error) {
         console.log(error);
         return res.status(500).send({

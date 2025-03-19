@@ -1,0 +1,293 @@
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Avtobus</title>
+    <link type="image/x-icon" href="../../favicon-3.png" rel="icon" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+
+    <style>
+        body {
+            background-color: #f4f7fc;
+            font-family: Arial, sans-serif;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .card {
+            background: white;
+            padding: 20px;
+            border-radius: 16px;
+            margin: 15px;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 1100px;
+            position: relative;
+            transition: 0.3s;
+            border-left: 6px solid #007bff;
+        }
+
+        .card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .route-info {
+            background: #eef4ff;
+            padding: 12px;
+            border-radius: 10px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .route-info p {
+            margin: 5px 0;
+            display: flex;
+            align-items: center;
+            font-weight: bold;
+        }
+
+        .route-info p i {
+            margin-right: 8px;
+            color: #007bff;
+        }
+
+        .buttons {
+            display: flex;
+            justify-content: flex-start;
+            margin-top: 12px;
+        }
+
+        .back-btn {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 14px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: 0.3s;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .back-btn:hover {
+            background-color: #0056b3;
+        }
+
+        .edit-btn-container {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 8px;
+        }
+
+        .edit-btn {
+            background-color: #28a745;
+            color: white;
+            padding: 8px 12px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: 0.3s;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .edit-btn:hover {
+            background-color: #218838;
+        }
+ .edit-btn {
+            background-color: #28a745;
+            color: white;
+            padding: 8px 12px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .edit-btn:hover {
+            background-color: #218838;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            width: 400px;
+        }
+
+        .close-btn {
+            float: right;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .modal input {
+            width: 100%;
+            padding: 8px;
+            margin: 5px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .table-responsive {
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 1100px;
+            margin: 15px auto;
+        }
+
+        .table-container {
+            background: white;
+            padding: 15px;
+            border-radius: 12px;
+            margin: 15px auto;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 1100px;
+            position: relative;
+            border-left: 5px solid #007bff;
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .table thead {
+            background: linear-gradient(135deg, #007bff, #0056b3);
+            color: white;
+        }
+
+        .table thead th {
+            padding: 12px;
+            text-align: left;
+            font-weight: bold;
+        }
+
+        .table tbody tr {
+            transition: 0.3s;
+        }
+
+        .table tbody tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+
+        .table tbody tr:hover {
+            background: rgba(0, 123, 255, 0.1);
+            transform: scale(1.02);
+        }
+
+        .table td {
+            padding: 12px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .table td:first-child {
+            font-weight: bold;
+            color: #007bff;
+        }
+
+        .table td:last-child {
+            font-weight: bold;
+            color: #28a745;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="card">
+        <h3>Avtobus</h3>
+        <div class="route-info">
+            <p><i class="fa-solid fa-bus"></i><strong>Avtobus modeli: </strong>{{bus.bus_model}}</p>
+            <p><i class="fa-solid fa-hashtag"></i><strong>Avtobus raqami: </strong>{{bus.bus_number}}</p>
+            <p><i class="fa-solid fa-chair"></i><strong>O'rindiqlar soni: </strong>{{bus.seats_count}}</p>
+            <div class="edit-btn-container">
+                <button class="edit-btn" id="editBtn"><i class="fa-solid fa-pen"></i> Tahrirlash</button>
+            </div>
+        </div>
+        <div class="buttons">
+            <a href="/buses" style="text-decoration: none;"><button class="back-btn"><i
+                        class="fa-solid fa-arrow-left"></i> Orqaga</button></a>
+        </div>
+    </div>
+
+    <div class="modal" id="editModal">
+        <div class="modal-content">
+            <span class="close-btn" id="closeModal">&times;</span>
+            <h3>Avtobusni tahrirlash</h3>
+            <label>Avtobus modeli:</label>
+            <input type="text" id="editBusModel">
+            <label>Avtobus raqami:</label>
+            <input type="text" id="editBusNumber">
+            <label>Rasm yuklash:</label>
+            <input type="file" id="busImage">
+            <button class="edit-btn" id="saveChanges">Saqlash</button>
+        </div>
+    </div>
+
+
+    <div class="card">
+        <h4 class="card-title" style="text-align: center; font-size: 30px;">O'rindiqlar</h4>
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Chipta raqami</th>
+                        <th>Band qilgan odam</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#each bus.seats}}
+                    <tr>
+                        <td>{{seetNumber}}</td>
+                        <td>{{booked_by}}</td>
+                        <td>{{status}}</td>
+                    </tr>
+                    {{/each}}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <script>
+        document.getElementById('editBtn').addEventListener('click', function() {
+            document.getElementById('editModal').style.display = 'flex';
+            document.getElementById('editBusModel').value = document.getElementById('busModel').textContent;
+            document.getElementById('editBusNumber').value = document.getElementById('busNumber').textContent;
+        });
+
+        document.getElementById('closeModal').addEventListener('click', function() {
+            document.getElementById('editModal').style.display = 'none';
+        });
+    </script>
+    <script src="https://kit.fontawesome.com/YOUR_FONT_AWESOME_KIT.js" crossorigin="anonymous"></script>
+</body>
+
+</html>
