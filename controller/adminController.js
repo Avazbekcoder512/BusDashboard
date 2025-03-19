@@ -69,10 +69,7 @@ exports.createAdmin = async (req, res) => {
             image: fileUrl
         })
 
-        return res.status(201).send({
-            message: "Admin muvaffaqiyatli yaratildi!",
-            admin: admin
-        })
+        return res.redirect('/')
     } catch (error) {
         console.log(error);
         return res.status(500).send({
@@ -84,6 +81,7 @@ exports.createAdmin = async (req, res) => {
 exports.getAllAdmin = async (req, res) => {
     try {
         const token = req.cookies.authToken
+        const gender = req.cookies.gender
         if (!token) {
             return res.redirect('/login')
         }
@@ -98,7 +96,8 @@ exports.getAllAdmin = async (req, res) => {
         return res.render("admins", {
             title: "Dashboard",
             admins,
-            token
+            token,
+            gender
         })
 
     } catch (error) {
@@ -152,9 +151,7 @@ exports.deleteAdmin = async (req, res) => {
 
         await adminModel.findByIdAndDelete(id);
 
-        return res.status(200).send({
-            message: "Admin deleted successfully!"
-        });
+        return res.redirect('/')
     } catch (error) {
         console.error(error);
         return res.status(500).send({

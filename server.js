@@ -8,14 +8,18 @@ const cookieParser = require("cookie-parser");
 const session = require("express-session");
 const router = require('./router/router');
 const cors = require('cors');
-const { deleteOldRoutes, createWeeklyRoutes,  } = require('./middleware/cronjobMiddleware');
 
 Connect();
 
-const hbs = create({ 
-    defaultLayout: "main", 
-    extname: "hbs", 
-    handlebars: allowInsecurePrototypeAccess(Handlebars) 
+const hbs = create({
+    defaultLayout: "main",
+    extname: "hbs",
+    handlebars: allowInsecurePrototypeAccess(Handlebars),
+    helpers: {
+        eq: function (a, b) {
+            return a === b;
+        }
+    }
 });
 
 const app = express();
@@ -32,9 +36,6 @@ app.set("view engine", "hbs");
 app.set("views", "./public/views");
 
 app.use(session({ secret: "Admin", resave: false, saveUninitialized: false }));
-
-// createWeeklyRoutes()
-// deleteOldRoutes()
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {

@@ -9,6 +9,7 @@
                         <table class="table table-striped">
                             <thead>
                                 <tr style="text-align: center;">
+                                    <th>Yo'nalish nomi</th>
                                     <th>Ketish kuni</th>
                                     <th>Ketish vaqti</th>
                                     <th>Kelish kuni</th>
@@ -19,7 +20,13 @@
                             </thead>
                             <tbody>
                                 {{#each trips}}
-                                <tr style="text-align: center; cursor: pointer;">
+                                <tr style="text-align: center;">
+                                    <td>
+                                        <a href="/trip/{{_id}}"
+                                            style="text-decoration: none; color: inherit; display: block; width: 100%;">
+                                            {{route.name}}
+                                        </a>
+                                    </td>
                                     <td>
                                         <a href="/trip/{{_id}}"
                                             style="text-decoration: none; color: inherit; display: block; width: 100%;">

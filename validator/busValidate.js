@@ -24,21 +24,21 @@ exports.createBusSchema = {
             errorMessage: "Avtobus o'rindiqlar sonini raqamda kiriting va 30 ta o'rindiqdan kam va 10 tadan kop bo'lmasligi kerak!",
         },
     },
-    // image: {
-    //     custom: {
-    //         options: async (value, { req }) => {
-    //             const validMimeTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/svg', 'image/webp'];
-    //             if (req.file) {
-    //                 const fileType = await fromBuffer(req.file.buffer)
+    image: {
+        custom: {
+            options: async (value, { req }) => {
+                const validMimeTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/svg', 'image/webp'];
+                if (req.file) {
+                    const fileType = await fromBuffer(req.file.buffer)
 
-    //                 if (!fileType || !validMimeTypes.includes(fileType.mime)) {
-    //                     throw new Error('Image must be only JPEG, JPG, PNG, SVG, WEBP format!');
-    //                 }
-    //             }
-    //             return true;
-    //         },
-    //     },
-    // }
+                    if (!fileType || !validMimeTypes.includes(fileType.mime)) {
+                        throw new Error('Image must be only JPEG, JPG, PNG, SVG, WEBP format!');
+                    }
+                }
+                return true;
+            },
+        },
+    }
 };
 
 exports.updateBusSchema = {

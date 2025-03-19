@@ -11,7 +11,7 @@ const supabase = createClient(
 );
 
 exports.createBus = async (req, res) => {
-    try {        
+    try {
         const errors = validationResult(req)
         if (!errors.isEmpty()) {
             return res.status(400).send({
@@ -20,43 +20,43 @@ exports.createBus = async (req, res) => {
         }
 
         const data = matchedData(req)
-        
 
-        // if (!req.file) {
-        //     return res.status(400).send({
-        //         error: "Iltimos, rasm faylni yuklang!",
-        //     });
-        // }
 
-        // const maxFileSize = 5 * 1024 * 1024;
-        // if (req.file.size > maxFileSize) {
-        //     return res.status(400).send({
-        //         error: "Rasm hajmi 5 MB dan oshmasligi kerak!",
-        //     });
-        // }
+        if (!req.file) {
+            return res.status(400).send({
+                error: "Iltimos, rasm faylni yuklang!",
+            });
+        }
 
-        // const { buffer, originalname } = req.file;
-        // const fileName = `buses/${Date.now()}-${originalname}`;
+        const maxFileSize = 5 * 1024 * 1024;
+        if (req.file.size > maxFileSize) {
+            return res.status(400).send({
+                error: "Rasm hajmi 5 MB dan oshmasligi kerak!",
+            });
+        }
 
-        // const { data: uploadData, error: uploadError } = await supabase.storage
-        //     .from("mbus_bucket")
-        //     .upload(fileName, buffer, {
-        //         cacheControl: "3600",
-        //         upsert: false,
-        //         contentType: req.file.mimetype,
-        //     });
+        const { buffer, originalname } = req.file;
+        const fileName = `buses/${Date.now()}-${originalname}`;
 
-        // if (uploadError) {
-        //     throw new Error(`Fayl yuklanmadi: ${uploadError.message}`);
-        // }
+        const { data: uploadData, error: uploadError } = await supabase.storage
+            .from("mbus_bucket")
+            .upload(fileName, buffer, {
+                cacheControl: "3600",
+                upsert: false,
+                contentType: req.file.mimetype,
+            });
 
-        // const fileUrl = `${supabase.storageUrl}/object/public/mbus_bucket/${fileName}`;
+        if (uploadError) {
+            throw new Error(`Fayl yuklanmadi: ${uploadError.message}`);
+        }
+
+        const fileUrl = `${supabase.storageUrl}/object/public/mbus_bucket/${fileName}`;
 
         const bus = await busModel.create({
-            model: data.model,
-            number: data.number,
+            bus_model: data.bus_model,
+            bus_number: data.bus_number,
             seats_count: data.seats_count,
-            // image: fileUrl,
+            image: fileUrl,
             seats: [],
         })
 
@@ -72,10 +72,12 @@ exports.createBus = async (req, res) => {
         bus.seats = seats;
         await bus.save();
 
-        return res.status(201).send({
-            message: "Avtobus muvaffaqiyatli yaratildi!",
-            bus: bus
-        })
+        return res.redirect('/buses')
+
+        // return res.status(201).send({
+        //     message: "Avtobus muvaffaqiyatli yaratildi!",
+        //     bus: bus
+        // })
     } catch (error) {
         console.log(error);
         return res.status(500).send({
@@ -88,6 +90,7 @@ exports.getAllBuses = async (req, res) => {
     try {
         const buses = await busModel.find().populate('seats')
         const route = await routeModel.find()
+        const gender = req.cookies.gender
         const token = req.cookies.authToken
 
         if (!buses.length) {
@@ -110,7 +113,8 @@ exports.getAllBuses = async (req, res) => {
             title: "Avtobuslar",
             buses,
             token,
-            route
+            route,
+            gender
         })
     } catch (error) {
         console.log(error);
@@ -123,6 +127,8 @@ exports.getAllBuses = async (req, res) => {
 exports.getOneBus = async (req, res) => {
     try {
         const { id } = req.params
+        const gender = req.cookies.gender
+        const token = req.cookies.authToken
 
         if (!id.match(/^[0-9a-fA-F]{24}$/)) {
             return res.status(400).send({
@@ -138,9 +144,16 @@ exports.getOneBus = async (req, res) => {
             })
         }
 
-        return res.status(200).send({
-            bus
+        return res.render('bus', {
+            bus,
+            token,
+            title: "Avtobus",
+            layout: false
         })
+
+        // return res.status(200).send({
+        //     bus
+        // })
     } catch (error) {
         console.log(error);
         return res.status(500).send({
@@ -297,10 +310,12 @@ exports.deleteOneBus = async (req, res) => {
             }
         }
 
+        await seatModel.deleteMany({ bus: id })
+
         await busModel.findByIdAndDelete(id);
 
         return res.status(200).send({
-            message: "Admin deleted successfully!"
+            message: "Avtobus muvaffaqiyatli o'chirildi!"
         });
     } catch (error) {
         return res.status(500).send({

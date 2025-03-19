@@ -1,10 +1,10 @@
-<!DOCTYPE html>
 <html lang="en">
-
 <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Order Cards</title>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Yo'nalish</title>
+        <link type="image/x-icon" href="../../favicon-3.png" rel="icon" />
+
         <style>
                 body {
                         background-color: #f8f9fa;
@@ -62,7 +62,8 @@
 
                 .buttons {
                         display: flex;
-                        justify-content: flex-start;
+                        justify-content:
+                                flex-start;
                         margin-top: 8px;
                 }
 
@@ -113,9 +114,8 @@
 </head>
 
 <body>
-
         <div class="card">
-                <!-- Yo'nalish nomi, Qayerdan, Qayerga -->
+                <h3>Yo'nalish</h3>
                 <div class="route-info">
                         <p><strong>Yo'nalish nomi:</strong> {{route.name}}</p>
                         <p><strong>Qayerdan:</strong> {{route.from}}</p>
@@ -125,7 +125,7 @@
                         </div>
                 </div>
 
-                <!-- Trips ma'lumotlari -->
+                <h3>Reys</h3>
                 {{#each route.trips}}
                 <div class="trip">
                         <p><strong>Ketish kuni:</strong> {{departure_date}}</p>
@@ -133,15 +133,11 @@
                         <p><strong>Kelish kuni:</strong> {{arrival_date}}</p>
                         <p><strong>Kelish vaqti:</strong> {{arrival_time}}</p>
                         <p><strong>Chipta narxi:</strong> {{ticket_price}}</p>
-                        <div class="trip-buttons">
-                                <button class="trip-edit-btn">Tahrirlash</button>
-                        </div>
                 </div>
                 {{/each}}
 
-                <!-- Orqaga tugmasi joyida qoldi -->
                 <div class="buttons">
-                        <button class="back-btn">Orqaga</button>
+                        <a href="/routes"><button class="back-btn" type="submit">Orqaga</button></a>
                 </div>
         </div>
 
