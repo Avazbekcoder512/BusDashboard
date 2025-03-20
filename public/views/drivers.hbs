@@ -1,0 +1,116 @@
+<div class="content-wrapper">
+    <div class="row">
+        <div class="col-lg-12 grid-margin stretch-card">
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="card-title" style="text-align: center; font-size: 30px;">Adminlar</h4>
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Rasm</th>
+                                    <th>Ismi</th>
+                                    <th>Telefon raqami</th>
+                                    <th>Tajribasi</th>
+                                    <th>Jinsi</th>
+                                    <th>Avtobus raqami</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {{#each drivers}}
+                                <tr>
+                                    <td class="py-1">
+                                        <img src="{{image}}" alt="image" />
+                                    </td>
+                                    <td>{{name}}</td>
+                                    <td>{{phoneNumber}}</td>
+                                    <td>{{experience}} yil</td>
+                                    <td>{{gender}}</td>
+                                    <td>{{bus.bus_number}}</td>
+                                    <td>
+                                        <button class="btn btn-danger btn-sm delete-btn" data-bs-toggle="modal"
+                                            data-bs-target="#deleteDriverModal" data-id="{{_id}}">
+                                            O‘chirish
+                                        </button>
+                                    </td>
+                                </tr>
+                                {{/each}}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="addDriverModal" tabindex="-1" aria-labelledby="addDriverModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content" style="border-radius: 12px; box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);">
+            <div class="modal-header">
+                <h4 class="modal-title text-success" id="addDriverModalLabel">Yangi Haydovchi Qo‘shish</h4>
+                <button style="border: none" type="button" class="btn-close" data-bs-dismiss="modal"
+                    aria-label="Close">x</button>
+            </div>
+            <div class="modal-body">
+                <form action="/create-driver" method="POST" enctype="multipart/form-data">
+                    <div class="mb-3">
+                        <label class="form-label" for="name">Familiya, Ism, Sharif</label>
+                        <input type="text" class="form-control" id="name" name="name" required
+                            style="border: 2px solid #17c964; border-radius: 6px; padding: 10px; font-size: 16px; background-color: #f8f9fa; transition: 0.3s; height: 45px;">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" for="phoneNumber">Telefon raqam</label>
+                        <input type="text" class="form-control" id="phoneNumber" name="phoneNumber" required
+                            style="border: 2px solid #17c964; border-radius: 6px; padding: 10px; font-size: 16px; background-color: #f8f9fa; transition: 0.3s; height: 45px;">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" for="experience">Tajriba(yil)</label>
+                        <input type="number" min="1" max="50" class="form-control" id="experience" name="experience" required
+                            style="border: 2px solid #17c964 ; border-radius: 6px; padding: 10px; font-size: 16px; background-color: #f8f9fa; transition: 0.3s; height: 45px;">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" for="gender">Jinsi</label>
+                        <select class="form-select" id="gender" name="gender" required
+                            style="width: 100%; border: 2px solid #17c964; border-radius: 6px; padding: 10px; font-size: 16px; background-color: #f8f9fa; transition: 0.3s; height: 45px;">
+                            <option value="" disabled selected>Tanlang...</option>
+                            <option value="Erkak">Erkak</option>
+                            <option value="Ayol">Ayol</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" for="bus">Avtobus</label>
+                        <select class="form-select" id="bus" name="bus" required
+                            style="width: 100%; border: 2px solid #17c964; border-radius: 6px; padding: 10px; font-size: 16px; background-color: #f8f9fa; transition: 0.3s; height: 45px;">
+                            <option value="" disabled selected>Tanlang...</option>
+                            {{#each bus}}
+                            <option value="{{_id}}">{{bus_model}}-{{bus_number}}</option>
+                            {{/each}}
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" for="image">Rasm yuklash</label>
+                        <input type="file" class="form-control" id="image" name="image" required
+                            style="border: 2px solid #17c964; border-radius: 6px; padding: 10px; font-size: 16px; background-color: #f8f9fa; transition: 0.3s; height: 45px; cursor: pointer;">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
+                            style="height: 45px;">Bekor qilish</button>
+                        <form id="deleteForm" method="POST"
+                            onsubmit="showspinner(event, 'addButton', 'addText', 'addSpinner')">
+                            <button id="addButton" type="submit" class="btn btn-success d-flex align-items-center"
+                                style="position: relative; display: flex; align-items: center; justify-content: center;">
+                                <span id="addText">Qo'shish</span>
+                                <div id="addSpinner" style="display: none; width: 18px; height: 18px; 
+                border: 3px solid rgba(255, 255, 255, 0.3); border-top: 3px solid white; 
+                border-radius: 50%; animation: spin 1s linear infinite;">
+                                </div>
+                            </button>
+                        </form>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

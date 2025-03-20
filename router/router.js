@@ -10,6 +10,8 @@ const { createRouteSchema, updateRouteSchema } = require("../validator/routeVali
 const { createRoute, getAllRoutes, getOneRoutes, updateRoute, deleteRoute } = require("../controller/routeController")
 const { createTripSchema } = require("../validator/tripValidate")
 const { createTrip, getAllTrips, getOneTrip } = require("../controller/tripController")
+const { getAllDrivers, createDriver } = require("../controller/driverController")
+const { createDriverSchema } = require("../validator/driverValidate")
 const upload = multer()
 
 const router = require("express").Router()
@@ -29,7 +31,7 @@ router
 .post('/create-bus', upload.single("image"), checkSchema(createBusSchema), createBus)
 .get('/buses', getAllBuses)
 .get('/bus/:id', getOneBus)
-.post('/bus/:id/update', checkSchema(updateBusSchema), updateOneBus)
+.post('/bus/:id/update',upload.single('image'), checkSchema(updateBusSchema), updateOneBus)
 .post('/bus/:id/delete', deleteOneBus)
 
 // Route router
@@ -44,6 +46,8 @@ router
 .get('/trips', getAllTrips)
 .get('/trip/:id', getOneTrip)
 
-
+// Driver router
+.post('/create-driver', upload.single("image"), checkSchema(createDriverSchema), createDriver)
+.get('/drivers', getAllDrivers)
 
 module.exports = router

@@ -62,7 +62,7 @@
 
         .buttons {
             display: flex;
-            justify-content: flex-start;
+            justify-content: space-between;
             margin-top: 12px;
         }
 
@@ -82,6 +82,24 @@
 
         .back-btn:hover {
             background-color: #0056b3;
+        }
+
+        .delete-btn {
+            background-color: red;
+            color: white;
+            padding: 10px 14px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: 0.3s;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .delete-btn:hover {
+            background-color: darkred;
         }
 
         .edit-btn-container {
@@ -104,10 +122,19 @@
             gap: 6px;
         }
 
+        #editModal {
+            display: none;
+        }
+
+        #deleteModal {
+            display: none;
+        }
+
         .edit-btn:hover {
             background-color: #218838;
         }
- .edit-btn {
+
+        .edit-btn {
             background-color: #28a745;
             color: white;
             padding: 8px 12px;
@@ -124,36 +151,63 @@
         .modal {
             display: none;
             position: fixed;
-            z-index: 1;
+            z-index: 10;
             left: 0;
             top: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
+            background-color: rgba(0, 0, 0, 0.4);
+            display: flex;
             justify-content: center;
             align-items: center;
+            transition: opacity 0.3s ease;
         }
 
         .modal-content {
             background-color: white;
             padding: 20px;
-            border-radius: 10px;
+            border-radius: 12px;
             width: 400px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            text-align: left;
+            position: relative;
+            animation: modalFade 0.3s;
+        }
+
+        @keyframes modalFade {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal-input {
+            width: 100%;
+            padding: 10px;
+            margin: 8px 0;
+            border: 1px solid #ccc;
+            border-radius: 6px;
         }
 
         .close-btn {
-            float: right;
-            font-size: 20px;
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 22px;
             cursor: pointer;
+            color: #555;
+            transition: color 0.3s;
         }
 
-        .modal input {
-            width: 100%;
-            padding: 8px;
-            margin: 5px 0;
-            border: 1px solid #ccc;
-            border-radius: 5px;
+        .close-btn:hover {
+            color: #d9534f;
         }
+
         .table-responsive {
             border-radius: 12px;
             overflow: hidden;
@@ -225,9 +279,9 @@
     <div class="card">
         <h3>Avtobus</h3>
         <div class="route-info">
-            <p><i class="fa-solid fa-bus"></i><strong>Avtobus modeli: </strong>{{bus.bus_model}}</p>
-            <p><i class="fa-solid fa-hashtag"></i><strong>Avtobus raqami: </strong>{{bus.bus_number}}</p>
-            <p><i class="fa-solid fa-chair"></i><strong>O'rindiqlar soni: </strong>{{bus.seats_count}}</p>
+            <p><i class="fa-solid fa-bus"></i><strong>Avtobus modeli:</strong>&nbsp;{{bus.bus_model}}</p>
+            <p><i class="fa-solid fa-hashtag"></i><strong>Avtobus raqami:</strong>&nbsp;{{bus.bus_number}}</p>
+            <p><i class="fa-solid fa-chair"></i><strong>O'rindiqlar soni:</strong>&nbsp;{{bus.seats_count}}</p>
             <div class="edit-btn-container">
                 <button class="edit-btn" id="editBtn"><i class="fa-solid fa-pen"></i> Tahrirlash</button>
             </div>
@@ -235,23 +289,37 @@
         <div class="buttons">
             <a href="/buses" style="text-decoration: none;"><button class="back-btn"><i
                         class="fa-solid fa-arrow-left"></i> Orqaga</button></a>
+            <button class="delete-btn"><i class="fa-solid fa-trash"></i>O'chirish</button>
         </div>
     </div>
 
     <div class="modal" id="editModal">
-        <div class="modal-content">
-            <span class="close-btn" id="closeModal">&times;</span>
-            <h3>Avtobusni tahrirlash</h3>
-            <label>Avtobus modeli:</label>
-            <input type="text" id="editBusModel">
-            <label>Avtobus raqami:</label>
-            <input type="text" id="editBusNumber">
-            <label>Rasm yuklash:</label>
-            <input type="file" id="busImage">
-            <button class="edit-btn" id="saveChanges">Saqlash</button>
-        </div>
+        <form action="">
+            <div class="modal-content">
+                <span class="close-btn" id="closeModal">&times;</span>
+                <h3 style="text-align: center; color: #007bff;">Avtobusni tahrirlash</h3>
+                <label>Avtobus modeli:</label>
+                <input type="text" id="editBusModel" class="modal-input">
+                <label>Avtobus raqami:</label>
+                <input type="text" id="editBusNumber" class="modal-input">
+                <label>Rasm yuklash:</label>
+                <input type="file" id="busImage" class="modal-input">
+                <button class="edit-btn" id="saveChanges"><i class="fa-solid fa-save"></i> Saqlash</button>
+            </div>
+        </form>
     </div>
 
+    <div class="modal" id="deleteModal">
+        <div class="modal-content">
+            <span class="close-btn" id="closeDeleteModal">&times;</span>
+            <h3 style="text-align: center; color: red;">Haqiqatdan ham bu Avtobusni o'chirmoqchimisiz?</h3>
+            <p style="text-align: center;">Bu amalni qaytarib bo‘lmaydi.</p>
+            <div style="display: flex; justify-content: center; gap: 10px; margin-top: 20px;">
+                <button class="delete-btn" id="confirmDelete">Ha, o'chir</button>
+                <button class="back-btn" id="cancelDelete">Bekor qilish</button>
+            </div>
+        </div>
+    </div>
 
     <div class="card">
         <h4 class="card-title" style="text-align: center; font-size: 30px;">O'rindiqlar</h4>
@@ -277,14 +345,43 @@
         </div>
     </div>
     <script>
-        document.getElementById('editBtn').addEventListener('click', function() {
+
+        document.getElementById('editBtn').addEventListener('click', function () {
             document.getElementById('editModal').style.display = 'flex';
-            document.getElementById('editBusModel').value = document.getElementById('busModel').textContent;
-            document.getElementById('editBusNumber').value = document.getElementById('busNumber').textContent;
         });
 
-        document.getElementById('closeModal').addEventListener('click', function() {
+        document.getElementById('closeModal').addEventListener('click', function () {
             document.getElementById('editModal').style.display = 'none';
+        });
+
+        document.addEventListener("DOMContentLoaded", function () {
+            const deleteBtn = document.querySelector(".delete-btn");
+            const deleteModal = document.getElementById("deleteModal");
+            const closeDeleteModal = document.getElementById("closeDeleteModal");
+            const cancelDelete = document.getElementById("cancelDelete");
+            const confirmDelete = document.getElementById("confirmDelete");
+
+            deleteBtn.addEventListener("click", function () {
+                deleteModal.style.display = "flex";
+            });
+
+            closeDeleteModal.addEventListener("click", function () {
+                deleteModal.style.display = "none";
+            });
+
+            cancelDelete.addEventListener("click", function () {
+                deleteModal.style.display = "none";
+            });
+
+            confirmDelete.addEventListener("click", function () {
+                alert("Avtobus o'chirildi!");
+                deleteModal.style.display = "none";
+            });
+            window.addEventListener("click", function (event) {
+                if (event.target === deleteModal) {
+                    deleteModal.style.display = "none";
+                }
+            });
         });
     </script>
     <script src="https://kit.fontawesome.com/YOUR_FONT_AWESOME_KIT.js" crossorigin="anonymous"></script>

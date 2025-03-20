@@ -1,6 +1,7 @@
 const { validationResult, matchedData } = require("express-validator");
 const tripModel = require("../models/trip");
 const routeModel = require("../models/route");
+const busModel = require("../models/bus");
 
 exports.createTrip = async (req, res) => {
     try {
@@ -25,7 +26,8 @@ exports.createTrip = async (req, res) => {
             $push: { trips: trip.id }
         })
 
-        return res.status(201).send({ message: "Reys muvaffaqiyatli yaratildi!", trip: trip });
+        // return res.status(201).send({ message: "Reys muvaffaqiyatli yaratildi!", trip: trip });
+        return res.redirect('/trips')
 
     } catch (error) {
         console.error(error);
@@ -35,7 +37,9 @@ exports.createTrip = async (req, res) => {
 
 exports.getAllTrips = async (req, res) => {
     try {
-        const trips = await tripModel.find().populate('route')
+        const trips = await tripModel.find().populate('route').populate('bus')
+        const bus = await busModel.find()
+        const route = await routeModel.find()
         const token = req.cookies.authToken
         const gender = req.cookies.gender
 
@@ -52,6 +56,8 @@ exports.getAllTrips = async (req, res) => {
         return res.render("trips", {
             title: "Reyslar",
             token,
+            bus,
+            route,
             trips,
             gender
         })
