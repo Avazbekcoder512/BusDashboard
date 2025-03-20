@@ -1,10 +1,10 @@
 exports.createTripSchema = {
-    route_id: {
+    route: {
         notEmpty: {
             errorMessage: "Yo'nalish kiritilishi shart!"
         }
     },
-    bus_id: {
+    bus: {
         notEmpty: {
             errorMessage: "Avtobus kiritilishi shart!"
         }

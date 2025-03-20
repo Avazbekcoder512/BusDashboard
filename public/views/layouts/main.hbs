@@ -42,17 +42,30 @@
             + Yo'nalish qo‘shish
           </button>
           {{/if}}
+
+          {{#if trips}}
+          <button type="button" class="btn btn-success mb-3" data-bs-toggle="modal" data-bs-target="#addTripsModal"
+            style="margin-top: 16px;">
+            + Reys qo‘shish
+          </button>
+          {{/if}}
+
+          {{#if drivers}}
+          <button type="button" class="btn btn-success mb-3" data-bs-toggle="modal" data-bs-target="#addDriverModal"
+            style="margin-top: 16px;">
+            + Haydovchi qo‘shish
+          </button>
+          {{/if}}
           <div style="position: relative; display: inline-block; margin-right: 20px;">
             <button id="profileBtn" onclick="toggleDropdown()"
               style="width: 50px; height: 50px; border-radius: 50%; border: none; background: transparent; cursor: pointer; padding: 5px; transition: transform 0.2s ease;">
               <img
                 style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);"
-                {{#if (eq gender "Erkak")}}
+                {{#if (eq gender "Erkak" )}}
                 src="https://kpwxamepfkueoebpkamd.supabase.co/storage/v1/object/public/mbus_bucket/gender/male.png"
                 {{else}}
                 src="https://kpwxamepfkueoebpkamd.supabase.co/storage/v1/object/public/mbus_bucket/gender/female.png"
-                {{/if}}
-                alt="Profile">
+                {{/if}} alt="Profile">
             </button>
 
             <div id="dropdown"
@@ -107,14 +120,14 @@
 
           {{#if drivers}}
           <li class="nav-item">
-            <a class="nav-link" href="/#drivers" style="background-color: #007bff; color: white;">
+            <a class="nav-link" href="/drivers" style="background-color: #007bff; color: white;">
               <i class="fa-solid fa-id-card" style="font-size: 20px; margin-right: 10px;"></i>
               <span class="menu-title">Haydovchilar</span>
             </a>
           </li>
           {{else}}
           <li class="nav-item">
-            <a class="nav-link" href="/#drivers">
+            <a class="nav-link" href="/drivers">
               <i class="fa-solid fa-id-card" style="font-size: 20px; margin-right: 10px;"></i>
               <span class="menu-title">Haydovchilar</span>
             </a>

@@ -19,9 +19,9 @@ exports.loginPage = async (req, res) => {
 }
 
 exports.login = async (req, res) => {
-    try {        
+    try {
         console.log(req.body);
-        
+
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
             return res.status(400).send({
@@ -32,6 +32,10 @@ exports.login = async (req, res) => {
 
         let user = await adminModel.findOne({ username: data.username })
 
+        if (!user) {
+            return res.redirect("/login")
+        }
+
         if (user) {
             const checkPassword = await bcrypt.compare(data.password, user.password)
 
@@ -40,35 +44,12 @@ exports.login = async (req, res) => {
             }
 
             const authToken = generateToken(user._id, user.role)
-            const gender = user.gender        
+            const gender = user.gender
 
             res.cookie("authToken", authToken, { secure: true })
             res.cookie('gender', gender)
 
             return res.redirect("/")
-        }
-
-        user = await driverModel.findOne({ username: data.username })
-
-        if (user) {
-            const checkPassword = await bcrypt.compare(data.password, user.password)
-
-            if (!checkPassword) {
-                return res.status(403).send({
-                    error: "Parol xato!"
-                })
-            }
-
-            const authToken = generateToken(user._id, user.role)
-            const gender = user.gender        
-
-            res.cookie("authToken", authToken, { secure: true })
-            res.cookie('gender', gender)
-
-            return res.redirect("/")
-        } 
-        if (!user) {
-            return res.redirect("/login")
         }
     } catch (error) {
         console.log(error);
@@ -92,6 +73,6 @@ exports.logout = async (req, res) => {
         console.log(error);
         return res.status(500).send({
             error: "Serverda xatolik!"
-        }) 
+        })
     }
 }

@@ -5,8 +5,8 @@ const driverSchema = new mongoose.Schema({
     image: String,
     phoneNumber: String,
     experience: Number,
-    bus_id: {type: mongoose.Schema.Types.ObjectId, ref: "Bus"},
-    role: {type: String, default: "driver"}
+    gender:String,
+    bus: {type: mongoose.Schema.Types.ObjectId, ref: "Bus"},
 }, {timestamps: true})
 
 const driverModel = mongoose.model("Driver", driverSchema)
