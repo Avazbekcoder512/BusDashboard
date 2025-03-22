@@ -3,6 +3,7 @@ const busModel = require("../models/bus");
 const { createClient } = require("@supabase/supabase-js");
 const seatModel = require("../models/seat");
 const routeModel = require("../models/route");
+const tripModel = require("../models/trip");
 require('dotenv').config()
 
 const supabase = createClient(
@@ -312,11 +313,15 @@ exports.deleteOneBus = async (req, res) => {
 
         await seatModel.deleteMany({ bus: id })
 
+        await tripModel.updateOne({ _id: bus.trip._id }, { $unset: { bus: "" } })
+
         await busModel.findByIdAndDelete(id);
 
-        return res.status(200).send({
-            message: "Avtobus muvaffaqiyatli o'chirildi!"
-        });
+        return res.redirect('/buses')
+
+        // return res.status(200).send({
+        //     message: "Avtobus muvaffaqiyatli o'chirildi!"
+        // });
     } catch (error) {
         return res.status(500).send({
             error: "Serverda xatolik!"

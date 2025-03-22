@@ -294,16 +294,16 @@
     </div>
 
     <div class="modal" id="editModal">
-        <form action="">
+        <form action="/bus/{{bus._id}}/update" method="post" enctype="multipart/form-data">
             <div class="modal-content">
                 <span class="close-btn" id="closeModal">&times;</span>
                 <h3 style="text-align: center; color: #007bff;">Avtobusni tahrirlash</h3>
                 <label>Avtobus modeli:</label>
-                <input type="text" id="editBusModel" class="modal-input">
+                <input type="text" id="editBusModel" class="modal-input" value="{{bus.bus_model}}" required>
                 <label>Avtobus raqami:</label>
-                <input type="text" id="editBusNumber" class="modal-input">
+                <input type="text" id="editBusNumber" class="modal-input" value="{{bus.bus_number}}" required>
                 <label>Rasm yuklash:</label>
-                <input type="file" id="busImage" class="modal-input">
+                <input type="file" id="busImage" class="modal-input" required>
                 <button class="edit-btn" id="saveChanges"><i class="fa-solid fa-save"></i> Saqlash</button>
             </div>
         </form>
@@ -315,8 +315,12 @@
             <h3 style="text-align: center; color: red;">Haqiqatdan ham bu Avtobusni o'chirmoqchimisiz?</h3>
             <p style="text-align: center;">Bu amalni qaytarib bo‘lmaydi.</p>
             <div style="display: flex; justify-content: center; gap: 10px; margin-top: 20px;">
-                <button class="delete-btn" id="confirmDelete">Ha, o'chir</button>
-                <button class="back-btn" id="cancelDelete">Bekor qilish</button>
+                <form action="/bus/{{bus._id}}/delete" method="post">
+                    <button class="delete-btn" id="confirmDelete">Ha, o'chir</button>
+                </form>
+                <div>
+                    <button class="back-btn" id="cancelDelete">Bekor qilish</button>
+                </div>
             </div>
         </div>
     </div>
@@ -374,7 +378,6 @@
             });
 
             confirmDelete.addEventListener("click", function () {
-                alert("Avtobus o'chirildi!");
                 deleteModal.style.display = "none";
             });
             window.addEventListener("click", function (event) {

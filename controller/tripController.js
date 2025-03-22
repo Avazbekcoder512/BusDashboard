@@ -73,6 +73,8 @@ exports.getOneTrip = async (req, res) => {
     try {
         const { id } = req.params
         const token = req.cookies.authToken
+        const route = await routeModel.find()
+        const bus = await busModel.find()
 
         if (!id.match(/^[0-9a-fA-F]{24}$/)) {
             return res.status(400).send({
@@ -88,6 +90,18 @@ exports.getOneTrip = async (req, res) => {
             })
         }
 
+        if (!route.length) {
+            return res.status(404).send({
+                error: "Yo'nalishlar topilmadi!"
+            })
+        }
+
+        if (!bus.length) {
+            return res.status(404).send({
+                error: "Avtobuslar topilmadi!"
+            })
+        }
+
         // return res.status(200).send({
         //     trip: trip
         // })
@@ -95,7 +109,9 @@ exports.getOneTrip = async (req, res) => {
             title: "Reys",
             token,
             layout: false,
-            trip
+            trip,
+            route,
+            bus
         })
     } catch (error) {
         console.log(error);

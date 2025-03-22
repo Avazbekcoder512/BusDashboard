@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Order Cards</title>
     <link type="image/x-icon" href="../../favicon-3.png" rel="icon" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
     <style>
         body {
             background-color: #f8f9fa;
@@ -110,6 +111,114 @@
         .edit-btn:hover {
             background-color: #218838;
         }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 10;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background: linear-gradient(135deg, #ffffff, #f8f9fa);
+            padding: 25px;
+            border-radius: 12px;
+            width: 600px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .modal-content label {
+            display: block;
+            text-align: left;
+            margin: 12px 0 5px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .modal-content input,
+        .modal-content select {
+            width: 90%;
+            padding: 10px;
+            margin-bottom: 12px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            transition: 0.3s;
+            outline: none;
+        }
+
+        .modal-content select {
+            width: 94%;
+        }
+
+        .modal-content input:focus,
+        .modal-content select:focus {
+            border-color: #007bff;
+            box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+        }
+
+        .modal-buttons {
+            margin-top: 15px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .save-btn,
+        .close-btn {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background 0.3s ease;
+        }
+
+        .save-btn {
+            background-color: #28a745;
+            color: white;
+        }
+
+        .save-btn:hover {
+            background-color: #218838;
+        }
+
+        .close-btn {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .close-btn:hover {
+            background-color: #0056b3;
+        }
+
+        option {
+            background-color: white;
+            color: black;
+            font-size: 14px;
+            padding: 10px;
+            border-radius: 5px;
+        }
     </style>
 </head>
 
@@ -131,7 +240,7 @@
             <p><strong>Kelish vaqti:</strong> {{trip.arrival_time}}</p>
             <p><strong>Chipta narxi:</strong> {{trip.ticket_price}}</p>
             <div class="trip-buttons">
-                <button class="trip-edit-btn">Tahrirlash</button>
+                <button class="trip-edit-btn" onclick="openModal()">Tahrirlash</button>
             </div>
         </div>
 
@@ -139,6 +248,60 @@
             <a href="/trips"><button class="back-btn" type="submit">Orqaga</button></a>
         </div>
     </div>
+
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <h3>Reysni tahrirlash</h3>
+            <form action="/trip/{{trip._id}}update" method="post">
+                <label for="departure_date">Ketish kuni:</label>
+                <input type="date" id="departure_date" value="{{trip.departure_date}}" required>
+
+                <label for="departure_time">Ketish vaqti:</label>
+                <input type="time" id="departure_time" value="{{trip.departure_time}}" required>
+
+                <label for="arrival_date">Kelish kuni:</label>
+                <input type="date" id="arrival_date" value="{{trip.arrival_date}}" required>
+
+                <label for="arrival_time">Kelish vaqti:</label>
+                <input type="time" id="arrival_time" value="{{trip.arrival_time}}" required>
+
+                <label for="ticket_price">Chipta narxi:</label>
+                <input type="number" id="ticket_price" value="{{trip.ticket_price}}" required>
+
+                <label for="seat_class">Yo'nalish:</label>
+                <select id="seat_class" required>
+                    <option value="" disabled selected>Tanlang...</option>
+                    {{#each route}}
+                    <option value="{{_id}}">{{name}}</option>
+                    {{/each}}
+                </select>
+                <label for="seat_class">Avtobus:</label>
+                <select id="seat_class" required>
+                    <option value="" disabled selected>Tanlang...</option>
+                    {{#each bus}}
+                    <option value="{{_id}}">{{bus_model}}&nbsp;{{bus_number}}</option>
+                    {{/each}}
+                </select>
+
+                <div class="modal-buttons">
+                    <button type="submit" class="save-btn">
+                        <i class="fa-solid fa-floppy-disk"></i> Saqlash
+                    </button>
+                    <button type="button" class="close-btn" onclick="closeModal()">Bekor qilish</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function openModal() {
+            document.getElementById("editModal").style.display = "flex";
+        }
+
+        function closeModal() {
+            document.getElementById("editModal").style.display = "none";
+        }
+    </script>
 
 </body>
 

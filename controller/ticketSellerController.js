@@ -1,28 +1,37 @@
 const { validationResult, matchedData } = require("express-validator");
-const driverModel = require("../models/driver");
-const busModel = require("../models/bus");
+const ticketSellerModel = require("../models/ticket_seller");
 const { createClient } = require("@supabase/supabase-js");
 require('dotenv').config()
+const bcrypt = require('bcrypt');
+const busModel = require("../models/bus");
 
 const supabase = createClient(
     process.env.Supabase_Url,
-    process.env.Anon_key,
-);
+    process.env.Anon_key
+)
 
-exports.createDriver = async (req, res) => {
+exports.createTicketSeller = async (req, res) => {
     try {
-        const errors = validationResult(req)
+        const errors = validationResult(req);
         if (!errors.isEmpty()) {
             return res.status(400).send({
-                error: errors.array().map((error) => error.msg)
+                error: errors.array().map((error) => error.msg),
+            });
+        }
+        const data = matchedData(req);
+
+        const condidat = await ticketSellerModel.findOne({ username: data.username })
+
+        if (condidat) {
+            return res.status(400).send({
+                error: "Bunday usernamega ega foydalanuvchi allaqchon ro'yhatdan o'tgan!"
             })
         }
-        const data = matchedData(req)
 
         if (!req.file) {
             return res.status(400).send({
-                error: "Iltimos, rasm faylni yuklang!",
-            });
+                error: "Iltimos rasm faylni yuklang!"
+            })
         }
 
         const maxFileSize = 5 * 1024 * 1024;
@@ -33,7 +42,7 @@ exports.createDriver = async (req, res) => {
         }
 
         const { buffer, originalname } = req.file;
-        const fileName = `drivers/${Date.now()}-${originalname}`;
+        const fileName = `ticketSellers/${Date.now()}-${originalname}`;
 
         const { data: uploadData, error: uploadError } = await supabase.storage
             .from("mbus_bucket")
@@ -49,16 +58,23 @@ exports.createDriver = async (req, res) => {
 
         const fileUrl = `${supabase.storageUrl}/object/public/mbus_bucket/${fileName}`;
 
-        const driver = await driverModel.create({
+        const passwordHash = bcrypt.hash(data.password, 12)
+        delete data.password
+
+        await ticketSellerModel.create({
             name: data.name,
+            username: date.username,
+            password: passwordHash,
             phoneNumber: data.phoneNumber,
-            experience: data.experience,
             gender: data.gender,
-            bus: data.bus,
-            image: fileUrl
+            image: fileUrl,
+            bus: data.bus
         })
 
-        return res.redirect('/drivers')
+        return res.status(201).send({
+            message: "Chiptachi muvaffaqiyatli yaratildi!"
+        })
+
     } catch (error) {
         console.log(error);
         return res.status(500).send({
@@ -67,26 +83,29 @@ exports.createDriver = async (req, res) => {
     }
 }
 
-exports.getAllDrivers = async (req, res) => {
+exports.getAllTicketSellers = async (req, res) => {
     try {
-        const drivers = await driverModel.find().populate("bus")
-        const bus = await busModel.find()
-        const gender = req.cookies.gender
+        const ticketSellers = await ticketSellerModel.find()
         const token = req.cookies.authToken
+        const bus = await busModel.find()
+        
 
-        if (!drivers.length) {
+        if (!ticketSellers.length) {
             return res.status(404).send({
-                error: "Haydovchilar topilmadi!"
+                error: "Chiptachilar topilmadi!"
             })
         }
 
-        return res.render('drivers', {
-            drivers,
-            bus,
-            token,
-            gender,
-            title: "Haydovchilar"
+        return res.render('ticketsellers', {
+            ticketSellers,
+            title: "Chiptachilar ro'yxati",
+            token
+
         })
+
+        // return res.status(200).send({
+        //     ticketSellers
+        // })
     } catch (error) {
         console.log(error);
         return res.status(500).send({
@@ -95,22 +114,47 @@ exports.getAllDrivers = async (req, res) => {
     }
 }
 
-exports.updateDriver = async (req, res) => {
+exports.getOneTicketSeller = async (req, res) => {
     try {
         const { id } = req.params
 
         if (!id.match(/^[0-9a-fA-F]{24}$/)) {
             return res.status(400).send({
-                error: "ID haqiqiy emas!",
+                error: "Invalid ID format!"
             });
         }
 
-        const driver = await driverModel.findById(id);
+        const ticketSeller = await ticketSellerModel.findById(id)
 
-        if (!driver) {
+        if (!ticketSeller) {
             return res.status(404).send({
-                error: "Haydovchi topilmadi!",
+                error: "Chiptachi topilmadi!"
+            })
+        }
+    } catch (error) {
+        console.log(error);
+        return res.status(500).send({
+            error: "Serverda xatolik!"
+        })
+    }
+}
+
+exports.updateTicketSeller = async (req, res) => {
+    try {
+        const { id } = req.params
+
+        if (!id.match(/^[0-9a-fA-F]{24}$/)) {
+            return res.status(400).send({
+                error: "Invalid ID format!"
             });
+        }
+
+        const ticketSeller = await ticketSellerModel.findById(id)
+
+        if (!ticketSeller) {
+            return res.status(404).send({
+                error: "Chiptachi topilmadi!"
+            })
         }
 
         const errors = validationResult(req);
@@ -121,7 +165,7 @@ exports.updateDriver = async (req, res) => {
         }
         const data = matchedData(req);
 
-        let fileUrl = driver.image;
+        let fileUrl = ticketSeller.image;
 
         if (req.file) {
             try {
@@ -182,18 +226,20 @@ exports.updateDriver = async (req, res) => {
             }
         }
 
-        const updatedDriver = {
-            name: data.name || driver.name,
-            phoneNumber: data.phoneNumber || driver.phoneNumber,
-            experience: data.experience || driver.experience,
-            gender: data.gender || driver.gender,
-            bus: data.bus || driver.bus,
-            image: fileUrl || driver.image
+        const newTicketSeller = {
+            name: data.name || ticketSeller.name,
+            username: data.username || ticketSeller.username,
+            phoneNumber: data.phoneNumber || ticketSeller.phoneNumber,
+            gender: data.gender || ticketSeller.gender,
+            bus: data.bus || ticketSeller.bus,
+            image: fileUrl || ticketSeller.image
         }
 
-        await driverModel.findByIdAndUpdate(id, updatedDriver)
+        await ticketSellerModel.findByIdAndUpdate(id, newTicketSeller)
 
-        return res.redirect('/drivers')
+        return res.status(201).send({
+            message: "Chiptachinimg ma'lumotlari muvaffaqiyatli yangilandi!"
+        })
     } catch (error) {
         console.log(error);
         return res.status(500).send({
@@ -202,9 +248,9 @@ exports.updateDriver = async (req, res) => {
     }
 }
 
-exports.deleteDriver = async (req, res) => {
+exports.deleteTicketSeller = async (req, res) => {
     try {
-        const { id } = req.params;
+        const { id } = req.params
 
         if (!id.match(/^[0-9a-fA-F]{24}$/)) {
             return res.status(400).send({
@@ -212,44 +258,51 @@ exports.deleteDriver = async (req, res) => {
             });
         }
 
-        const driver = await driverModel.findById(id);
-        if (!driver) {
+        const ticketSeller = await ticketSellerModel.findById(id)
+
+        if (!ticketSeller) {
             return res.status(404).send({
-                error: "Haydochi topilmadi!"
-            });
+                error: "Chiptachi topilmadi!"
+            })
         }
 
-        const fileUrl = driver.image
+        let fileUrl = ticketSeller.image;
 
-        if (fileUrl) {
-            const filePath = fileUrl.replace(`${supabase.storageUrl}/object/public/mbus_bucket/`, '');
+        const filePath = fileUrl.replace(
+            `${supabase.storageUrl}/object/public/mbus_bucket/`,
+            ""
+        );
 
-            const { data: fileExists, error: checkError } = await supabase
-                .storage
-                .from('mbus_bucket')
-                .list('', { prefix: filePath });
+        const { data: fileExists, error: checkError } = await supabase.storage
+            .from("mbus_bucket")
+            .list("", { prefix: filePath });
 
-            if (checkError) {
-                console.error(`Fayl mavjudligini tekshirishda xatolik: ${checkError.message}`);
-            } else if (fileExists && fileExists.length > 0) {
-                const { error: deleteError } = await supabase
-                    .storage
-                    .from('mbus_bucket')
-                    .remove([filePath]);
+        if (checkError) {
+            console.error(
+                `Fayl mavjudligini tekshirishda xatolik: ${checkError.message}`
+            );
+        } else if (fileExists && fileExists.length > 0) {
+            const { error: deleteError } = await supabase.storage
+                .from("mbus_bucket")
+                .remove([filePath]);
 
-                if (deleteError) {
-                    throw new Error(`Faylni o'chirishda xatolik: ${deleteError.message}`);
-                }
+            if (deleteError) {
+                throw new Error(
+                    `Faylni o'chirishda xatolik: ${deleteError.message}`
+                );
             }
         }
 
-        await driverModel.findByIdAndDelete(id);
+        await ticketSellerModel.findByIdAndDelete(id)
 
-        return res.redirect('/drivers')
+        return res.status(200).send({
+            message: "Chiptachi muvaffaqiyatli o'chirildi!"
+        })
+
     } catch (error) {
-        console.error(error);
+        console.log(error);
         return res.status(500).send({
             error: "Serverda xatolik!"
-        });
+        })
     }
 }

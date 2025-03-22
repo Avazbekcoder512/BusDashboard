@@ -22,7 +22,7 @@ exports.createAdmin = async (req, res) => {
 
         const condidat = await adminModel.findOne({ username: data.username })
         if (condidat) {
-            return res.status(200).send({
+            return res.status(400).send({
                 error: "Bunday username allaqachon ro'yhatdan o'tgan!"
             })
         }
