@@ -1,6 +1,6 @@
 <body>
     <div class="content-wrapper">
-        <div class="row">
+        <div class="row"  style="width: 98%;">
             <div class="col-lg-12 grid-margin stretch-card">
                 <div class="card">
                     <div class="card-body">
@@ -30,7 +30,7 @@
                                         <td>
                                             <button class="btn btn-danger btn-sm delete-btn" data-bs-toggle="modal"
                                                 data-bs-target="#deleteAdminModal" data-id="{{_id}}">
-                                                O‘chirish
+                                                <i class="fa-solid fa-trash-can"></i>
                                             </button>
                                         </td>
                                     </tr>
@@ -55,18 +55,18 @@
                 <div class="modal-body">
                     <form action="/create-admin" method="POST" enctype="multipart/form-data">
                         <div class="mb-3">
-                            <label class="form-label" for="name">Ism</label>
-                            <input type="text" class="form-control" id="name" name="name" required
+                            <label class="form-label" for="name">To'liq ism</label>
+                            <input type="text" class="form-control" id="name" name="name" placeholder="Masalan: Jabbarov Samat" required
                                 style="border: 2px solid #17c964; border-radius: 6px; padding: 10px; font-size: 16px; background-color: #f8f9fa; transition: 0.3s; height: 45px;">
                         </div>
                         <div class="mb-3">
                             <label class="form-label" for="username">Username</label>
-                            <input type="text" class="form-control" id="username" name="username" required
+                            <input type="text" class="form-control" id="username" name="username" placeholder="Admin" required
                                 style="border: 2px solid #17c964; border-radius: 6px; padding: 10px; font-size: 16px; background-color: #f8f9fa; transition: 0.3s; height: 45px;">
                         </div>
                         <div class="mb-3">
                             <label class="form-label" for="password">Parol</label>
-                            <input type="password" class="form-control" id="password" name="password" required
+                            <input type="password" class="form-control" id="password" name="password" placeholder="parol123" required
                                 style="border: 2px solid #17c964 ; border-radius: 6px; padding: 10px; font-size: 16px; background-color: #f8f9fa; transition: 0.3s; height: 45px;">
                         </div>
                         <div class="mb-3">

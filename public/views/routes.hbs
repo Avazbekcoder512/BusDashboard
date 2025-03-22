@@ -39,7 +39,7 @@
                                     <td>
                                         <button class="btn btn-danger btn-sm delete-btn" data-bs-toggle="modal"
                                             data-bs-target="#deleteRouteModal" data-id="{{_id}}">
-                                            O‘chirish
+                                            <i class="fa-solid fa-trash-can"></i>
                                         </button>
                                     </td>
                                 </tr>
@@ -71,17 +71,17 @@
                 <form action="/create-route" method="POST">
                     <div class="mb-3">
                         <label class="form-label" for="name">Yo'nalish nomi</label>
-                        <input type="text" class="form-control" name="name" id="name" required
+                        <input type="text" class="form-control" name="name" id="name" placeholder="Masalan: Toshkent-Xorazm" required
                             style="border: 2px solid #17c964; border-radius: 6px; padding: 10px; font-size: 16px; background-color: #f8f9fa; transition: 0.3s; height: 45px;">
                     </div>
                     <div class="mb-3">
                         <label class="form-label" for="from">Qayerdan</label>
-                        <input type="text" class="form-control" name="from" id="from" required
+                        <input type="text" class="form-control" name="from" id="from" placeholder="Toshkent" required
                             style="border: 2px solid #17c964; border-radius: 6px; padding: 10px; font-size: 16px; background-color: #f8f9fa; transition: 0.3s; height: 45px;">
                     </div>
                     <div class="mb-3">
                         <label class="form-label" for="to">Qayerga</label>
-                        <input type="text" class="form-control" name="to" id="to" required
+                        <input type="text" class="form-control" name="to" id="to" placeholder="Xorazm" required
                             style="border: 2px solid #17c964; border-radius: 6px; padding: 10px; font-size: 16px; background-color: #f8f9fa; transition: 0.3s; height: 45px;">
                     </div>
                     <div class="modal-footer">

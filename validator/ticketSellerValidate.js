@@ -1,17 +1,14 @@
 const { fromBuffer } = require("file-type");
 
-exports.createDriverSchema = {
+exports.createTicketSellerSchema = {
     name: {
-        isString: {
-            errorMessage: "Ismni stingda kiriting!"
-        },
         notEmpty: {
-            errorMessage: "Ismni kirish shart!"
+            errorMessage: "Ismni kiritish majburiy!"
         }
     },
     username: {
         notEmpty: {
-            errorMessage: "Usernameni kiritish majburiy!"
+            errorMessage: "Username kiritsh majburiy!"
         }
     },
     password: {
@@ -21,12 +18,6 @@ exports.createDriverSchema = {
         },
         trim: {
             errorMessage: "Parolning belgilari orasi ochiq bo'lmasligi kerak!"
-        }
-    },
-    experience: {
-        isInt: {
-            options: { min: 1, max: 50 },
-            errorMessage: "Tajribani raqamda kiriting, Tajriba 1 yildan kam 50 yildan ko'p bo'lmasligi kerak!"
         }
     },
     phoneNumber: {
@@ -49,9 +40,7 @@ exports.createDriverSchema = {
         },
     },
     bus: {
-        notEmpty: {
-            errorMessage: "Avtobus idisini kiritish shart!"
-        }
+        notEmpty: "Avtobusni kiritish majburiy!"
     },
     image: {
         custom: {
@@ -70,22 +59,27 @@ exports.createDriverSchema = {
     }
 }
 
-exports.updateDriverSchema = {
+exports.updateTicketSellerSchema = {
     name: {
-        isString: {
-            errorMessage: "Ismni stingda kiriting!"
+        notEmpty: {
+            errorMessage: "Ismni kiritish majburiy!"
         }
     },
-    experience: {
-        isInt: {
-            options: { min: 1, max: 50 },
-            errorMessage: "Tajribani raqamda kiriting, Tajriba 1 yildan kam 50 yildan ko'p bo'lmasligi kerak!"
+    username: {
+        notEmpty: {
+            errorMessage: "Username kiritsh majburiy!"
         }
+    },
+    bus: {
+        notEmpty: "Avtobusni kiritish majburiy!"
     },
     phoneNumber: {
         isMobilePhone: {
             options: ["uz-UZ"],
             errorMessage: "Telefon raqamini to'g'ri formatda kiriting! (masalan, +998901234567)"
+        },
+        notEmpty: {
+            errorMessage: "Telefon raqamini kiritish shart!"
         }
     },
     gender: {
@@ -97,11 +91,6 @@ exports.updateDriverSchema = {
             options: [["Erkak", "Ayol"]],
             errorMessage: "Faqat Erkak yoki Ayol kiritish mumkin",
         },
-    },
-    bus: {
-        notEmpty: {
-            errorMessage: "Avtobus idisini kiritish shart!"
-        }
     },
     image: {
         custom: {

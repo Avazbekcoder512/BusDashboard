@@ -26,6 +26,9 @@ exports.createAdminSchema = {
             options: { min: 8 },
             errorMessage: "Parol kamida 8 ta belgidan iborad bo'lishi kerak",
         },
+        trim: {
+            errorMessage: "Parolning belgilari orasi ochiq bo'lmasligi kerak!"
+        }
     },
     gender: {
         isString: {

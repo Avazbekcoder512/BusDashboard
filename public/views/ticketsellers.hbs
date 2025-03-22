@@ -10,15 +10,15 @@
                                 <tr>
                                     <th>Rasm</th>
                                     <th>Ism, Familiya</th>
+                                    <th>Username</th>
                                     <th>Telefon raqami</th>
-                                    <th>Tajribasi</th>
                                     <th>Jinsi</th>
                                     <th>Avtobus raqami</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {{#each drivers}}
+                                {{#each ticketSellers}}
                                 <tr>
                                     <td class="py-1">
                                         <img src="{{image}}" alt="image" />
@@ -50,16 +50,16 @@
     </div>
 </div>
 
-<div class="modal fade" id="addDriverModal" tabindex="-1" aria-labelledby="addDriverModalLabel" aria-hidden="true">
+<div class="modal fade" id="addTicketSellerModal" tabindex="-1" aria-labelledby="addTicketSellerModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content" style="border-radius: 12px; box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);">
             <div class="modal-header">
-                <h4 class="modal-title text-success" id="addDriverModalLabel">Yangi Haydovchi Qo‘shish</h4>
+                <h4 class="modal-title text-success" id="addTicketSellerModalLabel">Yangi Chiptachi Qo‘shish</h4>
                 <button style="border: none" type="button" class="btn-close" data-bs-dismiss="modal"
                     aria-label="Close">x</button>
             </div>
             <div class="modal-body">
-                <form action="/create-driver" method="POST" enctype="multipart/form-data">
+                <form action="/create-ticketseller" method="POST" enctype="multipart/form-data">
                     <div class="mb-3">
                         <label class="form-label" for="name">Familiya, Ism, Sharif</label>
                         <input type="text" class="form-control" id="name" name="name" placeholder="Masalan: Hasanov Jamol Sanjar o'g'li" required
@@ -131,12 +131,12 @@
     </div>
 </div>
 
-<div class="modal fade" id="updateDriverModal" tabindex="-1" aria-labelledby="updateDriverModalLabel"
+<div class="modal fade" id="updateTicketSellerModal" tabindex="-1" aria-labelledby="updateTicketSellerModalLabel"
     aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content" style="border-radius: 12px; box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);">
             <div class="modal-header">
-                <h4 class="modal-title text-success" id="updateDriverModalLabel">Haydovchi ma'lumotlarini yangilash</h4>
+                <h4 class="modal-title text-success" id="updateTicketSellerModalLabel">Chiptachi ma'lumotlarini yangilash</h4>
                 <button style="border: none" type="button" class="btn-close" data-bs-dismiss="modal"
                     aria-label="Close">x</button>
             </div>
@@ -208,16 +208,16 @@
     </div>
 </div>
 
-<div class="modal fade" id="deleteDriverModal" tabindex="-1" aria-labelledby="deleteDriverModalLabel"
+<div class="modal fade" id="deleteTicketSellerModal" tabindex="-1" aria-labelledby="deleteTicketSellerModalLabel"
     aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content" style="border-radius: 12px; box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);">
             <div class="modal-header">
-                <h5 class="modal-title text-danger" id="deleteDriverModalLabel">Haydovchini o‘chirish</h5>
+                <h5 class="modal-title text-danger" id="deleteTicketSellerModalLabel">Chiptachini o‘chirish</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">x</button>
             </div>
             <div class="modal-body">
-                <p>Haqiqatdan ham ushbu haydovchini o‘chirmoqchimisiz?</p>
+                <p>Haqiqatdan ham ushbu chiptachini o‘chirmoqchimisiz?</p>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Bekor qilish</button>
@@ -241,7 +241,7 @@
         document.getElementById("updateExperience").value = experience;
         document.getElementById("updateGender").value = gender;
 
-        document.querySelector("#updateDriverModal form").action = `/driver/${id}/update`;
+        document.querySelector("#updateDriverModal form").action = `/ticketseller/${id}/update`;
 
         var myModal = new bootstrap.Modal(document.getElementById('updateDriverModal'));
         myModal.show();
@@ -257,7 +257,7 @@
         deleteButtons.forEach(button => {
             button.addEventListener("click", function () {
                 const driverId = this.getAttribute("data-id");
-                deleteForm.setAttribute("action", `/driver/${driverId}/delete`);
+                deleteForm.setAttribute("action", `/ticketseller/${driverId}/delete`);
             });
         });
     });

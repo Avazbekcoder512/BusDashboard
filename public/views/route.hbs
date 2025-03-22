@@ -1,146 +1,322 @@
+<!DOCTYPE html>
 <html lang="en">
+
 <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Yo'nalish</title>
-        <link type="image/x-icon" href="../../favicon-3.png" rel="icon" />
+      <meta charset="UTF-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <title>Yo'nalish</title>
+      <link type="image/x-icon" href="../../favicon-3.png" rel="icon" />
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 
-        <style>
-                body {
-                        background-color: #f8f9fa;
-                        font-family: Arial, sans-serif;
-                        color: #333;
-                        display: flex;
-                        flex-direction: column;
-                        align-items: center;
-                        padding: 20px;
-                }
+      <style>
+            body {
+                  background-color: #f8f9fa;
+                  font-family: Arial, sans-serif;
+                  color:
+                        #333;
+                  display: flex;
+                  flex-direction: column;
+                  align-items: center;
+                  padding:
+                        20px;
+            }
 
-                .card {
-                        background: #fff;
-                        padding: 15px;
-                        border-radius: 12px;
-                        margin: 15px;
-                        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-                        width: 100%;
-                        max-width: 1100px;
-                        border-left: 5px solid #007bff;
-                        position: relative;
-                }
+            .card {
+                  background: #fff;
+                  padding: 15px;
+                  border-radius: 12px;
+                  margin: 15px;
+                  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+                  width: 100%;
+                  max-width: 1100px;
+                  border-left: 5px solid #007bff;
+                  position: relative;
+            }
 
-                .route-info {
-                        background: #e3f2fd;
-                        padding: 10px;
-                        border-radius: 8px;
-                        font-size: 14px;
-                        font-weight: bold;
-                        margin-bottom: 8px;
-                }
+            .route-info {
+                  background: #e3f2fd;
+                  padding: 10px;
+                  border-radius: 8px;
+                  font-size: 14px;
+                  font-weight: bold;
+                  margin-bottom: 8px;
+            }
 
-                .route-details {
-                        background: #f1f3f4;
-                        padding: 8px;
-                        border-radius: 8px;
-                        margin-bottom: 12px;
-                }
+            .route-details {
+                  background: #f1f3f4;
+                  padding: 8px;
+                  border-radius: 8px;
+                  margin-bottom:
+                        12px;
+            }
 
-                .route-details p {
-                        margin: 4px 0;
-                        font-weight: bold;
-                }
+            .route-details p {
+                  margin: 4px 0;
+                  font-weight: bold;
+            }
 
-                .trip {
-                        padding: 8px;
-                        background: #fff3cd;
-                        border-radius: 8px;
-                        margin-bottom: 8px;
-                        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-                        max-height: 200px;
-                        overflow: auto;
-                        font-size: 14px;
-                }
+            .trip {
+                  padding: 8px;
+                  background: #fff3cd;
+                  border-radius: 8px;
+                  margin-bottom: 8px;
+                  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+                  max-height: 200px;
+                  overflow:
+                        auto;
+                  font-size: 14px;
+            }
 
-                .buttons {
-                        display: flex;
-                        justify-content:
-                                flex-start;
-                        margin-top: 8px;
-                }
+            .buttons {
+                  display: flex;
+                  justify-content:
+                        flex-start;
+                  margin-top: 8px;
+            }
 
-                .edit-btn-container {
-                        display: flex;
-                        justify-content: flex-end;
-                        margin-top: 8px;
-                }
+            .edit-btn-container {
+                  display: flex;
+                  justify-content: flex-end;
+                  margin-top: 8px;
+            }
 
-                .back-btn {
-                        background-color: #007bff;
-                        color: white;
-                        padding: 8px 12px;
-                        border: none;
-                        border-radius: 5px;
-                        cursor: pointer;
-                        transition: 0.3s;
-                        font-size: 14px;
-                }
+            .back-btn {
+                  background-color: #007bff;
+                  color: white;
+                  padding: 8px 12px;
+                  border: none;
+                  border-radius: 5px;
+                  cursor: pointer;
+                  transition: 0.3s;
+                  font-size: 14px;
+            }
 
-                .back-btn:hover {
-                        background-color: #0056b3;
-                }
+            .back-btn:hover {
+                  background-color: #0056b3;
+            }
 
-                .trip-buttons {
-                        display: flex;
-                        justify-content: flex-end;
-                        margin-top: 8px;
-                }
+            .trip-buttons {
+                  display:
+                        flex;
+                  justify-content: flex-end;
+                  margin-top: 8px;
+            }
 
-                .trip-edit-btn,
-                .edit-btn {
-                        background-color: #28a745;
-                        color: white;
-                        padding: 6px 10px;
-                        border: none;
-                        border-radius: 5px;
-                        cursor: pointer;
-                        transition: 0.3s;
-                        font-size: 12px;
-                }
+            .trip-edit-btn,
+            .edit-btn {
+                  background-color: #28a745;
+                  color: white;
+                  padding: 6px 10px;
+                  border: none;
+                  border-radius: 5px;
+                  cursor: pointer;
+                  transition: 0.3s;
+                  font-size: 12px;
+            }
 
-                .trip-edit-btn:hover,
-                .edit-btn:hover {
-                        background-color: #218838;
-                }
-        </style>
+            .trip-edit-btn:hover,
+            .edit-btn:hover {
+                  background-color: #218838;
+            }
+
+            .modal {
+                  display: none;
+                  position: fixed;
+                  top: 0;
+                  left: 0;
+                  width: 100%;
+                  height: 100%;
+                  background-color: rgba(0, 0, 0, 0.5);
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  backdrop-filter: blur(5px);
+                  animation: fadeIn 0.3s ease-in-out;
+            }
+
+            #editModal {
+                  display: none;
+            }
+
+            /* Modal oynasi */
+            .modal-content {
+                  background: white;
+                  padding: 25px;
+                  border-radius: 10px;
+                  width: 350px;
+                  text-align: center;
+                  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+                  animation: scaleIn 0.3s ease-in-out;
+            }
+
+            /* Inputlarni dizayni */
+            .input-group {
+                  margin-bottom: 12px;
+                  text-align: left;
+            }
+
+            .input-group label {
+                  font-weight: 600;
+                  font-size: 14px;
+                  display: block;
+                  margin-bottom: 5px;
+            }
+
+            .input-group input {
+                  width: 93%;
+                  padding: 12px;
+                  border-radius: 8px;
+                  border: 1px solid #ddd;
+                  outline: none;
+                  font-size: 14px;
+                  transition: 0.3s;
+                  background: #f8f8f8;
+            }
+
+            .input-group input:focus {
+                  border-color: #333;
+                  background: #fff;
+                  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+            }
+
+            /* Tugmalar */
+            .modal-buttons {
+                  margin-top: 15px;
+                  display: flex;
+                  justify-content: space-between;
+            }
+
+            .save-btn,
+            .close-btn {
+                  padding: 12px 15px;
+                  border: none;
+                  border-radius: 8px;
+                  cursor: pointer;
+                  font-size: 14px;
+                  font-weight: 600;
+                  transition: 0.3s;
+                  width: 48%;
+            }
+
+            .save-btn {
+                  background: #28a745;
+                  color: white;
+            }
+
+            .close-btn {
+                  background: #007bff;
+                  color: white;
+            }
+
+            .save-btn:hover {
+                  background: #218838;
+            }
+
+            .close-btn:hover {
+                  background: #0056b3;
+            }
+
+            /* Animatsiyalar */
+            @keyframes fadeIn {
+                  from {
+                        opacity: 0;
+                  }
+
+                  to {
+                        opacity: 1;
+                  }
+            }
+
+            @keyframes scaleIn {
+                  from {
+                        transform: scale(0.8);
+                  }
+
+                  to {
+                        transform: scale(1);
+                  }
+            }
+      </style>
 </head>
 
 <body>
-        <div class="card">
-                <h3>Yo'nalish</h3>
-                <div class="route-info">
-                        <p><strong>Yo'nalish nomi:</strong> {{route.name}}</p>
-                        <p><strong>Qayerdan:</strong> {{route.from}}</p>
-                        <p><strong>Qayerga:</strong> {{route.to}}</p>
-                        <div class="edit-btn-container">
-                                <button class="edit-btn">Tahrirlash</button>
+      <div class="card">
+            <h3>Yo'nalish</h3>
+            <div class="route-info">
+                  <p><strong>Yo'nalish nomi:</strong> {{route.name}}</p>
+                  <p><strong>Qayerdan:</strong> {{route.from}}</p>
+                  <p><strong>Qayerga:</strong> {{route.to}}</p>
+                  <div class="edit-btn-container">
+                        <button class="edit-btn">Tahrirlash</button>
+                  </div>
+            </div>
+
+            <h3>Reys</h3>
+            {{#each route.trips}}
+            <div class="trip">
+                  <p><strong>Ketish kuni:</strong> {{departure_date}}</p>
+                  <p><strong>Ketish vaqti:</strong> {{departure_time}}</p>
+                  <p><strong>Kelish kuni:</strong> {{arrival_date}}</p>
+                  <p><strong>Kelish vaqti:</strong> {{arrival_time}}</p>
+                  <p><strong>Chipta narxi:</strong> {{ticket_price}}</p>
+            </div>
+            {{/each}}
+
+            <div class="buttons">
+                  <a href="/routes"><button class="back-btn" type="submit">Orqaga</button></a>
+            </div>
+      </div>
+
+      <div id="editModal" class="modal">
+            <div class="modal-content">
+                  <h3>Yo'nalishni tahrirlash</h3>
+                  <form id="editForm" action="/route/{{route._id}}/update" method="post">
+                        <div class="input-group">
+                              <label for="routeName">Yo'nalish nomi:</label>
+                              <input type="text" id="routeName" value="{{route.name}}" required>
                         </div>
-                </div>
 
-                <h3>Reys</h3>
-                {{#each route.trips}}
-                <div class="trip">
-                        <p><strong>Ketish kuni:</strong> {{departure_date}}</p>
-                        <p><strong>Ketish vaqti:</strong> {{departure_time}}</p>
-                        <p><strong>Kelish kuni:</strong> {{arrival_date}}</p>
-                        <p><strong>Kelish vaqti:</strong> {{arrival_time}}</p>
-                        <p><strong>Chipta narxi:</strong> {{ticket_price}}</p>
-                </div>
-                {{/each}}
+                        <div class="input-group">
+                              <label for="routeFrom">Qayerdan:</label>
+                              <input type="text" id="routeFrom" value="{{route.from}}" required>
+                        </div>
 
-                <div class="buttons">
-                        <a href="/routes"><button class="back-btn" type="submit">Orqaga</button></a>
-                </div>
-        </div>
+                        <div class="input-group">
+                              <label for="routeTo">Qayerga:</label>
+                              <input type="text" id="routeTo" value="{{route.to}}" required>
+                        </div>
 
+                        <div class="modal-buttons">
+                              <button type="submit" class="save-btn">
+                                    <i class="fa-solid fa-floppy-disk"></i> Saqlash
+                              </button>
+
+                              <button type="button" id="closeModal" class="close-btn">Bekor qilish</button>
+                        </div>
+                  </form>
+            </div>
+      </div>
+      <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                  const modal = document.getElementById("editModal");
+                  const openModalBtn = document.querySelector(".edit-btn");
+                  const closeModalBtn = document.getElementById("closeModal");
+
+                  openModalBtn.addEventListener("click", function () {
+                        modal.style.display = "flex";
+                  });
+
+                  closeModalBtn.addEventListener("click", function () {
+                        modal.style.display = "none";
+                  });
+
+                  window.addEventListener("click", function (event) {
+                        if (event.target === modal) {
+                              modal.style.display = "none";
+                        }
+                  });
+            });
+      </script>
 </body>
 
 </html>

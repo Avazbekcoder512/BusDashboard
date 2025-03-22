@@ -59,8 +59,8 @@
                                     </td>
                                     <td>
                                         <button class="btn btn-danger btn-sm delete-btn" data-bs-toggle="modal"
-                                            data-bs-target="#deleteRouteModal" data-id="{{_id}}">
-                                            O‘chirish
+                                            data-bs-target="#deleteTripModal" data-id="{{_id}}">
+                                            <i class="fa-solid fa-trash-can"></i>
                                         </button>
                                     </td>
                                 </tr>
@@ -87,28 +87,28 @@
                 <form action="/create-trip" method="POST">
                     <div class="mb-3">
                         <label class="form-label" for="dateInput">Ketish sanasi</label>
-                        <input type="date" class="form-control" id="dateInput" name="departure_date" required
+                        <input type="date" class="form-control" id="dateInput" name="departure_date" placeholder="Masalan: 22.03.2025" required
                             style="border: 2px solid #17c964; border-radius: 6px; padding: 10px; font-size: 16px; background-color: #f8f9fa; transition: 0.3s; height: 45px;">
                     </div>
                     <div class="mb-3">
                         <label class="form-label" for="departure_time">Ketish vaqti</label>
-                        <input type="time" class="form-control" id="departure_time" name="departure_time" required
+                        <input type="time" class="form-control" id="departure_time" name="departure_time" placeholder="10:00" required
                             style="border: 2px solid #17c964; border-radius: 6px; padding: 10px; font-size: 16px; background-color: #f8f9fa; transition: 0.3s; height: 45px;">
                     </div>
                     <div class="mb-3">
                         <label class="form-label" for="dateInput2">Kelish sanasi</label>
-                        <input type="date" class="form-control" id="dateInput2" name="arrival_date" required
+                        <input type="date" class="form-control" id="dateInput2" name="arrival_date" placeholder="23.03.2025" required
                             style="border: 2px solid #17c964 ; border-radius: 6px; padding: 10px; font-size: 16px; background-color: #f8f9fa; transition: 0.3s; height: 45px;">
                     </div>
                     <div class="mb-3">
                         <label class="form-label" for="arrival_time">Kelish vaqti</label>
-                        <input type="time" class="form-control" id="arrival_time" name="arrival_time" required
+                        <input type="time" class="form-control" id="arrival_time" name="arrival_time" placeholder="14:00" required
                             style="border: 2px solid #17c964 ; border-radius: 6px; padding: 10px; font-size: 16px; background-color: #f8f9fa; transition: 0.3s; height: 45px;">
                     </div>
                     <div class="mb-3">
-                        <label class="form-label" for="ticket_price">Chipta narxi</label>
+                        <label class="form-label" for="ticket_price">Chipta narxi(so'm)</label>
                         <input type="number" min="50000" max="1000000" class="form-control" id="ticket_price"
-                            name="ticket_price" required
+                            name="ticket_price" placeholder="100000" required
                             style="border: 2px solid #17c964 ; border-radius: 6px; padding: 10px; font-size: 16px; background-color: #f8f9fa; transition: 0.3s; height: 45px;">
                     </div>
                     <div class="mb-3">
@@ -152,6 +152,31 @@
     </div>
 </div>
 
+<div class="modal fade" id="deleteTripModal" tabindex="-1" aria-labelledby="deleteTripModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content" style="border-radius: 12px; box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);">
+            <div class="modal-header">
+                <h5 class="modal-title text-danger" id="deleteTripModalLabel">Reysni o‘chirish</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">x</button>
+            </div>
+            <div class="modal-body">
+                <p>Haqiqatdan ham ushbu reysni o‘chirmoqchimisiz?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Bekor qilish</button>
+                <form id="deleteForm" method="POST">
+                    <input type="hidden" name="_method" value="DELETE">
+                    <button id="deleteButton" type="submit" class="btn btn-danger">
+                        <span id="deleteText">O‘chirish</span>
+                        <span id="deleteLoader" class="spinner-border spinner-border-sm d-none" role="status"
+                            aria-hidden="true"></span>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
     let today = new Date();
 
@@ -159,6 +184,22 @@
 
     document.getElementById("dateInput").setAttribute("min", minDate);
     document.getElementById("dateInput2").setAttribute("min", minDate);
+
+
+    document.addEventListener("DOMContentLoaded", function () {
+        const deleteButtons = document.querySelectorAll(".delete-btn");
+        const deleteForm = document.getElementById("deleteForm");
+        const deleteButton = document.getElementById("deleteButton");
+        const deleteText = document.getElementById("deleteText");
+        const deleteLoader = document.getElementById("deleteLoader");
+
+        deleteButtons.forEach(button => {
+            button.addEventListener("click", function () {
+                const driverId = this.getAttribute("data-id");
+                deleteForm.setAttribute("action", `/trip/${driverId}/delete`);
+            });
+        });
+    });
 </script>
 
 {{else}}
