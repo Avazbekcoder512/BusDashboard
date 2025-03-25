@@ -3,7 +3,6 @@ const ticketSellerModel = require("../models/ticket_seller");
 const { createClient } = require("@supabase/supabase-js");
 require('dotenv').config()
 const bcrypt = require('bcrypt');
-const busModel = require("../models/bus");
 
 const supabase = createClient(
     process.env.Supabase_Url,
@@ -58,23 +57,24 @@ exports.createTicketSeller = async (req, res) => {
 
         const fileUrl = `${supabase.storageUrl}/object/public/mbus_bucket/${fileName}`;
 
-        const passwordHash = bcrypt.hash(data.password, 12)
+        const passwordHash = await bcrypt.hash(data.password, 12)
         delete data.password
 
-        await ticketSellerModel.create({
+        const ticketSeller = await ticketSellerModel.create({
             name: data.name,
-            username: date.username,
+            username: data.username,
             password: passwordHash,
             phoneNumber: data.phoneNumber,
             gender: data.gender,
-            image: fileUrl,
-            bus: data.bus
+            image: fileUrl
         })
 
-        return res.status(201).send({
-            message: "Chiptachi muvaffaqiyatli yaratildi!"
-        })
+        // return res.status(201).send({
+        //     message: "Chiptachi muvaffaqiyatli yaratildi!",
+        //     ticketSeller
+        // })
 
+        return res.redirect('/')
     } catch (error) {
         console.log(error);
         return res.status(500).send({
@@ -87,8 +87,8 @@ exports.getAllTicketSellers = async (req, res) => {
     try {
         const ticketSellers = await ticketSellerModel.find()
         const token = req.cookies.authToken
-        const bus = await busModel.find()
-        
+        const gender = req.cookies.gender
+
 
         if (!ticketSellers.length) {
             return res.status(404).send({
@@ -99,8 +99,8 @@ exports.getAllTicketSellers = async (req, res) => {
         return res.render('ticketsellers', {
             ticketSellers,
             title: "Chiptachilar ro'yxati",
-            token
-
+            token,
+            gender
         })
 
         // return res.status(200).send({
@@ -231,15 +231,16 @@ exports.updateTicketSeller = async (req, res) => {
             username: data.username || ticketSeller.username,
             phoneNumber: data.phoneNumber || ticketSeller.phoneNumber,
             gender: data.gender || ticketSeller.gender,
-            bus: data.bus || ticketSeller.bus,
             image: fileUrl || ticketSeller.image
         }
 
         await ticketSellerModel.findByIdAndUpdate(id, newTicketSeller)
 
-        return res.status(201).send({
-            message: "Chiptachinimg ma'lumotlari muvaffaqiyatli yangilandi!"
-        })
+        // return res.status(201).send({
+        //     message: "Chiptachinimg ma'lumotlari muvaffaqiyatli yangilandi!"
+        // })
+
+        return res.redirect('/')
     } catch (error) {
         console.log(error);
         return res.status(500).send({
@@ -295,9 +296,11 @@ exports.deleteTicketSeller = async (req, res) => {
 
         await ticketSellerModel.findByIdAndDelete(id)
 
-        return res.status(200).send({
-            message: "Chiptachi muvaffaqiyatli o'chirildi!"
-        })
+        // return res.status(200).send({
+        //     message: "Chiptachi muvaffaqiyatli o'chirildi!"
+        // })
+
+        return res.status('/')
 
     } catch (error) {
         console.log(error);

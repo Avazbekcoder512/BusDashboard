@@ -1,9 +1,11 @@
+{{#if token}}
+{{#if ticketSellers}}
 <div class="content-wrapper">
     <div class="row">
         <div class="col-lg-12 grid-margin stretch-card">
             <div class="card">
                 <div class="card-body">
-                    <h4 class="card-title" style="text-align: center; font-size: 30px;">Adminlar</h4>
+                    <h4 class="card-title" style="text-align: center; font-size: 30px;">Chipta sotuvchilar</h4>
                     <div class="table-responsive">
                         <table class="table table-striped">
                             <thead>
@@ -13,7 +15,6 @@
                                     <th>Username</th>
                                     <th>Telefon raqami</th>
                                     <th>Jinsi</th>
-                                    <th>Avtobus raqami</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
@@ -24,18 +25,17 @@
                                         <img src="{{image}}" alt="image" />
                                     </td>
                                     <td>{{name}}</td>
+                                    <td>{{username}}</td>
                                     <td>{{phoneNumber}}</td>
-                                    <td>{{experience}} yil</td>
                                     <td>{{gender}}</td>
-                                    <td>{{bus.bus_number}}</td>
                                     <td>
                                         <button class="btn btn-success btn-sm edit-btn" data-bs-toggle="modal"
-                                            data-bs-target="#updateDriverModal"
-                                            onclick="openUpdateModal('{{_id}}', '{{name}}', '{{phoneNumber}}', '{{experience}}', '{{gender}}')">
+                                            data-bs-target="#updateTicketSellerModal"
+                                            onclick="openUpdateModal('{{_id}}', '{{name}}', '{{username}}', '{{phoneNumber}}', '{{gender}}')">
                                             <i class="fa-solid fa-pen"></i>
                                         </button>
                                         <button class="btn btn-danger btn-sm delete-btn" data-bs-toggle="modal"
-                                            data-bs-target="#deleteDriverModal" data-id="{{_id}}">
+                                            data-bs-target="#deleteTicketSellerModal" data-id="{{_id}}">
                                             <i class="fa-solid fa-trash-can"></i>
                                         </button>
                                     </td>
@@ -49,12 +49,34 @@
         </div>
     </div>
 </div>
+{{else}}
+<div class="content-wrapper" style="display: flex; justify-content: center; align-items: center; height: 300px;">
+    <div
+        style="width: 400px; padding: 30px; border: 1px solid #ddd; border-radius: 10px; box-shadow: 2px 2px 15px rgba(0, 0, 0, 0.1); text-align: center; background: #fff;">
+        <h2 style="margin: 0; color: #333; font-size: 28px;">Chiptachilar sotuvchilar mavjud emas!</h2>
+        <p style="color: #777; margin: 15px 0; font-size: 20px;">Yangi chiptachi qo'shing</p>
+        <button type="button" data-bs-toggle="modal" data-bs-target="#addTicketSellerModal"
+            style="padding: 12px 25px; border: none; background: #17c964; color: white; font-size: 20px; border-radius: 8px; cursor: pointer; transition: 0.3s; box-shadow: 0 4px 10px rgba(23, 201, 100, 0.3);"
+            onmouseover="this.style.background='#13a856'; this.style.boxShadow='0 6px 15px rgba(23, 201, 100, 0.5)';"
+            onmouseout="this.style.background='#17c964'; this.style.boxShadow='0 4px 10px rgba(23, 201, 100, 0.3)';">
+            + Chipta sotuvchi qo'shish
+        </button>
+    </div>
+</div>
+{{/if}}
+{{else}}
+<script>
+    window.location.href = './login'
+</script>
+{{/if}}
 
-<div class="modal fade" id="addTicketSellerModal" tabindex="-1" aria-labelledby="addTicketSellerModalLabel" aria-hidden="true">
+<div class="modal fade" id="addTicketSellerModal" tabindex="-1" aria-labelledby="addTicketSellerModalLabel"
+    aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content" style="border-radius: 12px; box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);">
             <div class="modal-header">
-                <h4 class="modal-title text-success" id="addTicketSellerModalLabel">Yangi Chiptachi Qo‘shish</h4>
+                <h4 class="modal-title text-success" id="addTicketSellerModalLabel">Yangi Chipta Sotuvchisini Qo‘shish
+                </h4>
                 <button style="border: none" type="button" class="btn-close" data-bs-dismiss="modal"
                     aria-label="Close">x</button>
             </div>
@@ -62,29 +84,27 @@
                 <form action="/create-ticketseller" method="POST" enctype="multipart/form-data">
                     <div class="mb-3">
                         <label class="form-label" for="name">Familiya, Ism, Sharif</label>
-                        <input type="text" class="form-control" id="name" name="name" placeholder="Masalan: Hasanov Jamol Sanjar o'g'li" required
+                        <input type="text" class="form-control" id="name" name="name"
+                            placeholder="Masalan: Hasanov Jamol Sanjar o'g'li" required
                             style="border: 2px solid #17c964; border-radius: 6px; padding: 10px; font-size: 16px; background-color: #f8f9fa; transition: 0.3s; height: 45px;">
                     </div>
                     <div class="mb-3">
                         <label class="form-label" for="username">Username</label>
-                        <input type="text" class="form-control" id="username" name="username" placeholder="User" required
+                        <input type="text" class="form-control" id="username" name="username" placeholder="User"
+                            required
                             style="border: 2px solid #17c964; border-radius: 6px; padding: 10px; font-size: 16px; background-color: #f8f9fa; transition: 0.3s; height: 45px;">
                     </div>
                     <div class="mb-3">
                         <label class="form-label" for="password">Parol</label>
-                        <input type="text" class="form-control" id="password" name="password" placeholder="parol123" required
+                        <input type="text" class="form-control" id="password" name="password" placeholder="parol123"
+                            required
                             style="border: 2px solid #17c964; border-radius: 6px; padding: 10px; font-size: 16px; background-color: #f8f9fa; transition: 0.3s; height: 45px;">
                     </div>
                     <div class="mb-3">
                         <label class="form-label" for="phoneNumber">Telefon raqam</label>
-                        <input type="text" class="form-control" id="phoneNumber" name="phoneNumber" placeholder="+998991234567" required
+                        <input type="text" class="form-control" id="phoneNumber" name="phoneNumber"
+                            placeholder="+998991234567" required
                             style="border: 2px solid #17c964; border-radius: 6px; padding: 10px; font-size: 16px; background-color: #f8f9fa; transition: 0.3s; height: 45px;">
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label" for="experience">Tajriba(yil)</label>
-                        <input type="number" min="1" max="50" class="form-control" id="experience" name="experience" placeholder="5"
-                            required
-                            style="border: 2px solid #17c964 ; border-radius: 6px; padding: 10px; font-size: 16px; background-color: #f8f9fa; transition: 0.3s; height: 45px;">
                     </div>
                     <div class="mb-3">
                         <label class="form-label" for="gender">Jinsi</label>
@@ -93,16 +113,6 @@
                             <option value="" disabled selected>Tanlang...</option>
                             <option value="Erkak">Erkak</option>
                             <option value="Ayol">Ayol</option>
-                        </select>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label" for="bus">Avtobus</label>
-                        <select class="form-select" id="bus" name="bus" required
-                            style="width: 100%; border: 2px solid #17c964; border-radius: 6px; padding: 10px; font-size: 16px; background-color: #f8f9fa; transition: 0.3s; height: 45px;">
-                            <option value="" disabled selected>Tanlang...</option>
-                            {{#each bus}}
-                            <option value="{{_id}}">{{bus_model}}-{{bus_number}}</option>
-                            {{/each}}
                         </select>
                     </div>
                     <div class="mb-3">
@@ -136,36 +146,31 @@
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content" style="border-radius: 12px; box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);">
             <div class="modal-header">
-                <h4 class="modal-title text-success" id="updateTicketSellerModalLabel">Chiptachi ma'lumotlarini yangilash</h4>
+                <h4 class="modal-title text-success" id="updateTicketSellerModalLabel">Chipta sotuvchi ma'lumotlarini
+                    yangilash</h4>
                 <button style="border: none" type="button" class="btn-close" data-bs-dismiss="modal"
                     aria-label="Close">x</button>
             </div>
             <div class="modal-body">
-                <form method="POST" enctype="multipart/form-data">
+                <form method="POST" enctype="multipart/form-data" action="/ticketseller/{{id}}/update">
                     <div class="mb-3">
                         <label class="form-label" for="updateName">Familiya, Ism, Sharif</label>
-                        <input type="text" class="form-control" id="updateName" name="name" required
+                        <input type="text" class="form-control" id="updateName" name="name"
                             style="border: 2px solid #17c964; border-radius: 6px; padding: 10px; font-size: 16px; background-color: #f8f9fa; transition: 0.3s; height: 45px;">
                     </div>
                     <div class="mb-3">
                         <label class="form-label" for="updateUsername">Username</label>
-                        <input type="text" class="form-control" id="updateUsername" name="username" required
+                        <input type="text" class="form-control" id="updateUsername" name="username"
                             style="border: 2px solid #17c964; border-radius: 6px; padding: 10px; font-size: 16px; background-color: #f8f9fa; transition: 0.3s; height: 45px;">
                     </div>
                     <div class="mb-3">
                         <label class="form-label" for="updatephoneNumber">Telefon raqam</label>
-                        <input type="text" class="form-control" id="updatephoneNumber" name="phoneNumber" required
+                        <input type="text" class="form-control" id="updatephoneNumber" name="phoneNumber"
                             style="border: 2px solid #17c964; border-radius: 6px; padding: 10px; font-size: 16px; background-color: #f8f9fa; transition: 0.3s; height: 45px;">
                     </div>
                     <div class="mb-3">
-                        <label class="form-label" for="updateExperience">Tajriba(yil)</label>
-                        <input type="number" min="1" max="50" class="form-control" id="updateExperience"
-                            name="experience" required
-                            style="border: 2px solid #17c964 ; border-radius: 6px; padding: 10px; font-size: 16px; background-color: #f8f9fa; transition: 0.3s; height: 45px;">
-                    </div>
-                    <div class="mb-3">
                         <label class="form-label" for="updateGender">Jinsi</label>
-                        <select class="form-select" id="updateGender" name="gender" required
+                        <select class="form-select" id="updateGender" name="gender"
                             style="width: 100%; border: 2px solid #17c964; border-radius: 6px; padding: 10px; font-size: 16px; background-color: #f8f9fa; transition: 0.3s; height: 45px;">
                             <option value="" disabled selected>Tanlang...</option>
                             <option value="Erkak">Erkak</option>
@@ -173,18 +178,8 @@
                         </select>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label" for="updateBus">Avtobus</label>
-                        <select class="form-select" id="updateBus" name="bus" required
-                            style="width: 100%; border: 2px solid #17c964; border-radius: 6px; padding: 10px; font-size: 16px; background-color: #f8f9fa; transition: 0.3s; height: 45px;">
-                            <option value="" disabled selected>Tanlang...</option>
-                            {{#each bus}}
-                            <option value="{{_id}}">{{bus_model}}-{{bus_number}}</option>
-                            {{/each}}
-                        </select>
-                    </div>
-                    <div class="mb-3">
                         <label class="form-label" for="image">Rasm yuklash</label>
-                        <input type="file" class="form-control" id="image" name="image" required
+                        <input type="file" class="form-control" id="image" name="image"
                             style="border: 2px solid #17c964; border-radius: 6px; padding: 10px; font-size: 16px; background-color: #f8f9fa; transition: 0.3s; height: 45px; cursor: pointer;">
                     </div>
                     <div class="modal-footer">
@@ -235,15 +230,15 @@
 </div>
 
 <script>
-    function openUpdateModal(id, name, phoneNumber, experience, gender) {
+    function openUpdateModal(id, name, username, phoneNumber, gender) {
         document.getElementById("updateName").value = name;
+        document.getElementById("updateUsername").value = username;
         document.getElementById("updatephoneNumber").value = phoneNumber;
-        document.getElementById("updateExperience").value = experience;
         document.getElementById("updateGender").value = gender;
 
-        document.querySelector("#updateDriverModal form").action = `/ticketseller/${id}/update`;
+        document.querySelector("#updateTicketSellerModal form").action = `/ticketseller/${id}/update`;
 
-        var myModal = new bootstrap.Modal(document.getElementById('updateDriverModal'));
+        var myModal = new bootstrap.Modal(document.getElementById('updateTicketSellerModal'));
         myModal.show();
     }
 

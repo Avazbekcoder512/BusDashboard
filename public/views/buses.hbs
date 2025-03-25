@@ -1,5 +1,6 @@
 <body>
     {{#if token}}
+    {{#if buses}}
     <div class="content-wrapper">
         <div class="col-xl-3 d-flex grid-margin stretch-card">
             {{#each buses}}
@@ -7,8 +8,10 @@
                 <img src="{{image}}" class="card-img-top" alt="Avtobus rasmi"
                     style="width: 100%; height: 250px; object-fit: cover;">
                 <div class="card-body" style="padding: 20px;">
-                    <h3 class="card-text" style="margin: 20px;">Avtobus modeli: <strong style="font-weight: 400;">{{bus_model}}</strong></h3>
-                    <h3 class="card-text" style="margin: 20px;">Avtobus raqami: <strong style="font-weight: 400;">{{bus_number}}</strong></h3>
+                    <h3 class="card-text" style="margin: 20px;">Avtobus modeli: <strong
+                            style="font-weight: 400;">{{bus_model}}</strong></h3>
+                    <h3 class="card-text" style="margin: 20px;">Avtobus raqami: <strong
+                            style="font-weight: 400;">{{bus_number}}</strong></h3>
                     <a href="/bus/{{_id}}">
                         <button type="button" class="btn btn-success mb-3" style="width: 100%;">
                             Batafsil <i class="fa-solid fa-arrow-right" style="padding-left: 10px;"></i>
@@ -19,6 +22,21 @@
             {{/each}}
         </div>
     </div>
+    {{else}}
+    <div class="content-wrapper" style="display: flex; justify-content: center; align-items: center; height: 300px;">
+        <div
+            style="width: 400px; padding: 30px; border: 1px solid #ddd; border-radius: 10px; box-shadow: 2px 2px 15px rgba(0, 0, 0, 0.1); text-align: center; background: #fff;">
+            <h2 style="margin: 0; color: #333; font-size: 28px;">Avtobuslar mavjud emas!</h2>
+            <p style="color: #777; margin: 15px 0; font-size: 20px;">Yangi avtobus qo'shing</p>
+            <button type="button" data-bs-toggle="modal" data-bs-target="#addBusesModel"
+                style="padding: 12px 25px; border: none; background: #17c964; color: white; font-size: 20px; border-radius: 8px; cursor: pointer; transition: 0.3s; box-shadow: 0 4px 10px rgba(23, 201, 100, 0.3);"
+                onmouseover="this.style.background='#13a856'; this.style.boxShadow='0 6px 15px rgba(23, 201, 100, 0.5)';"
+                onmouseout="this.style.background='#17c964'; this.style.boxShadow='0 4px 10px rgba(23, 201, 100, 0.3)';">
+                + Avtobus qo'shish
+            </button>
+        </div>
+    </div>
+    {{/if}}
     {{else}}
     <script>
         window.location.href = './login'
@@ -38,17 +56,20 @@
                     <form action="/create-bus" method="POST" enctype="multipart/form-data">
                         <div class="mb-3">
                             <label class="form-label" for="bus_model">Avtobus modeli</label>
-                            <input type="text" class="form-control" id="bus_model" name="bus_model" placeholder="Masalan: Yutong-51" required
+                            <input type="text" class="form-control" id="bus_model" name="bus_model"
+                                placeholder="Masalan: Yutong-51" required
                                 style="border: 2px solid #17c964; border-radius: 6px; padding: 10px; font-size: 16px; background-color: #f8f9fa; transition: 0.3s; height: 45px;">
                         </div>
                         <div class="mb-3">
                             <label class="form-label" for="bus_number">Avtobus raqami</label>
-                            <input type="text" class="form-control" id="bus_number" name="bus_number" placeholder="ASD125D9" required
+                            <input type="text" class="form-control" id="bus_number" name="bus_number"
+                                placeholder="ASD125D9" required
                                 style="border: 2px solid #17c964; border-radius: 6px; padding: 10px; font-size: 16px; background-color: #f8f9fa; transition: 0.3s; height: 45px;">
                         </div>
                         <div class="mb-3">
                             <label class="form-label" for="seats_count">O'rindiqlar soni</label>
-                            <input type="text" class="form-control" id="seats_count" name="seats_count" placeholder="51" required
+                            <input type="text" class="form-control" id="seats_count" name="seats_count" placeholder="51"
+                                required
                                 style="border: 2px solid #17c964; border-radius: 6px; padding: 10px; font-size: 16px; background-color: #f8f9fa; transition: 0.3s; height: 45px;">
                         </div>
                         <div class="mb-3">
