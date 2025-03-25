@@ -7,7 +7,7 @@ const multer = require('multer')
 const { createBusSchema, updateBusSchema } = require("../validator/busValidate")
 const { createBus, getOneBus, getAllBuses, updateOneBus, deleteOneBus } = require("../controller/busContoller")
 const { createRouteSchema, updateRouteSchema } = require("../validator/routeValidate")
-const { createRoute, getAllRoutes, getOneRoutes, updateRoute, deleteRoute } = require("../controller/routeController")
+const { createRoute, getAllRoutes, getOneRoutes, updateRoute, deleteRoute, searchRoute } = require("../controller/routeController")
 const { createTripSchema } = require("../validator/tripValidate")
 const { createTrip, getAllTrips, getOneTrip, deleteTrip, updateTrip } = require("../controller/tripController")
 const { getAllDrivers, createDriver, updateDriver, deleteDriver } = require("../controller/driverController")
@@ -15,6 +15,7 @@ const { createDriverSchema, updateDriverSchema } = require("../validator/driverV
 const { createTicketSeller, getAllTicketSellers, getOneTicketSeller, updateTicketSeller, deleteTicketSeller } = require("../controller/ticketSellerController")
 const { createTicketSellerSchema, updateTicketSellerSchema } = require("../validator/ticketSellerValidate")
 const { jwtAccessMiddleware } = require("../middleware/jwt-accessMiddleware")
+const { getTicket } = require("../controller/ticket")
 const upload = multer()
 
 const router = require("express").Router()
@@ -43,6 +44,7 @@ router
 .get('/route/:id', jwtAccessMiddleware, getOneRoutes)
 .post('/route/:id/update', jwtAccessMiddleware, checkSchema(updateRouteSchema), updateRoute)
 .post('/route/:id/delete', jwtAccessMiddleware, deleteRoute)
+.get('/search-route', searchRoute)
 
 // Trip router
 .post('/create-trip', jwtAccessMiddleware, checkSchema(createTripSchema), createTrip)
@@ -58,10 +60,13 @@ router
 .post('/driver/:id/delete', jwtAccessMiddleware, deleteDriver)
 
 // TicketSeller router
-.post('/create-ticketseller', jwtAccessMiddleware, upload.single('image'), checkSchema(createTicketSellerSchema), createTicketSeller)
-.get('/ticketsellers', jwtAccessMiddleware, getAllTicketSellers)
+.post('/create-ticketseller', /* jwtAccessMiddleware, */ upload.single('image'), checkSchema(createTicketSellerSchema), createTicketSeller)
+.get('/ticketsellers', /* jwtAccessMiddleware, */ getAllTicketSellers)
 .get('/ticketseller/:id', jwtAccessMiddleware, getOneTicketSeller)
 .post('/ticketseller/:id/update', jwtAccessMiddleware, upload.single('image'), checkSchema(updateTicketSellerSchema), updateTicketSeller)
 .post('/ticketseller/:id/delete', jwtAccessMiddleware, deleteTicketSeller)
+
+// Ticket router
+.get('/tickets', getTicket)
 
 module.exports = router

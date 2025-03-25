@@ -39,9 +39,6 @@ exports.createTicketSellerSchema = {
             errorMessage: "Faqat Erkak yoki Ayol kiritish mumkin",
         },
     },
-    bus: {
-        notEmpty: "Avtobusni kiritish majburiy!"
-    },
     image: {
         custom: {
             options: async (value, { req }) => {
@@ -69,9 +66,6 @@ exports.updateTicketSellerSchema = {
         notEmpty: {
             errorMessage: "Username kiritsh majburiy!"
         }
-    },
-    bus: {
-        notEmpty: "Avtobusni kiritish majburiy!"
     },
     phoneNumber: {
         isMobilePhone: {

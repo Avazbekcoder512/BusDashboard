@@ -56,6 +56,14 @@
             + Haydovchi qo‘shish
           </button>
           {{/if}}
+
+          {{#if ticketSellers}}
+          <button type="button" class="btn btn-success mb-3" data-bs-toggle="modal"
+            data-bs-target="#addTicketSellerModal" style="margin-top: 16px;">
+            + Chipta sotuvchisini qo‘shish
+          </button>
+          {{/if}}
+
           <div style="position: relative; display: inline-block; margin-right: 20px;">
             <button id="profileBtn" onclick="toggleDropdown()"
               style="width: 50px; height: 50px; border-radius: 50%; border: none; background: transparent; cursor: pointer; padding: 5px; transition: transform 0.2s ease;">
@@ -89,14 +97,14 @@
           {{#if admins}}
           <li class="nav-item">
             <a class="nav-link" href="/" style="background-color: #007bff; color: white;">
-              <i class="fa-solid fa-user-tie" style="font-size: 20px; margin-right: 10px;"></i>
+              <i class="fas fa-user-shield admin-icon" style="font-size: 20px; margin-right: 10px;"></i>
               <span class="menu-title">Adminlar</span>
             </a>
           </li>
           {{else}}
           <li class="nav-item">
             <a class="nav-link" href="/">
-              <i class="fa-solid fa-user-tie" style="font-size: 20px; margin-right: 10px;"></i>
+              <i class="fas fa-user-shield admin-icon" style="font-size: 20px; margin-right: 10px;"></i>
               <span class="menu-title">Adminlar</span>
             </a>
           </li>
@@ -130,6 +138,22 @@
             <a class="nav-link" href="/drivers">
               <i class="fa-solid fa-id-card" style="font-size: 20px; margin-right: 10px;"></i>
               <span class="menu-title">Haydovchilar</span>
+            </a>
+          </li>
+          {{/if}}
+
+          {{#if ticketSellers}}
+          <li class="nav-item">
+            <a class="nav-link" href="/ticketsellers" style="background-color: #007bff; color: white;">
+              <i class="fas fa-user-tie ticket-seller" style="font-size: 20px; margin-right: 10px;"></i>
+              <span class="menu-title">Chipta sotuvchilar</span>
+            </a>
+          </li>
+          {{else}}
+          <li class="nav-item">
+            <a class="nav-link" href="/ticketsellers">
+              <i class="fas fa-user-tie ticket-seller" style="font-size: 20px; margin-right: 10px;"></i>
+              <span class="menu-title">Chipta sotuvchilar</span>
             </a>
           </li>
           {{/if}}
@@ -180,6 +204,22 @@
             <a class="nav-link" href="/#passengers">
               <i class="fa-solid fa-users" style="font-size: 20px; margin-right: 10px;"></i>
               <span class="menu-title">Yo'lovchilar</span>
+            </a>
+          </li>
+          {{/if}}
+
+          {{#if tickets}}
+          <li class="nav-item">
+            <a class="nav-link" href="/#passengers" style="background-color: #007bff; color: white;">
+              <i class="fa-solid fa-ticket" style="font-size: 20px; margin-right: 10px;"></i>
+              <span class="menu-title"></span>
+            </a>
+          </li>
+          {{else}}
+          <li class="nav-item">
+            <a class="nav-link" href="/tickets">
+              <i class="fa-solid fa-ticket" style="font-size: 20px; margin-right: 10px;"></i>
+              <span class="menu-title">Chipta band qilish</span>
             </a>
           </li>
           {{/if}}

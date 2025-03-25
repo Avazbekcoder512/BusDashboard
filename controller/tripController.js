@@ -43,12 +43,6 @@ exports.getAllTrips = async (req, res) => {
         const token = req.cookies.authToken
         const gender = req.cookies.gender
 
-        if (!trips.length) {
-            return res.status(404).send({
-                error: "Yo'nalishlar topilmadi!"
-            })
-        }
-
         // return res.status(200).send({
         //     trips
         // })
