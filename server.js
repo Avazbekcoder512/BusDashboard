@@ -16,8 +16,8 @@ const hbs = create({
     extname: "hbs",
     handlebars: allowInsecurePrototypeAccess(Handlebars),
     helpers: {
-        eq: function (a, b) {
-            return a === b;
+        eq: function (a, b, c) {
+            return a === b || a === c;
         }
     }
 });

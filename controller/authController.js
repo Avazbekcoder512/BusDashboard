@@ -4,6 +4,7 @@ require('dotenv').config()
 const bcrypt = require("bcrypt")
 const driverModel = require("../models/driver")
 const { validationResult, matchedData } = require("express-validator")
+const ticketSellerModel = require("../models/ticket_seller")
 
 const generateToken = (id, role) => {
     const payload = { id, role }
@@ -20,8 +21,6 @@ exports.loginPage = async (req, res) => {
 
 exports.login = async (req, res) => {
     try {
-        console.log(req.body);
-
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
             return res.status(400).send({
@@ -31,10 +30,6 @@ exports.login = async (req, res) => {
         const data = matchedData(req);
 
         let user = await adminModel.findOne({ username: data.username })
-
-        if (!user) {
-            return res.redirect("/login")
-        }
 
         if (user) {
             const checkPassword = await bcrypt.compare(data.password, user.password)
@@ -50,6 +45,28 @@ exports.login = async (req, res) => {
             res.cookie('gender', gender)
 
             return res.redirect("/")
+        }
+
+        user = await ticketSellerModel.findOne({ username: data.username })
+
+        if (user) {
+            const checkPassword = await bcrypt.compare(data.password, user.password)
+
+            if (!checkPassword) {
+                return res.redirect('/login')
+            }
+
+            const authToken = generateToken(user._id, user.role)
+            const gender = user.gender
+
+            res.cookie("authToken", authToken, { secure: true })
+            res.cookie('gender', gender)
+
+            return res.redirect("/tickets")
+        }
+
+        if (!user) {
+            return res.redirect("/login")
         }
     } catch (error) {
         console.log(error);

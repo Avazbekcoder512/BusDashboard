@@ -6,7 +6,7 @@ const ticketSellerSchema = new mongoose.Schema({
     password: String,
     phoneNumber: String,
     gender: String,
-    role: { type: String, default: "ticket seller" },
+    role: { type: String, default: "ticket_seller" },
     image: String
 }, { timestamps: true })
 

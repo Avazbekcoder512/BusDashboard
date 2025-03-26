@@ -87,7 +87,7 @@
 
 <div class="content-wrapper">
     <div class="search-container">
-        <h2>Chipta qidirish</h2>
+        <h2>Reys qidirish</h2>
         <form action="/search-route" method="GET">
             <select name="from" required>
                 <option value="" disabled selected>Qayerdan</option>
@@ -109,67 +109,73 @@
     </div>
 </div>
 
+{{#if tickets}}
+{{/if}}
+
 {{#if data}}
 <div class="content-wrapper">
-    <div class="row">
-        <div class="col-lg-12 grid-margin stretch-card">
-            <div class="card">
-                <div class="card-body">
-                    <h4 class="card-title" style="text-align: center;">Yo'nalishlar</h4>
-                    <div class="table-responsive">
-                        <table class="table table-striped">
-                            <thead>
-                                <tr style="text-align: center;">
-                                    <th>Yo'nalish nomi</th>
-                                    <th>Ketish kuni</th>
-                                    <th>Ketish vaqti</th>
-                                    <th>Chipta narxi</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {{#each data}}
-                                <tr style="text-align: center;">
-                                    <td>
-                                        <a href="/trip/{{_id}}"
-                                            style="text-decoration: none; color: inherit; display: block; width: 100%;">
-                                            {{this.name}}
-                                        </a>
-                                    </td>
-                                    <td>
-                                        <a href="/trip/{{_id}}"
-                                            style="text-decoration: none; color: inherit; display: block; width: 100%;">
-                                            {{thsi.from}}
-                                        </a>
-                                    </td>
-                                    <td>
-                                        <a href="/trip/{{_id}}"
-                                            style="text-decoration: none; color: inherit; display: block; width: 100%;">
-                                            {{this.to}}
-                                        </a>
-                                    </td>
-                                    <td>
-                                        <a href="/trip/{{_id}}"
-                                            style="text-decoration: none; color: inherit; display: block; width: 100%;">
-                                            {{this.trips.departure_date}}
-                                        </a>
-                                    </td>
-                                    <td>
-                                        <a href="/trip/{{_id}}"
-                                            style="text-decoration: none; color: inherit; display: block; width: 100%;">
-                                            {{this.trips.ticket_price}}
-                                        </a>
-                                    </td>
-                                </tr>
-                                {{/each}}
-                            </tbody>
-
-                        </table>
+    <div class="col-lg-12 grid-margin stretch-card">
+        <div class="card">
+            {{#if data.trips}}
+            <div class="card-body">
+                <h4 class="card-title" style="text-align: center;">Yo'nalishlar</h4>
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr style="text-align: center;">
+                                <th>Yo'nalish nomi</th>
+                                <th>Ketish kuni</th>
+                                <th>Ketish vaqti</th>
+                                <th>Chipta narxi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {{#each data}}
+                            <tr style="text-align: center;">
+                                <td>{{name}}</td>
+                                <td>
+                                    {{#each trips}}
+                                    <a href="/seats/{{bus}}"
+                                        style="text-decoration: none; color: inherit; display: block; width: 100%;">
+                                        {{departure_date}}
+                                    </a>
+                                    {{/each}}
+                                </td>
+                                <td>
+                                    {{#each trips}}
+                                    <a href="/seats/{{_id}}"
+                                        style="text-decoration: none; color: inherit; display: block; width: 100%;">
+                                        {{departure_time}}
+                                    </a>
+                                    {{/each}}
+                                </td>
+                                <td>
+                                    {{#each trips}}
+                                    <a href="/seats/{{_id}}"
+                                        style="text-decoration: none; color: inherit; display: block; width: 100%;">
+                                        {{ticket_price}}
+                                    </a>
+                                    {{/each}}
+                                </td>
+                            </tr>
+                            {{/each}}
+                        </tbody>
+                    </table>
+                </div>  
+            </div>
+                {{else}}
+                <div class="content-wrapper"
+                    style="display: flex; justify-content: center; align-items: center; height: 300px;">
+                    <div
+                        style="width: 400px; padding: 30px; border: 1px solid #ddd; border-radius: 10px; box-shadow: 2px 2px 15px rgba(0, 0, 0, 0.1); text-align: center; background: #fff;">
+                        <h2 style="margin: 0; color: #333; font-size: 28px;">Bu sanada reyslar mavjud emas!</h2>
                     </div>
                 </div>
-            </div>
+                {{/if}}
         </div>
     </div>
 </div>
+
 {{/if}}
 
 <script>

@@ -2,6 +2,7 @@ const { matchedData, validationResult } = require("express-validator");
 const adminModel = require("../models/admin");
 const bcrypt = require('bcrypt');
 const { createClient } = require("@supabase/supabase-js");
+const jwt = require('jsonwebtoken')
 require("dotenv").config()
 
 const supabase = createClient(
@@ -82,6 +83,7 @@ exports.getAllAdmin = async (req, res) => {
     try {
         const token = req.cookies.authToken
         const gender = req.cookies.gender
+        const user = jwt.verify(token, process.env.JWT_KEY)
         if (!token) {
             return res.redirect('/login')
         }
@@ -97,7 +99,8 @@ exports.getAllAdmin = async (req, res) => {
             title: "Dashboard",
             admins,
             token,
-            gender
+            gender,
+            user
         })
 
     } catch (error) {

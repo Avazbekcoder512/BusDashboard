@@ -4,6 +4,7 @@ const { createClient } = require("@supabase/supabase-js");
 const seatModel = require("../models/seat");
 const routeModel = require("../models/route");
 const tripModel = require("../models/trip");
+const jwt = require('jsonwebtoken')
 require('dotenv').config()
 
 const supabase = createClient(
@@ -93,6 +94,7 @@ exports.getAllBuses = async (req, res) => {
         const route = await routeModel.find()
         const gender = req.cookies.gender
         const token = req.cookies.authToken
+        const user = jwt.verify(token, process.env.JWT_KEY)
 
         if (!buses.length) {
             return res.status(404).send({
@@ -115,7 +117,8 @@ exports.getAllBuses = async (req, res) => {
             buses,
             token,
             route,
-            gender
+            gender,
+            user
         })
     } catch (error) {
         console.log(error);

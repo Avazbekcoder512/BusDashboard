@@ -4,7 +4,7 @@ require('dotenv')
 exports.roleAccessMiddleware = function (roles) {
     return async function (req, res, next) {
         try {
-            const token = req.cookie.authToken
+            const token = req.cookies.authToken
             if (!token) {
                 return res.status(404).send({
                     error: 'Token not provided',

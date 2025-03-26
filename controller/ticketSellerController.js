@@ -2,6 +2,7 @@ const { validationResult, matchedData } = require("express-validator");
 const ticketSellerModel = require("../models/ticket_seller");
 const { createClient } = require("@supabase/supabase-js");
 require('dotenv').config()
+const jwt = require('jsonwebtoken')
 const bcrypt = require('bcrypt');
 
 const supabase = createClient(
@@ -88,6 +89,7 @@ exports.getAllTicketSellers = async (req, res) => {
         const ticketSellers = await ticketSellerModel.find()
         const token = req.cookies.authToken
         const gender = req.cookies.gender
+        const user = jwt.verify(token, process.env.JWT_KEY)
 
 
         if (!ticketSellers.length) {
@@ -100,7 +102,8 @@ exports.getAllTicketSellers = async (req, res) => {
             ticketSellers,
             title: "Chiptachilar ro'yxati",
             token,
-            gender
+            gender,
+            user
         })
 
         // return res.status(200).send({
