@@ -2,6 +2,8 @@ const { validationResult, matchedData } = require("express-validator");
 const tripModel = require("../models/trip");
 const routeModel = require("../models/route");
 const busModel = require("../models/bus");
+const jwt = require('jsonwebtoken')
+require('dotenv')
 
 exports.createTrip = async (req, res) => {
     try {
@@ -42,6 +44,7 @@ exports.getAllTrips = async (req, res) => {
         const route = await routeModel.find()
         const token = req.cookies.authToken
         const gender = req.cookies.gender
+        const user = jwt.verify(token, process.env.JWT_KEY)
 
         // return res.status(200).send({
         //     trips
@@ -53,7 +56,8 @@ exports.getAllTrips = async (req, res) => {
             bus,
             route,
             trips,
-            gender
+            gender,
+            user
         })
     } catch (error) {
         console.log(error);
@@ -155,7 +159,7 @@ exports.updateTrip = async (req, res) => {
 
         return res.status(201).send({
             message: "Reys muvaffaqiyatli yangilandi!",
-            data: newRoute
+            data: newTrip
         })
     } catch (error) {
         console.log(error);
@@ -179,9 +183,7 @@ exports.deleteTrip = async (req, res) => {
 
         await tripModel.findByIdAndDelete(id)
 
-        return res.status(200).send({
-            message: "Reys muvaffaqiyatli o'chirildi!"
-        })
+        return res.redirect('/trips')
     } catch (error) {
         console.log(error);
         return res.status(500).send({

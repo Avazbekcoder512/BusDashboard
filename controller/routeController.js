@@ -2,6 +2,7 @@ const { validationResult, matchedData } = require("express-validator");
 const routeModel = require("../models/route");
 const tripModel = require("../models/trip");
 const cityModel = require("../models/city");
+const jwt = require('jsonwebtoken')
 
 
 exports.createRoute = async (req, res) => {
@@ -40,12 +41,14 @@ exports.getAllRoutes = async (req, res) => {
         const routes = await routeModel.find().populate("trips")
         const token = req.cookies.authToken
         const gender = req.cookies.gender
+        const user = jwt.verify(token, process.env.JWT_KEY)
 
         return res.render('routes', {
             routes,
             token,
             gender,
-            title: "Yo'nalishlar"
+            title: "Yo'nalishlar",
+            user
         })
         // return res.status(200).send({
         //     routes
@@ -165,36 +168,6 @@ exports.deleteRoute = async (req, res) => {
         await routeModel.findByIdAndDelete(id)
 
         return res.redirect('/routes')
-    } catch (error) {
-        console.log(error);
-        return res.status(500).send({
-            error: "Serverda xatolik!"
-        })
-    }
-}
-
-exports.searchRoute = async (req, res) => {
-    try {
-        const token = req.cookies.authToken
-        const gender = req.cookies.gender
-        const from = req.query.from
-        const to = req.query.to
-        const departure_date = req.query.departure_date
-
-        if (!from || !to || !departure_date) {
-            return res.status(400).send({
-                error: "Iltimos, 3 ta maydonni ham to'g'ri kiriting!"
-            })
-        }
-
-        const data = await routeModel.findOne({ from: from, to: to }).populate({
-            path: 'trips',
-            match: { departure_date }
-        })        
-
-        res.locals.data = data
-        
-        return res.render('ticket')
     } catch (error) {
         console.log(error);
         return res.status(500).send({

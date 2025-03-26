@@ -5,8 +5,6 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <title>{{title}}</title>
-  <link rel="stylesheet" href="vendors/typicons.font/font/typicons.css">
-  <link rel="stylesheet" href="vendors/css/vendor.bundle.base.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 
   <link rel="stylesheet" href="css/vertical-layout-light/style.css">
@@ -16,11 +14,13 @@
 
 <body>
   {{#if token}}
+  {{#if user}}
   <div class="container-scroller">
     <nav class="navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
       <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-between"
         style="width: 100%; margin: 0 auto;">
         <h1 style="margin-left: 20px;">Dashboard</h1>
+        {{#if (eq user.role "superAdmin" "admin")}}
         <div style="display: flex; align-items: center; gap: 30px;">
           {{#if admins}}
           <button type="button" class="btn btn-success mb-3" data-bs-toggle="modal" data-bs-target="#addAdminModal"
@@ -88,11 +88,40 @@
               </a>
             </div>
           </div>
+
+          {{else}}
+          <div style="position: relative; display: inline-block; margin-right: 20px;">
+            <button id="profileBtn" onclick="toggleDropdown()"
+              style="width: 50px; height: 50px; border-radius: 50%; border: none; background: transparent; cursor: pointer; padding: 5px; transition: transform 0.2s ease;">
+              <img
+                style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);"
+                {{#if (eq gender "Erkak" )}}
+                src="https://kpwxamepfkueoebpkamd.supabase.co/storage/v1/object/public/mbus_bucket/gender/male.png"
+                {{else}}
+                src="https://kpwxamepfkueoebpkamd.supabase.co/storage/v1/object/public/mbus_bucket/gender/female.png"
+                {{/if}} alt="Profile">
+            </button>
+
+            <div id="dropdown"
+              style="display: none; position: absolute; right: 0; top: 60px; background: white; box-shadow: 0px 6px 12px rgba(0,0,0,0.15); border-radius: 8px; width: 150px; overflow: hidden;">
+              <a href="/profile"
+                style="display: flex; align-items: center; gap: 10px; padding: 12px; text-decoration: none; color: #333; font-size: 14px; transition: background 0.3s ease; font-family: Arial, sans-serif;">
+                <i class="fa-solid fa-user"></i> Profil
+              </a>
+              <a href="/logout"
+                style="display: flex; align-items: center; gap: 10px; padding: 12px; text-decoration: none; color: #d9534f; font-size: 14px; transition: background 0.3s ease; font-family: Arial, sans-serif;">
+                <i class="fa-solid fa-right-from-bracket"></i> Logout
+              </a>
+            </div>
+          </div>
         </div>
+        {{/if}}
       </div>
     </nav>
+
     <div class="container-fluid page-body-wrapper">
       <nav class="sidebar sidebar-offcanvas" id="sidebar">
+        {{#if (eq user.role "superAdmin" 'admin')}}
         <ul class="nav">
           {{#if admins}}
           <li class="nav-item">
@@ -210,9 +239,9 @@
 
           {{#if tickets}}
           <li class="nav-item">
-            <a class="nav-link" href="/#passengers" style="background-color: #007bff; color: white;">
+            <a class="nav-link" href="/tickets" style="background-color: #007bff; color: white;">
               <i class="fa-solid fa-ticket" style="font-size: 20px; margin-right: 10px;"></i>
-              <span class="menu-title"></span>
+              <span class="menu-title">Chipta band qilish</span>
             </a>
           </li>
           {{else}}
@@ -224,6 +253,27 @@
           </li>
           {{/if}}
         </ul>
+        {{/if}}
+
+        {{#if (eq user.role "ticket_seller")}}
+        <ul class="nav">
+          {{#if tickets}}
+          <li class="nav-item">
+            <a class="nav-link" href="/tickets" style="background-color: #007bff; color: white;">
+              <i class="fa-solid fa-ticket" style="font-size: 20px; margin-right: 10px;"></i>
+              <span class="menu-title">Chipta band qilish</span>
+            </a>
+          </li>
+          {{else}}
+          <li class="nav-item">
+            <a class="nav-link" href="/tickets">
+              <i class="fa-solid fa-ticket" style="font-size: 20px; margin-right: 10px;"></i>
+              <span class="menu-title">Chipta band qilish</span>
+            </a>
+          </li>
+          {{/if}}
+        </ul>
+        {{/if}}
       </nav>
       <div class="main-panel">
         {{{body}}}
@@ -245,25 +295,13 @@
       }
     });
   </script>
-
+  {{/if}}
   {{else}}
   <script>
     window.location.href = './login'
   </script>
   {{/if}}
 
-  <script src="vendors/js/vendor.bundle.base.js"></script>
-
-  <script src="js/off-canvas.js"></script>
-  <script src="js/hoverable-collapse.js"></script>
-  <script src="js/template.js"></script>
-  <script src="js/settings.js"></script>
-  <script src="js/todolist.js"></script>
-
-  <script src="vendors/progressbar.js/progressbar.min.js"></script>
-  <script src="vendors/chart.js/Chart.min.js"></script>
-
-  <script src="js/dashboard.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>

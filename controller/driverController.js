@@ -3,6 +3,7 @@ const driverModel = require("../models/driver");
 const busModel = require("../models/bus");
 const { createClient } = require("@supabase/supabase-js");
 require('dotenv').config()
+const jwt = require('jsonwebtoken')
 
 const supabase = createClient(
     process.env.Supabase_Url,
@@ -73,6 +74,7 @@ exports.getAllDrivers = async (req, res) => {
         const bus = await busModel.find()
         const gender = req.cookies.gender
         const token = req.cookies.authToken
+        const user = jwt.verify(token, process.env.JWT_KEY)
 
         if (!drivers.length) {
             return res.status(404).send({
@@ -85,7 +87,8 @@ exports.getAllDrivers = async (req, res) => {
             bus,
             token,
             gender,
-            title: "Haydovchilar"
+            title: "Haydovchilar",
+            user
         })
     } catch (error) {
         console.log(error);
