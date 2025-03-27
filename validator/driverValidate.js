@@ -76,6 +76,11 @@ exports.updateDriverSchema = {
             errorMessage: "Ismni stingda kiriting!"
         }
     },
+    username: {
+        notEmpty: {
+            errorMessage: "Usernameni kiritish majburiy!"
+        }
+    },
     experience: {
         isInt: {
             options: { min: 1, max: 50 },

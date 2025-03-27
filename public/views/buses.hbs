@@ -96,120 +96,32 @@
         </div>
     </div>
 
-    {{!-- <div class="modal fade" id="updateBusModal" tabindex="-1" aria-labelledby="addAdminModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content" style="border-radius: 12px; box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);">
-                <div class="modal-header">
-                    <h4 class="modal-title text-success" id="addAdminModalLabel">Yangi Avtobus Qo‘shish</h4>
-                    <button style="border: none" type="button" class="btn-close" data-bs-dismiss="modal"
-                        aria-label="Close">x</button>
-                </div>
-                <div class="modal-body">
-                    <form action="/bus/id/update" method="POST" enctype="multipart/form-data">
-                        <div class="mb-3">
-                            <label class="form-label">Avtobus modeli</label>
-                            <input type="text" class="form-control" name="name" required
-                                style="border: 2px solid #17c964; border-radius: 6px; padding: 10px; font-size: 16px; background-color: #f8f9fa; transition: 0.3s; height: 45px;">
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Yo'nalish</label>
-                            <select class="form-select" name="startPoint" required
-                                style="width: 100%; border: 2px solid #17c964; border-radius: 6px; padding: 10px; font-size: 16px; background-color: #f8f9fa; transition: 0.3s; height: 45px;">
-                                <option value="" disabled selected>Tanlang...</option>
-                                {{#each route}}
-                                <option value="{{_id}}">{{name}}</option>
-                                {{/each}}
-                            </select>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Rasm yuklash</label>
-                            <input type="file" class="form-control" name="image" required
-                                style="border: 2px solid #17c964; border-radius: 6px; padding: 10px; font-size: 16px; background-color: #f8f9fa; transition: 0.3s; height: 45px; cursor: pointer;">
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
-                                style="height: 45px;">Bekor qilish</button>
-                            <button id="updateButton" type="submit" class="btn btn-success d-flex align-items-center"
-                                style="background-color: #198754; border: none; height: 45px; display: flex; align-items: center; justify-content: center;"
-                                onclick="showLoader(event, 'updateButton', 'updateText', 'updateSpinner')">
-                                <span id="updateText">Qo‘shish</span>
-                                <div id="updateSpinner" style="display: none; width: 18px; height: 18px; 
-            border: 3px solid rgba(255, 255, 255, 0.3); border-top: 3px solid white; 
-            border-radius: 50%; animation: spin 1s linear infinite;">
-                                </div>
-                            </button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
 
-    <div class="modal fade" id="deleteBusModal" tabindex="-1" aria-labelledby="deleteAdminModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content" style="border-radius: 12px; box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);">
-                <div class="modal-header">
-                    <h5 class="modal-title text-danger" id="deleteAdminModalLabel">Avtobusni o‘chirish</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">x</button>
-                </div>
-                <div class="modal-body">
-                    <p>Haqiqatdan ham ushbu avtobusni o‘chirmoqchimisiz?</p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Bekor qilish</button>
-                    <form id="deleteForm" method="POST"
-                        onsubmit="showLoader(event, 'deleteButton', 'deleteText', 'deleteSpinner')">
-                        <input type="hidden" name="_method" value="DELETE">
-                        <button id="deleteButton" type="submit" class="btn btn-danger d-flex align-items-center"
-                            style="position: relative; display: flex; align-items: center; justify-content: center;">
-                            <span id="deleteText">O‘chirish</span>
-                            <div id="deleteSpinner" style="display: none; width: 18px; height: 18px; 
-                border: 3px solid rgba(255, 255, 255, 0.3); border-top: 3px solid white; 
-                border-radius: 50%; animation: spin 1s linear infinite;">
-                            </div>
-                        </button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div> --}}
 
-    {{!--
+
     <script>
         function showLoader(event, buttonId, textId, spinnerId) {
-            const button = document.getElementById(buttonId);
-            const text = document.getElementById(textId);
-            const spinner = document.getElementById(spinnerId);
-            const form = event.target.form
+            event.preventDefault();
 
+            var form = event.target.closest("form");
             if (!form.checkValidity()) {
+                form.reportValidity();
                 return;
             }
 
-            event.preventDefault();
+            var button = document.getElementById(buttonId);
+            var createText = document.getElementById(textId);
+            var createSpinner = document.getElementById(spinnerId);
 
-            button.disabled = true;
-            text.style.display = "none";
-            spinner.style.display = "inline-block";
+            if (button && createText && createSpinner) {
+                createText.style.display = "none";
+                createSpinner.style.display = "inline-block";
+                button.disabled = true;
 
-            setTimeout(() => {
-                if (event.target.form) {
-                    event.target.form.submit();
-                }
-            }, 1000);
+                setTimeout(function () {
+                    form.submit();
+                }, 1000);
+            }
         }
 
-        document.addEventListener("DOMContentLoaded", function () {
-            const deleteButtons = document.querySelectorAll(".delete-btn");
-            const deleteForm = document.getElementById("deleteForm");
-
-            deleteButtons.forEach(button => {
-                button.addEventListener("click", function () {
-                    const busId = this.getAttribute("data-id");
-                    deleteForm.setAttribute("action", `buhhghs/${busId}/delete`);
-                });
-            });
-        });
-    </script> --}}
+    </script>

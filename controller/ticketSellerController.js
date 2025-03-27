@@ -75,7 +75,7 @@ exports.createTicketSeller = async (req, res) => {
         //     ticketSeller
         // })
 
-        return res.redirect('/')
+        return res.redirect('/ticketsellers')
     } catch (error) {
         console.log(error);
         return res.status(500).send({
@@ -243,7 +243,7 @@ exports.updateTicketSeller = async (req, res) => {
         //     message: "Chiptachinimg ma'lumotlari muvaffaqiyatli yangilandi!"
         // })
 
-        return res.redirect('/')
+        return res.redirect('/ticketsellers')
     } catch (error) {
         console.log(error);
         return res.status(500).send({
@@ -303,7 +303,7 @@ exports.deleteTicketSeller = async (req, res) => {
         //     message: "Chiptachi muvaffaqiyatli o'chirildi!"
         // })
 
-        return res.status('/')
+        return res.redirect('/ticketsellers')
 
     } catch (error) {
         console.log(error);

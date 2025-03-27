@@ -33,7 +33,7 @@
                                     <td>
                                         <button class="btn btn-success btn-sm edit-btn" data-bs-toggle="modal"
                                             data-bs-target="#updateDriverModal"
-                                            onclick="openUpdateModal('{{_id}}', '{{name}}', '{{phoneNumber}}', '{{experience}}', '{{gender}}')">
+                                            onclick="openUpdateModal('{{_id}}', '{{name}}', '{{username}}', '{{phoneNumber}}', '{{experience}}', '{{gender}}')">
                                             <i class="fa-solid fa-pen"></i>
                                         </button>
                                         <button class="btn btn-danger btn-sm delete-btn" data-bs-toggle="modal"
@@ -134,17 +134,12 @@
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
                             style="height: 45px;">Bekor qilish</button>
-                        <form id="deleteForm" method="POST"
-                            onsubmit="showspinner(event, 'addButton', 'addText', 'addSpinner')">
-                            <button id="addButton" type="submit" class="btn btn-success d-flex align-items-center"
-                                style="position: relative; display: flex; align-items: center; justify-content: center;">
-                                <span id="addText">Qo'shish</span>
-                                <div id="addSpinner" style="display: none; width: 18px; height: 18px; 
-                border: 3px solid rgba(255, 255, 255, 0.3); border-top: 3px solid white; 
-                border-radius: 50%; animation: spin 1s linear infinite;">
-                                </div>
-                            </button>
-                        </form>
+                        <button id="addButton" type="submit" class="btn btn-success d-flex align-items-center"
+                            onclick="showSpinner(event, 'addButton', 'addText', 'addSpinner')">
+                            <span id="addText">Qo‘shish</span>
+                            <span id="addSpinner" class="spinner-border spinner-border-sm" role="status"
+                                aria-hidden="true" style="display: none;"></span>
+                        </button>
                     </div>
                 </form>
             </div>
@@ -211,17 +206,12 @@
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
                             style="height: 45px;">Bekor qilish</button>
-                        <form id="deleteForm" method="POST"
-                            onsubmit="showspinner(event, 'addButton', 'addText', 'addSpinner')">
-                            <button id="addButton" type="submit" class="btn btn-success d-flex align-items-center"
-                                style="position: relative; display: flex; align-items: center; justify-content: center;">
-                                <span id="addText">Qo'shish</span>
-                                <div id="addSpinner" style="display: none; width: 18px; height: 18px; 
-                border: 3px solid rgba(255, 255, 255, 0.3); border-top: 3px solid white; 
-                border-radius: 50%; animation: spin 1s linear infinite;">
-                                </div>
-                            </button>
-                        </form>
+                        <button id="updateButton" type="submit" class="btn btn-success d-flex align-items-center"
+                            onclick="showSpinner(event, 'updateButton', 'updateText', 'updateSpinner')">
+                            <span id="updateText">Yangilash</span>
+                            <span id="updateSpinner" class="spinner-border spinner-border-sm" role="status"
+                                aria-hidden="true" style="display: none;"></span>
+                        </button>
                     </div>
                 </form>
             </div>
@@ -244,10 +234,11 @@
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Bekor qilish</button>
                 <form id="deleteForm" method="POST">
                     <input type="hidden" name="_method" value="DELETE">
-                    <button id="deleteButton" type="submit" class="btn btn-danger">
+                    <button id="deleteButton" type="submit" class="btn btn-danger"
+                        onclick="showSpinner(event, 'deleteButton', 'deleteText', 'deleteSpinner')">
                         <span id="deleteText">O‘chirish</span>
-                        <span id="deleteLoader" class="spinner-border spinner-border-sm d-none" role="status"
-                            aria-hidden="true"></span>
+                        <span id="deleteSpinner" class="spinner-border spinner-border-sm" role="status"
+                            aria-hidden="true" style="display: none;"></span>
                     </button>
                 </form>
             </div>
@@ -256,8 +247,9 @@
 </div>
 
 <script>
-    function openUpdateModal(id, name, phoneNumber, experience, gender) {
+    function openUpdateModal(id, name, username, phoneNumber, experience, gender) {
         document.getElementById("updateName").value = name;
+        document.getElementById("updateUsername").value = username;
         document.getElementById("updatephoneNumber").value = phoneNumber;
         document.getElementById("updateExperience").value = experience;
         document.getElementById("updateGender").value = gender;
@@ -265,16 +257,26 @@
         document.querySelector("#updateDriverModal form").action = `/driver/${id}/update`;
 
         var myModal = new bootstrap.Modal(document.getElementById('updateDriverModal'));
+
+        document.getElementById('updateDriverModal').addEventListener('hidden.bs.modal', function () {
+            let backdrop = document.querySelector('.modal-backdrop');
+            if (backdrop) {
+                backdrop.remove();
+            }
+            document.body.classList.remove("modal-open");
+            document.body.style.overflow = "auto";
+        });
+
         myModal.show();
     }
+
 
     document.addEventListener("DOMContentLoaded", function () {
         const deleteButtons = document.querySelectorAll(".delete-btn");
         const deleteForm = document.getElementById("deleteForm");
         const deleteButton = document.getElementById("deleteButton");
         const deleteText = document.getElementById("deleteText");
-        const deleteLoader = document.getElementById("deleteLoader");
-
+    
         deleteButtons.forEach(button => {
             button.addEventListener("click", function () {
                 const driverId = this.getAttribute("data-id");
@@ -282,6 +284,19 @@
             });
         });
     });
+
+    function showSpinner(event, buttonId, textId, spinnerId) {
+        event.preventDefault();
+        let form = event.target.closest("form");
+
+        document.getElementById(buttonId).disabled = true;
+        document.getElementById(textId).style.display = "none";
+        document.getElementById(spinnerId).style.display = "inline-block";
+
+        setTimeout(() => {
+            form.submit();
+        }, 1000);
+    }
 </script>
 
 {{else}}

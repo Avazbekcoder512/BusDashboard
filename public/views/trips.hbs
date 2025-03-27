@@ -21,7 +21,8 @@
                             </thead>
                             <tbody>
                                 {{#each trips}}
-                                <tr style="text-align: center; cursor: pointer;" onclick="window.location='/trip/{{_id}}'">
+                                <tr style="text-align: center; cursor: pointer;"
+                                    onclick="window.location='/trip/{{_id}}'">
                                     <td>{{route.name}}</td>
                                     <td>{{departure_date}}</td>
                                     <td>{{departure_time}}</td>
@@ -29,7 +30,8 @@
                                     <td>{{arrival_time}}</td>
                                     <td>{{ticket_price}}</td>
                                     <td>
-                                        <button class="btn btn-danger btn-sm delete-btn" onclick="event.stopPropagation()" data-bs-toggle="modal"
+                                        <button class="btn btn-danger btn-sm delete-btn"
+                                            onclick="event.stopPropagation()" data-bs-toggle="modal"
                                             data-bs-target="#deleteTripModal" data-id="{{_id}}">
                                             <i class="fa-solid fa-trash-can"></i>
                                         </button>
@@ -175,8 +177,8 @@
     document.getElementById("dateInput").setAttribute("min", minDate);
     document.getElementById("dateInput2").setAttribute("min", minDate);
 
-
     document.addEventListener("DOMContentLoaded", function () {
+        // DELETE BUTTON uchun loader
         const deleteButtons = document.querySelectorAll(".delete-btn");
         const deleteForm = document.getElementById("deleteForm");
         const deleteButton = document.getElementById("deleteButton");
@@ -185,9 +187,35 @@
 
         deleteButtons.forEach(button => {
             button.addEventListener("click", function () {
-                const driverId = this.getAttribute("data-id");
-                deleteForm.setAttribute("action", `/trip/${driverId}/delete`);
+                const tripId = this.getAttribute("data-id");
+                deleteForm.setAttribute("action", `/trip/${tripId}/delete`);
             });
+        });
+
+        deleteForm.addEventListener("submit", function () {
+            deleteButton.disabled = true;
+            deleteText.classList.add("d-none");
+            deleteLoader.classList.remove("d-none");
+        });
+
+        const addForm = document.querySelector("#addTripsModal form");
+        const addButton = addForm.querySelector("button[type='submit']");
+
+        const addText = document.createElement("span");
+        addText.innerText = "Qo‘shish";
+        const addLoader = document.createElement("span");
+        addLoader.classList.add("spinner-border", "spinner-border-sm", "d-none");
+        addLoader.setAttribute("role", "status");
+        addLoader.setAttribute("aria-hidden", "true");
+
+        addButton.innerHTML = "";
+        addButton.appendChild(addText);
+        addButton.appendChild(addLoader);
+
+        addForm.addEventListener("submit", function () {
+            addButton.disabled = true;
+            addText.classList.add("d-none");
+            addLoader.classList.remove("d-none");
         });
     });
 </script>
