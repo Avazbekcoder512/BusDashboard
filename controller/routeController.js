@@ -7,34 +7,39 @@ const jwt = require('jsonwebtoken')
 
 exports.createRoute = async (req, res) => {
     try {
-        const errors = validationResult(req)
+        const errors = validationResult(req);
         if (!errors.isEmpty()) {
-            return res.status(400).send({ error: errors.array().map((error) => error.msg) })
+            // Agar validatsiya xatoligi bo‘lsa, sahifani xatolik bilan qaytaramiz
+            req.flash('error', errors.array().map(error => error.msg).join("<br>"));
+            return res.redirect('/routes');
         }
-        const data = matchedData(req)
+
+        const data = matchedData(req);
 
         const route = await routeModel.create({
             name: data.name,
             from: data.from,
             to: data.to
-        })
+        });
 
-        const existingCity = await cityModel.findOne({ name: data.from })
+        const [existingFromCity, existingToCity] = await Promise.all([
+            cityModel.findOne({ name: data.from }),
+            cityModel.findOne({ name: data.to })
+        ]);
 
-        if (!existingCity) {
-            const city = await cityModel.create({
-                name: data.from
-            })
-        }
+        await Promise.all([
+            !existingFromCity && cityModel.create({ name: data.from }),
+            !existingToCity && cityModel.create({ name: data.to })
+        ]);
 
-        return res.redirect('/routes')
+        return res.redirect('/routes');
     } catch (error) {
-        console.log(error);
-        return res.status(500).send({
-            error: "Serverda xatolik!"
-        })
+        req.flash('error', "Serverda xatolik!");
+        return res.redirect('/routes');
     }
-}
+};
+
+
 
 exports.getAllRoutes = async (req, res) => {
     try {

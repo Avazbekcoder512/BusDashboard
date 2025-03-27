@@ -316,7 +316,7 @@ exports.deleteOneBus = async (req, res) => {
 
         await seatModel.deleteMany({ bus: id })
 
-        await tripModel.updateOne({ _id: bus.trip._id }, { $unset: { bus: "" } })
+        await tripModel.updateOne({ _id: bus.trip }, { $unset: { bus: "" } })
 
         await busModel.findByIdAndDelete(id);
 
@@ -326,6 +326,7 @@ exports.deleteOneBus = async (req, res) => {
         //     message: "Avtobus muvaffaqiyatli o'chirildi!"
         // });
     } catch (error) {
+        console.log(error);
         return res.status(500).send({
             error: "Serverda xatolik!"
         })

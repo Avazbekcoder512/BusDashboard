@@ -4,6 +4,7 @@ const busModel = require("../models/bus");
 const { createClient } = require("@supabase/supabase-js");
 require('dotenv').config()
 const jwt = require('jsonwebtoken')
+const bcrypt = require('bcrypt')
 
 const supabase = createClient(
     process.env.Supabase_Url,
@@ -50,8 +51,13 @@ exports.createDriver = async (req, res) => {
 
         const fileUrl = `${supabase.storageUrl}/object/public/mbus_bucket/${fileName}`;
 
+        const passwordHash = await bcrypt.hash(data.password, 12)
+        delete data.password
+
         const driver = await driverModel.create({
             name: data.name,
+            username: data.username,
+            password: passwordHash,
             phoneNumber: data.phoneNumber,
             experience: data.experience,
             gender: data.gender,
@@ -75,12 +81,6 @@ exports.getAllDrivers = async (req, res) => {
         const gender = req.cookies.gender
         const token = req.cookies.authToken
         const user = jwt.verify(token, process.env.JWT_KEY)
-
-        if (!drivers.length) {
-            return res.status(404).send({
-                error: "Haydovchilar topilmadi!"
-            })
-        }
 
         return res.render('drivers', {
             drivers,
@@ -187,6 +187,7 @@ exports.updateDriver = async (req, res) => {
 
         const updatedDriver = {
             name: data.name || driver.name,
+            username: data.username || driver.password,
             phoneNumber: data.phoneNumber || driver.phoneNumber,
             experience: data.experience || driver.experience,
             gender: data.gender || driver.gender,
