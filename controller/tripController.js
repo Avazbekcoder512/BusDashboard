@@ -9,7 +9,8 @@ exports.createTrip = async (req, res) => {
     try {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
-            return res.status(400).send({ error: errors.array().map((error) => error.msg) });
+            req.flash('error', errors.array().map(error => error.msg).join("<br>"));
+            return res.redirect('/trips');
         }
 
         const data = matchedData(req)
@@ -33,7 +34,7 @@ exports.createTrip = async (req, res) => {
 
     } catch (error) {
         console.error(error);
-        return res.status(500).send({ error: "Serverda xatolik!" });
+        return res.redirect('/500')
     }
 };
 
@@ -44,7 +45,7 @@ exports.getAllTrips = async (req, res) => {
         const route = await routeModel.find()
         const token = req.cookies.authToken
         const gender = req.cookies.gender
-        const user = jwt.verify(token, process.env.JWT_KEY)
+        const admin = jwt.verify(token, process.env.JWT_KEY)
 
         // return res.status(200).send({
         //     trips
@@ -57,13 +58,12 @@ exports.getAllTrips = async (req, res) => {
             route,
             trips,
             gender,
-            user
+            admin,
+            errorFlash: req.flash('error')
         })
     } catch (error) {
         console.log(error);
-        return res.status(500).send({
-            error: "Serverda xatolik!"
-        })
+        return res.redirect('/500')
     }
 }
 
@@ -71,33 +71,20 @@ exports.getOneTrip = async (req, res) => {
     try {
         const { id } = req.params
         const token = req.cookies.authToken
+        const admin = jwt.verify(token, process.env.JWT_KEY)
         const route = await routeModel.find()
         const bus = await busModel.find()
 
         if (!id.match(/^[0-9a-fA-F]{24}$/)) {
-            return res.status(400).send({
-                error: "Invalid ID format!"
-            });
+            req.flash('error', "Id noto'g'ri")
+            return res.redirect('/trips')
         }
 
         const trip = await tripModel.findById(id).populate('route')
 
         if (!trip) {
-            return res.status(404).send({
-                error: "Reys topilmadi!"
-            })
-        }
-
-        if (!route.length) {
-            return res.status(404).send({
-                error: "Yo'nalishlar topilmadi!"
-            })
-        }
-
-        if (!bus.length) {
-            return res.status(404).send({
-                error: "Avtobuslar topilmadi!"
-            })
+            req.flash('error', 'Reys topilmadi!')
+            return res.redirect('/trips')
         }
 
         // return res.status(200).send({
@@ -109,13 +96,13 @@ exports.getOneTrip = async (req, res) => {
             layout: false,
             trip,
             route,
-            bus
+            bus,
+            admin,
+            errorFlash: req.flash('error')
         })
     } catch (error) {
         console.log(error);
-        return res.status(500).send({
-            error: "Serverda xatolik!"
-        })
+        return res.redirect('/500')
     }
 }
 
@@ -124,24 +111,21 @@ exports.updateTrip = async (req, res) => {
         const { id } = req.params
 
         if (!id.match(/^[0-9a-fA-F]{24}$/)) {
-            return res.status(400).send({
-                error: "Invalid ID format!"
-            });
+            req.flash('error', "Id noto'g'ri")
+            return res.redirect('/trips')
         }
 
         const trip = await tripModel.findById(id)
 
         if (!trip) {
-            return res.status(404).send({
-                error: "Reys topilmadi!"
-            })
+            req.flash('error', 'Reys topilmadi!')
+            return res.redirect('/trips')
         }
 
         const errors = validationResult(req)
         if (!errors.isEmpty()) {
-            return res.status(400).send({
-                error: errors.array().map((error) => error.msg)
-            })
+            req.flash('error', errors.array().map(error => error.msg));
+            return res.redirect(`/trip/${id}`);
         }
         const data = matchedData(req)
 
@@ -163,9 +147,7 @@ exports.updateTrip = async (req, res) => {
         })
     } catch (error) {
         console.log(error);
-        return res.status(500).send({
-            error: "Serverda xatolik!"
-        })
+        return res.redirect('/500')
     }
 }
 
@@ -173,12 +155,16 @@ exports.deleteTrip = async (req, res) => {
     try {
         const { id } = req.params
 
+        if (!id.match(/^[0-9a-fA-F]{24}$/)) {
+            req.flash('error', "Id noto'g'ri")
+            return res.redirect('/trips')
+        }
+
         const trip = await tripModel.findById(id)
 
         if (!trip) {
-            return res.status(404).send({
-                error: "Reys topilmadi!"
-            })
+            req.flash('error', 'Reys topilmadi!')
+            return res.redirect('/trips')
         }
 
         await tripModel.findByIdAndDelete(id)
@@ -186,8 +172,6 @@ exports.deleteTrip = async (req, res) => {
         return res.redirect('/trips')
     } catch (error) {
         console.log(error);
-        return res.status(500).send({
-            error: "Serverda xatolik!"
-        })
+        return res.redirect('/500')
     }
 }

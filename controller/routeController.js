@@ -9,7 +9,6 @@ exports.createRoute = async (req, res) => {
     try {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
-            // Agar validatsiya xatoligi bo‘lsa, sahifani xatolik bilan qaytaramiz
             req.flash('error', errors.array().map(error => error.msg).join("<br>"));
             return res.redirect('/routes');
         }
@@ -34,35 +33,32 @@ exports.createRoute = async (req, res) => {
 
         return res.redirect('/routes');
     } catch (error) {
-        req.flash('error', "Serverda xatolik!");
-        return res.redirect('/routes');
+        console.log(error);
+        return res.redirect('/500')
     }
 };
-
-
 
 exports.getAllRoutes = async (req, res) => {
     try {
         const routes = await routeModel.find().populate("trips")
         const token = req.cookies.authToken
         const gender = req.cookies.gender
-        const user = jwt.verify(token, process.env.JWT_KEY)
+        const admin = jwt.verify(token, process.env.JWT_KEY)
 
         return res.render('routes', {
             routes,
             token,
             gender,
             title: "Yo'nalishlar",
-            user
+            admin,
+            errorFlash: req.flash('error')
         })
         // return res.status(200).send({
         //     routes
         // })
     } catch (error) {
         console.log(error);
-        return res.status(500).send({
-            error: "Serverda xatolik!"
-        })
+        return res.redirect('/500')
     }
 }
 
@@ -70,25 +66,26 @@ exports.getOneRoutes = async (req, res) => {
     try {
         const { id } = req.params
         const token = req.cookies.authToken
+        const admin = jwt.verify(token, process.env.JWT_KEY)
 
         if (!id.match(/^[0-9a-fA-F]{24}$/)) {
-            return res.status(400).send({
-                error: "Invalid ID format!"
-            });
+            req.flash('error', "Id noto'g'ri")
+            return res.redirect('/routes')
         }
 
         const route = await routeModel.findById(id).populate('trips')
 
         if (!route) {
-            return res.status(404).send({
-                error: "Yo'nalish topilmadi"
-            })
+            req.flash('error', "Yo'nalish topilmadi")
+            return res.redirect('/routes')
         }
 
         return res.render('route', {
             route,
             token,
+            admin,
             layout: false,
+            errorFlash: req.flash('error')
         })
 
         // return res.status(200).send({
@@ -96,9 +93,7 @@ exports.getOneRoutes = async (req, res) => {
         // })
     } catch (error) {
         console.log(error);
-        return res.status(500).send({
-            error: "Serverda xatolik!"
-        })
+        return res.redirect('/500')
     }
 }
 
@@ -107,22 +102,21 @@ exports.updateRoute = async (req, res) => {
         const { id } = req.params
 
         if (!id.match(/^[0-9a-fA-F]{24}$/)) {
-            return res.status(400).send({
-                error: "Invalid ID format!"
-            });
+            req.flash('error', "Id noto'g'ri")
+            return res.redirect('/routes')
         }
 
         const route = await routeModel.findById(id)
 
         if (!route) {
-            return res.status(404).send({
-                error: "Yo'nalish topilmadi!"
-            })
+            req.flash('error', "Yo'nalish topilmadi")
+            return res.redirect('/routes')
         }
 
         const errors = validationResult(req)
         if (!errors.isEmpty()) {
-            return res.status(400).send({ error: errors.array().map((error) => error.msg) })
+            req.flash('error', errors.array().map(error => error.msg));
+            return res.redirect(`/route/${id}`);
         }
         const data = matchedData(data)
 
@@ -144,9 +138,7 @@ exports.updateRoute = async (req, res) => {
 
     } catch (error) {
         console.log(error);
-        return res.status(500).send({
-            error: "Serverda xatolik!"
-        })
+        return res.redirect('/500')
     }
 }
 
@@ -155,17 +147,15 @@ exports.deleteRoute = async (req, res) => {
         const { id } = req.params
 
         if (!id.match(/^[0-9a-fA-F]{24}$/)) {
-            return res.status(400).send({
-                error: "Invalid ID format!"
-            });
+            req.flash('error', "Id noto'g'ri")
+            return res.redirect('/routes')
         }
 
         const route = await routeModel.findById(id)
 
         if (!route) {
-            return res.status(404).send({
-                error: "Yo'nalish topilmadi!"
-            })
+            req.flash('error', "Yo'nalish topilmadi")
+            return res.redirect('/routes')
         }
 
         await tripModel.deleteMany({ route: id })
@@ -175,8 +165,6 @@ exports.deleteRoute = async (req, res) => {
         return res.redirect('/routes')
     } catch (error) {
         console.log(error);
-        return res.status(500).send({
-            error: "Serverda xatolik!"
-        })
+        return res.redirect('/500')
     }
 }

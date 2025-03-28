@@ -236,6 +236,27 @@
                         transform: scale(1);
                   }
             }
+
+            #errorModal h3 {
+                  font-size: 22px;
+                  font-weight: bold;
+                  color: #d9534f;
+            }
+
+            /* Xatolik matnini kattalashtirish */
+            .modal-content p {
+                  font-size: 18px;
+                  color: #333;
+                  font-weight: 500;
+                  margin-top: 10px;
+            }
+
+            .fa-triangle-exclamation {
+                  color: #d9534f;
+                  /* Qizil */
+                  margin-right: 8px;
+                  font-size: 20px;
+            }
       </style>
 </head>
 
@@ -267,23 +288,33 @@
             </div>
       </div>
 
+      <div id="errorModal" class="modal" style="display: {{#if errorFlash}}flex{{else}}none{{/if}}">
+            <div class="modal-content">
+                  <h3>Xatolik yuz berdi</h3>
+                  {{#each errorFlash}}
+                  <p><i class="fa-solid fa-triangle-exclamation"></i> {{this}}</p>
+                  {{/each}}
+                  <button type="button" id="closeErrorModal" class="close-btn">Yopish</button>
+            </div>
+      </div>
+
       <div id="editModal" class="modal">
             <div class="modal-content">
                   <h3>Yo'nalishni tahrirlash</h3>
                   <form id="editForm" action="/route/{{route._id}}/update" method="post">
                         <div class="input-group">
                               <label for="routeName">Yo'nalish nomi:</label>
-                              <input type="text" id="routeName" value="{{route.name}}" required>
+                              <input type="text" id="routeName" value="{{route.name}}">
                         </div>
 
                         <div class="input-group">
                               <label for="routeFrom">Qayerdan:</label>
-                              <input type="text" id="routeFrom" value="{{route.from}}" required>
+                              <input type="text" id="routeFrom" value="{{route.from}}">
                         </div>
 
                         <div class="input-group">
                               <label for="routeTo">Qayerga:</label>
-                              <input type="text" id="routeTo" value="{{route.to}}" required>
+                              <input type="text" id="routeTo" value="{{route.to}}">
                         </div>
 
                         <div class="modal-buttons">
@@ -313,6 +344,21 @@
                   window.addEventListener("click", function (event) {
                         if (event.target === modal) {
                               modal.style.display = "none";
+                        }
+                  });
+            });
+
+            document.addEventListener("DOMContentLoaded", function () {
+                  const errorModal = document.getElementById("errorModal");
+                  const closeErrorModalBtn = document.getElementById("closeErrorModal");
+
+                  closeErrorModalBtn.addEventListener("click", function () {
+                        errorModal.style.display = "none";
+                  });
+
+                  window.addEventListener("click", function (event) {
+                        if (event.target === errorModal) {
+                              errorModal.style.display = "none";
                         }
                   });
             });

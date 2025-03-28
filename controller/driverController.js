@@ -15,23 +15,27 @@ exports.createDriver = async (req, res) => {
     try {
         const errors = validationResult(req)
         if (!errors.isEmpty()) {
-            return res.status(400).send({
-                error: errors.array().map((error) => error.msg)
-            })
+            req.flash('error', errors.array().map(error => error.msg).join("<br>"));
+            return res.redirect('/drivers');
         }
         const data = matchedData(req)
 
+        const condidat = await driverModel.findOne({ username: data.username })
+
+        if (condidat) {
+            req.flash('error', "Bunday usernamega ega foydalanuvchi allaqchon ro'yhatdan o'tgan!")
+            return res.redirect('/drivers');
+        }
+
         if (!req.file) {
-            return res.status(400).send({
-                error: "Iltimos, rasm faylni yuklang!",
-            });
+            req.flash('error', 'Iltimos, rasm faylni yuklang!')
+            return res.redirect('/drivers')
         }
 
         const maxFileSize = 5 * 1024 * 1024;
         if (req.file.size > maxFileSize) {
-            return res.status(400).send({
-                error: "Rasm hajmi 5 MB dan oshmasligi kerak!",
-            });
+            req.flash('error', 'Rasm hajmi 5 MB dan oshmasligi kerak!')
+            return res.redirect('/drivers')
         }
 
         const { buffer, originalname } = req.file;
@@ -68,9 +72,7 @@ exports.createDriver = async (req, res) => {
         return res.redirect('/drivers')
     } catch (error) {
         console.log(error);
-        return res.status(500).send({
-            error: "Serverda xatolik!"
-        })
+        return res.redirect('/500')
     }
 }
 
@@ -80,7 +82,7 @@ exports.getAllDrivers = async (req, res) => {
         const bus = await busModel.find()
         const gender = req.cookies.gender
         const token = req.cookies.authToken
-        const user = jwt.verify(token, process.env.JWT_KEY)
+        const admin = jwt.verify(token, process.env.JWT_KEY)
 
         return res.render('drivers', {
             drivers,
@@ -88,13 +90,12 @@ exports.getAllDrivers = async (req, res) => {
             token,
             gender,
             title: "Haydovchilar",
-            user
+            admin,
+            errorFlash: req.flash('error')
         })
     } catch (error) {
         console.log(error);
-        return res.status(500).send({
-            error: "Serverda xatolik!"
-        })
+        return res.redirect('/500')
     }
 }
 
@@ -103,24 +104,21 @@ exports.updateDriver = async (req, res) => {
         const { id } = req.params
 
         if (!id.match(/^[0-9a-fA-F]{24}$/)) {
-            return res.status(400).send({
-                error: "ID haqiqiy emas!",
-            });
+            req.flash('error', "Id noto'g'ri")
+            return res.redirect('/drivers')
         }
 
         const driver = await driverModel.findById(id);
 
         if (!driver) {
-            return res.status(404).send({
-                error: "Haydovchi topilmadi!",
-            });
+            req.flash('error', 'Haydovchi topilmadi!')
+            return res.redirect('/drivers')
         }
 
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
-            return res.status(400).send({
-                error: errors.array().map((error) => error.msg),
-            });
+            req.flash('error', errors.array().map(error => error.msg).join("<br>"));
+            return res.redirect('/drivers');
         }
         const data = matchedData(req);
 
@@ -130,9 +128,8 @@ exports.updateDriver = async (req, res) => {
             try {
                 const maxFileSize = 5 * 1024 * 1024;
                 if (req.file.size > maxFileSize) {
-                    return res.status(400).send({
-                        error: "Rasm hajmi 5 MB dan oshmasligi kerak!",
-                    });
+                    req.flash('error', 'Rasm hajmi 5 MB dan oshmasligi kerak!')
+                    return res.redirect('/drivers')
                 }
 
                 if (fileUrl) {
@@ -185,6 +182,13 @@ exports.updateDriver = async (req, res) => {
             }
         }
 
+        const condidat = await driverModel.findOne({ username: data.username })
+
+        if (condidat) {
+            req.flash('error', "Bunday usernamega ega foydalanuvchi allaqchon ro'yhatdan o'tgan!")
+            return res.redirect('/drivers');
+        }
+
         const updatedDriver = {
             name: data.name || driver.name,
             username: data.username || driver.password,
@@ -200,9 +204,7 @@ exports.updateDriver = async (req, res) => {
         return res.redirect('/drivers')
     } catch (error) {
         console.log(error);
-        return res.status(500).send({
-            error: "Serverda xatolik!"
-        })
+        return res.redirect('/500')
     }
 }
 
@@ -211,16 +213,14 @@ exports.deleteDriver = async (req, res) => {
         const { id } = req.params;
 
         if (!id.match(/^[0-9a-fA-F]{24}$/)) {
-            return res.status(400).send({
-                error: "Invalid ID format!"
-            });
+            req.flash('error', "Id noto'g'ri")
+            return res.redirect('/drivers')
         }
 
         const driver = await driverModel.findById(id);
         if (!driver) {
-            return res.status(404).send({
-                error: "Haydochi topilmadi!"
-            });
+            req.flash('error', 'Haydovchi topilmadi!')
+            return res.redirect('/drivers')
         }
 
         const fileUrl = driver.image
@@ -252,8 +252,6 @@ exports.deleteDriver = async (req, res) => {
         return res.redirect('/drivers')
     } catch (error) {
         console.error(error);
-        return res.status(500).send({
-            error: "Serverda xatolik!"
-        });
+        return res.redirect('/500')
     }
 }

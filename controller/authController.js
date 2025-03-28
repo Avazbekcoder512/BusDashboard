@@ -6,8 +6,8 @@ const driverModel = require("../models/driver")
 const { validationResult, matchedData } = require("express-validator")
 const ticketSellerModel = require("../models/ticket_seller")
 
-const generateToken = (id, role) => {
-    const payload = { id, role }
+const generateToken = (id, role, name) => {
+    const payload = { id, role, name }
     return jwt.sign(payload, process.env.JWT_KEY, { expiresIn: "1d" })
 }
 
@@ -15,7 +15,8 @@ exports.loginPage = async (req, res) => {
     return res.render("login", {
         token: res.cookie.authToken,
         layout: false,
-        title: "Login"
+        title: "Login",
+        errorFlash: req.flash('error')
     })
 }
 
@@ -23,9 +24,8 @@ exports.login = async (req, res) => {
     try {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
-            return res.status(400).send({
-                error: errors.array().map((error) => error.msg),
-            });
+            req.flash('error', errors.array().map((error) => error.msg).join("<br>"))
+            return res.redirect('/login')
         }
         const data = matchedData(req);
 
@@ -35,10 +35,11 @@ exports.login = async (req, res) => {
             const checkPassword = await bcrypt.compare(data.password, user.password)
 
             if (!checkPassword) {
+                req.flash('error', 'Parol xato!')
                 return res.redirect('/login')
             }
 
-            const authToken = generateToken(user._id, user.role)
+            const authToken = generateToken(user._id, user.role, user.name)
             const gender = user.gender
 
             res.cookie("authToken", authToken, { secure: true })
@@ -53,10 +54,11 @@ exports.login = async (req, res) => {
             const checkPassword = await bcrypt.compare(data.password, user.password)
 
             if (!checkPassword) {
+                req.flash('error', 'Parol xato!')
                 return res.redirect('/login')
             }
 
-            const authToken = generateToken(user._id, user.role)
+            const authToken = generateToken(user._id, user.role, user.name)
             const gender = user.gender
 
             res.cookie("authToken", authToken, { secure: true })
@@ -66,13 +68,12 @@ exports.login = async (req, res) => {
         }
 
         if (!user) {
+            req.flash('error', "Username xato!")
             return res.redirect("/login")
         }
     } catch (error) {
         console.log(error);
-        return res.status(500).send({
-            error: "Serverda xatolik!"
-        })
+        return res.redirect('/500')
     }
 }
 
@@ -88,8 +89,6 @@ exports.logout = async (req, res) => {
         return res.redirect('/login')
     } catch (error) {
         console.log(error);
-        return res.status(500).send({
-            error: "Serverda xatolik!"
-        })
+        return res.redirect('/500')
     }
 }

@@ -5,10 +5,10 @@ const { login, loginPage, logout } = require("../controller/authController")
 const { loginValidate } = require("../validator/authValidate")
 const multer = require('multer')
 const { createBusSchema, updateBusSchema } = require("../validator/busValidate")
-const { createBus, getOneBus, getAllBuses, updateOneBus, deleteOneBus } = require("../controller/busContoller")
+const { createBus, getOneBus, getAllBuses, updateOneBus, deleteOneBus } = require("../controller/busController")
 const { createRouteSchema, updateRouteSchema } = require("../validator/routeValidate")
 const { createRoute, getAllRoutes, getOneRoutes, updateRoute, deleteRoute } = require("../controller/routeController")
-const { createTripSchema } = require("../validator/tripValidate")
+const { createTripSchema, updateTripSchema } = require("../validator/tripValidate")
 const { createTrip, getAllTrips, getOneTrip, deleteTrip, updateTrip } = require("../controller/tripController")
 const { getAllDrivers, createDriver, updateDriver, deleteDriver } = require("../controller/driverController")
 const { createDriverSchema, updateDriverSchema } = require("../validator/driverValidate")
@@ -17,6 +17,7 @@ const { createTicketSellerSchema, updateTicketSellerSchema } = require("../valid
 const { jwtAccessMiddleware } = require("../middleware/jwt-accessMiddleware")
 const { getTicket, searchRoute, getSeats } = require("../controller/ticket")
 const { roleAccessMiddleware } = require("../middleware/role-accessMidleware")
+const { ServerError, notFound, forbidden } = require("../controller/errorController")
 const upload = multer()
 
 const router = require("express").Router()
@@ -50,7 +51,7 @@ router
 .post('/create-trip', jwtAccessMiddleware, roleAccessMiddleware(['superAdmin', 'admin']), checkSchema(createTripSchema), createTrip)
 .get('/trips', jwtAccessMiddleware, roleAccessMiddleware(['superAdmin', 'admin']), getAllTrips)
 .get('/trip/:id', jwtAccessMiddleware, roleAccessMiddleware(['superAdmin', 'admin']), getOneTrip)
-.post('/trip/:id/update', jwtAccessMiddleware, roleAccessMiddleware(['superAdmin', 'admin']), updateTrip)
+.post('/trip/:id/update', jwtAccessMiddleware, roleAccessMiddleware(['superAdmin', 'admin']), checkSchema(updateTripSchema), updateTrip)
 .post('/trip/:id/delete', jwtAccessMiddleware, roleAccessMiddleware(['superAdmin', 'admin']), deleteTrip)
 
 // Driver router
@@ -70,5 +71,10 @@ router
 .get('/tickets', getTicket)
 .get('/search-route', searchRoute)
 .get('/seats/:id', getSeats)
+
+// Error router
+.get('/403', forbidden)
+.get('/404', notFound)
+.get('/500', ServerError)
 
 module.exports = router
