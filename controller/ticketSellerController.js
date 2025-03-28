@@ -14,31 +14,27 @@ exports.createTicketSeller = async (req, res) => {
     try {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
-            return res.status(400).send({
-                error: errors.array().map((error) => error.msg),
-            });
+            req.flash('error', errors.array().map(error => error.msg).join("<br>"));
+            return res.redirect('/ticketsellers');
         }
         const data = matchedData(req);
 
         const condidat = await ticketSellerModel.findOne({ username: data.username })
 
         if (condidat) {
-            return res.status(400).send({
-                error: "Bunday usernamega ega foydalanuvchi allaqchon ro'yhatdan o'tgan!"
-            })
+            req.flash('error', "Bunday usernamega ega foydalanuvchi allaqchon ro'yhatdan o'tgan!")
+            return res.redirect('/ticketsellers');
         }
 
         if (!req.file) {
-            return res.status(400).send({
-                error: "Iltimos rasm faylni yuklang!"
-            })
+            req.flash('error', 'Iltimos, rasm faylni yuklang!')
+            return res.redirect('/ticketsellers');
         }
 
         const maxFileSize = 5 * 1024 * 1024;
         if (req.file.size > maxFileSize) {
-            return res.status(400).send({
-                error: "Rasm hajmi 5 MB dan oshmasligi kerak!",
-            });
+            req.flash('error', 'Rasm hajmi 5 MB dan oshmasligi kerak!')
+            return res.redirect('/ticketsellers')
         }
 
         const { buffer, originalname } = req.file;
@@ -78,9 +74,7 @@ exports.createTicketSeller = async (req, res) => {
         return res.redirect('/ticketsellers')
     } catch (error) {
         console.log(error);
-        return res.status(500).send({
-            error: "Serverda xatolik!"
-        })
+        return res.redirect('/500')
     }
 }
 
@@ -89,21 +83,15 @@ exports.getAllTicketSellers = async (req, res) => {
         const ticketSellers = await ticketSellerModel.find()
         const token = req.cookies.authToken
         const gender = req.cookies.gender
-        const user = jwt.verify(token, process.env.JWT_KEY)
-
-
-        if (!ticketSellers.length) {
-            return res.status(404).send({
-                error: "Chiptachilar topilmadi!"
-            })
-        }
+        const admin = jwt.verify(token, process.env.JWT_KEY)
 
         return res.render('ticketsellers', {
             ticketSellers,
             title: "Chiptachilar ro'yxati",
             token,
             gender,
-            user
+            admin,
+            errorFlash: req.flash('error')
         })
 
         // return res.status(200).send({
@@ -111,9 +99,7 @@ exports.getAllTicketSellers = async (req, res) => {
         // })
     } catch (error) {
         console.log(error);
-        return res.status(500).send({
-            error: "Serverda xatolik!"
-        })
+        return res.redirect('/500')
     }
 }
 
@@ -136,9 +122,7 @@ exports.getOneTicketSeller = async (req, res) => {
         }
     } catch (error) {
         console.log(error);
-        return res.status(500).send({
-            error: "Serverda xatolik!"
-        })
+        return res.redirect('/500')
     }
 }
 
@@ -147,24 +131,21 @@ exports.updateTicketSeller = async (req, res) => {
         const { id } = req.params
 
         if (!id.match(/^[0-9a-fA-F]{24}$/)) {
-            return res.status(400).send({
-                error: "Invalid ID format!"
-            });
+            req.flash('error', "Id noto'g'ri")
+            return res.redirect('/ticketsellers')
         }
 
         const ticketSeller = await ticketSellerModel.findById(id)
 
         if (!ticketSeller) {
-            return res.status(404).send({
-                error: "Chiptachi topilmadi!"
-            })
+            req.flash('error', 'Chiptachi topilmadi!')
+            return res.redirect('/ticketsellers')
         }
 
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
-            return res.status(400).send({
-                error: errors.array().map((error) => error.msg),
-            });
+            req.flash('error', errors.array().map(error => error.msg).join("<br>"));
+            return res.redirect('/ticketsellers');
         }
         const data = matchedData(req);
 
@@ -174,9 +155,8 @@ exports.updateTicketSeller = async (req, res) => {
             try {
                 const maxFileSize = 5 * 1024 * 1024;
                 if (req.file.size > maxFileSize) {
-                    return res.status(400).send({
-                        error: "Rasm hajmi 5 MB dan oshmasligi kerak!",
-                    });
+                    req.flash('error', 'Rasm hajmi 5 MB dan oshmasligi kerak!')
+                    return res.redirect('/ticketsellers')
                 }
 
                 if (fileUrl) {
@@ -246,9 +226,7 @@ exports.updateTicketSeller = async (req, res) => {
         return res.redirect('/ticketsellers')
     } catch (error) {
         console.log(error);
-        return res.status(500).send({
-            error: "Serverda xatolik!"
-        })
+        return res.redirect('/500')
     }
 }
 
@@ -257,17 +235,15 @@ exports.deleteTicketSeller = async (req, res) => {
         const { id } = req.params
 
         if (!id.match(/^[0-9a-fA-F]{24}$/)) {
-            return res.status(400).send({
-                error: "Invalid ID format!"
-            });
+            req.flash('error', "Id noto'g'ri")
+            return res.redirect('/ticketsellers')
         }
 
         const ticketSeller = await ticketSellerModel.findById(id)
 
         if (!ticketSeller) {
-            return res.status(404).send({
-                error: "Chiptachi topilmadi!"
-            })
+            req.flash('error', 'Chiptachi topilmadi!')
+            return res.redirect('/ticketsellers')
         }
 
         let fileUrl = ticketSeller.image;
@@ -307,8 +283,6 @@ exports.deleteTicketSeller = async (req, res) => {
 
     } catch (error) {
         console.log(error);
-        return res.status(500).send({
-            error: "Serverda xatolik!"
-        })
+        return res.redirect('/500')
     }
 }

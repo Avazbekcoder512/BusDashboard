@@ -13,11 +13,11 @@ exports.searchRoute = async (req, res) => {
         const to = req.query.to
         const departure_date = req.query.departure_date
         const user = jwt.verify(token, process.env.JWT_KEY)
+        const admin = jwt.verify(token, process.env.JWT_KEY)
 
         if (!from || !to || !departure_date) {
-            return res.status(400).send({
-                error: "Iltimos, 3 ta maydonni ham to'g'ri kiriting!"
-            })
+            req.flash('error', 'Iltimos, 3 ta maydonni ham kiriting!')
+            return res.redirect('/tickets')
         }
 
         const data = await routeModel.findOne({ from: from, to: to }).populate({
@@ -30,15 +30,15 @@ exports.searchRoute = async (req, res) => {
             gender,
             data,
             city,
-            user
+            user,
+            admin,
+            errorFlash: req.flash('error')
         })
 
 
     } catch (error) {
         console.log(error);
-        return res.status(500).send({
-            error: "Serverda xatolik!"
-        })
+        return res.redirect('/500')
     }
 }
 
@@ -50,22 +50,33 @@ exports.getTicket = async (req, res) => {
         const city = await cityModel.find()
         const tickets = await routeModel.find().populate('trips')
 
-        return res.render('ticket', {
-            token,
-            gender,
-            city,
-            tickets,
-            user
-        })
+        if (user.role === "ticket_seller") {
+            return res.render('ticket', {
+                token,
+                gender,
+                city,
+                tickets,
+                user,
+                errorFlash: req.flash('error')
+            })
+        } else {
+            return res.render('ticket', {
+                token,
+                gender,
+                city,
+                tickets,
+                admin: user,
+                errorFlash: req.flash('error')
+            })
+        }
+
 
         // return res.send({
         //     tickets: tickets
         // })
     } catch (error) {
         console.log(error);
-        return res.status(500).send({
-            error: "Serverda xatolik!"
-        })
+        return res.redirect('/500')
     }
 }
 
@@ -75,17 +86,15 @@ exports.getSeats = async (req, res) => {
         const token = req.cookies.authToken
 
         if (!id.match(/^[0-9a-fA-F]{24}$/)) {
-            return res.status(400).send({
-                error: "Invalid ID format!"
-            });
+            req.flash('error', "Id noto'g'ri")
+            return res.redirect('/tickets')
         }
 
         const bus = await busModel.findById(id).populate("seats")
 
         if (!bus) {
-            return res.status(404).send({
-                error: "Avtobus topilmadi!"
-            })
+            req.flash('error', 'Avtobus topilmadi!')
+            return res.redirect('/tickets')
         }
 
         return res.render('seats', {
@@ -99,8 +108,6 @@ exports.getSeats = async (req, res) => {
         // })
     } catch (error) {
         console.log(error);
-        return res.status(500).send({
-            error: "Serverda xatolik!"
-        })
+        return res.redirect('/500')
     }
 }

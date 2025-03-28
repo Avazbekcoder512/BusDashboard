@@ -16,25 +16,22 @@ exports.createBus = async (req, res) => {
     try {
         const errors = validationResult(req)
         if (!errors.isEmpty()) {
-            return res.status(400).send({
-                error: errors.array().map((error) => error.msg)
-            })
+            req.flash('error', errors.array().map((error) => error.msg).join("<br>"))
+            return res.redirect('/buses')
         }
 
         const data = matchedData(req)
 
 
         if (!req.file) {
-            return res.status(400).send({
-                error: "Iltimos, rasm faylni yuklang!",
-            });
+            req.flash('error', 'Iltimos, rasm faylni yuklang!')
+            return res.redirect('/buses')
         }
 
         const maxFileSize = 5 * 1024 * 1024;
         if (req.file.size > maxFileSize) {
-            return res.status(400).send({
-                error: "Rasm hajmi 5 MB dan oshmasligi kerak!",
-            });
+            req.flash('error', 'Rasm hajmi 5 MB dan oshmasligi kerak!')
+            return res.redirect('/buses')
         }
 
         const { buffer, originalname } = req.file;
@@ -82,9 +79,7 @@ exports.createBus = async (req, res) => {
         // })
     } catch (error) {
         console.log(error);
-        return res.status(500).send({
-            error: "Serverda xatolik!"
-        })
+        return res.redirect('/500')
     }
 }
 
@@ -94,19 +89,7 @@ exports.getAllBuses = async (req, res) => {
         const route = await routeModel.find()
         const gender = req.cookies.gender
         const token = req.cookies.authToken
-        const user = jwt.verify(token, process.env.JWT_KEY)
-
-        if (!buses.length) {
-            return res.status(404).send({
-                error: "Avtobuslar topilmadi!"
-            })
-        }
-
-        if (!route.length) {
-            return res.status(404).send({
-                error: "Yo'nalish topilmadi!"
-            })
-        }
+        const admin = jwt.verify(token, process.env.JWT_KEY)
 
         // return res.status(200).send({
         //     buses
@@ -118,41 +101,40 @@ exports.getAllBuses = async (req, res) => {
             token,
             route,
             gender,
-            user
+            admin,
+            errorFlash: req.flash('error')
         })
     } catch (error) {
         console.log(error);
-        return res.status(500).send({
-            error: "Serverda xatolik!"
-        })
+        return res.redirect('/500')
     }
 }
 
 exports.getOneBus = async (req, res) => {
     try {
         const { id } = req.params
-        const gender = req.cookies.gender
         const token = req.cookies.authToken
+        const admin = jwt.verify(token, process.env.JWT_KEY)
 
         if (!id.match(/^[0-9a-fA-F]{24}$/)) {
-            return res.status(400).send({
-                error: "Invalid ID format!"
-            });
+            req.flash('error', "Id noto'g'ri!")
+            return res.redirect('/buses')
         }
 
         const bus = await busModel.findById(id).populate("seats")
 
         if (!bus) {
-            return res.status(404).send({
-                error: "Avtobus topilmadi!"
-            })
+            req.flash('error', 'Avtobus topilmadi!')
+            return res.redirect('/')
         }
 
         return res.render('bus', {
             bus,
             token,
+            admin,
             title: "Avtobus",
-            layout: false
+            layout: false,
+            errorFlash: req.flash('error')
         })
 
         // return res.status(200).send({
@@ -160,9 +142,7 @@ exports.getOneBus = async (req, res) => {
         // })
     } catch (error) {
         console.log(error);
-        return res.status(500).send({
-            error: "Serverda xatolik!"
-        })
+        return res.redirect('/500')
     }
 }
 
@@ -171,94 +151,90 @@ exports.updateOneBus = async (req, res) => {
         const { id } = req.params
 
         if (!id.match(/^[0-9a-fA-F]{24}$/)) {
-            return res.status(400).send({
-                error: "Invalid ID format!"
-            });
+            req.flash('error', "Id noto'g'ri!")
+            return res.redirect('/buses')
         }
 
         const bus = await busModel.findById(id)
 
         if (!bus) {
-            return res.status(404).send({
-                error: "Avtobus topilmadi!"
-            })
+            req.flash('error', 'Avtobus topilmadi!')
+            return res.redirect('/buses')
         }
 
         const errors = validationResult(req)
         if (!errors.isEmpty()) {
-            return res.status(400).send({
-                error: errors.array().map((error) => error.msg)
-            })
+            req.flash('error', errors.array().map((error) => error.msg))
+            return res.redirect(`/bus/${id}`)
         }
 
         const data = matchedData(req)
 
-        // let fileUrl = bus.image;
-        // if (req.file) {
-        //     try {
-        //         const maxFileSize = 5 * 1024 * 1024;
-        //         if (req.file.size > maxFileSize) {
-        //             return res.status(400).send({
-        //                 error: "Rasm hajmi 5 MB dan oshmasligi kerak!",
-        //             });
-        //         }
+        let fileUrl = bus.image;
+        if (req.file) {
+            try {
+                const maxFileSize = 5 * 1024 * 1024;
+                if (req.file.size > maxFileSize) {
+                    req.flash('error', 'Rasm hajmi 5 MB dan oshmasligi kerak!')
+                    return res.redirect(`/bus/${id}`)
+                }
 
-        //         if (fileUrl) {
-        //             const filePath = fileUrl.replace(
-        //                 `${supabase.storageUrl}/object/public/mbus_bucket/`,
-        //                 ""
-        //             );
+                if (fileUrl) {
+                    const filePath = fileUrl.replace(
+                        `${supabase.storageUrl}/object/public/mbus_bucket/`,
+                        ""
+                    );
 
-        //             const { data: fileExists, error: checkError } = await supabase.storage
-        //                 .from("mbus_bucket")
-        //                 .list("", { prefix: filePath });
+                    const { data: fileExists, error: checkError } = await supabase.storage
+                        .from("mbus_bucket")
+                        .list("", { prefix: filePath });
 
-        //             if (checkError) {
-        //                 console.error(
-        //                     `Fayl mavjudligini tekshirishda xatolik: ${checkError.message}`
-        //                 );
-        //             } else if (fileExists && fileExists.length > 0) {
-        //                 const { error: deleteError } = await supabase.storage
-        //                     .from("mbus_bucket")
-        //                     .remove([filePath]);
+                    if (checkError) {
+                        console.error(
+                            `Fayl mavjudligini tekshirishda xatolik: ${checkError.message}`
+                        );
+                    } else if (fileExists && fileExists.length > 0) {
+                        const { error: deleteError } = await supabase.storage
+                            .from("mbus_bucket")
+                            .remove([filePath]);
 
-        //                 if (deleteError) {
-        //                     throw new Error(
-        //                         `Faylni o'chirishda xatolik: ${deleteError.message}`
-        //                     );
-        //                 }
-        //             }
-        //         }
+                        if (deleteError) {
+                            throw new Error(
+                                `Faylni o'chirishda xatolik: ${deleteError.message}`
+                            );
+                        }
+                    }
+                }
 
-        //         const { buffer, originalname } = req.file;
-        //         const fileName = `buses/${Date.now()}-${originalname}`;
-        //         const { data: uploadData, error: uploadError } = await supabase.storage
-        //             .from("mbus_bucket")
-        //             .upload(fileName, buffer, {
-        //                 cacheControl: "3600",
-        //                 upsert: true,
-        //                 contentType: req.file.mimetype,
-        //             });
+                const { buffer, originalname } = req.file;
+                const fileName = `buses/${Date.now()}-${originalname}`;
+                const { data: uploadData, error: uploadError } = await supabase.storage
+                    .from("mbus_bucket")
+                    .upload(fileName, buffer, {
+                        cacheControl: "3600",
+                        upsert: true,
+                        contentType: req.file.mimetype,
+                    });
 
-        //         if (uploadError) {
-        //             throw new Error(`Fayl yuklanmadi: ${uploadError.message}`);
-        //         }
+                if (uploadError) {
+                    throw new Error(`Fayl yuklanmadi: ${uploadError.message}`);
+                }
 
-        //         fileUrl = `${supabase.storageUrl}/object/public/mbus_bucket/${fileName}`;
-        //     } catch (err) {
-        //         console.error(`Faylni yangilashda xatolik: ${err.message}`);
-        //         throw new Error(
-        //             "Yangi faylni yuklash yoki eski faylni o‘chirishda muammo!"
-        //         );
-        //     }
-        // }
+                fileUrl = `${supabase.storageUrl}/object/public/mbus_bucket/${fileName}`;
+            } catch (err) {
+                console.error(`Faylni yangilashda xatolik: ${err.message}`);
+                throw new Error(
+                    "Yangi faylni yuklash yoki eski faylni o‘chirishda muammo!"
+                );
+            }
+        }
 
 
         const updateBus = {
             bus_number: data.bus_number || bus.bus_number,
             bus_model: data.bus_model || bus.bus_model,
-            seats_count: data.seats_count || bus.seats_count
-            // image: fileUrl || bus.image
+            seats_count: data.seats_count || bus.seats_count,
+            image: fileUrl || bus.image
         }
 
         await busModel.findByIdAndUpdate(id, updateBus, { new: true })
@@ -267,9 +243,7 @@ exports.updateOneBus = async (req, res) => {
             message: "Avtobus muvaffaqiyatli yangilandi!"
         })
     } catch (error) {
-        return res.status(500).send({
-            error: "Serverda xatolik!"
-        })
+        return res.redirect('/500')
     }
 }
 
@@ -278,9 +252,8 @@ exports.deleteOneBus = async (req, res) => {
         const { id } = req.params;
 
         if (!id.match(/^[0-9a-fA-F]{24}$/)) {
-            return res.status(400).send({
-                error: "Invalid ID format!"
-            });
+            req.flash('error', "Id noto'g'ri!")
+            return res.redirect('/buses')
         }
 
         const bus = await busModel.findById(id);
@@ -327,8 +300,6 @@ exports.deleteOneBus = async (req, res) => {
         // });
     } catch (error) {
         console.log(error);
-        return res.status(500).send({
-            error: "Serverda xatolik!"
-        })
+        return res.redirect('/500')
     }
 }

@@ -223,6 +223,27 @@
             padding: 10px;
             border-radius: 5px;
         }
+
+        #errorModal h3 {
+            font-size: 22px;
+            font-weight: bold;
+            color: #d9534f;
+        }
+
+        /* Xatolik matnini kattalashtirish */
+        .modal-content p {
+            font-size: 18px;
+            color: #333;
+            font-weight: 500;
+            margin-top: 10px;
+        }
+
+        .fa-triangle-exclamation {
+            color: #d9534f;
+            /* Qizil */
+            margin-right: 8px;
+            font-size: 20px;
+        }
     </style>
 </head>
 
@@ -253,34 +274,44 @@
         </div>
     </div>
 
+    <div id="errorModal" class="modal" style="display: {{#if errorFlash}}flex{{else}}none{{/if}}">
+        <div class="modal-content">
+            <h3>Xatolik yuz berdi</h3>
+            {{#each errorFlash}}
+            <p><i class="fa-solid fa-triangle-exclamation"></i> {{this}}</p>
+            {{/each}}
+            <button type="button" id="closeErrorModal" class="close-btn">Yopish</button>
+        </div>
+    </div>
+
     <div id="editModal" class="modal">
         <div class="modal-content">
             <h3>Reysni tahrirlash</h3>
-            <form action="/trip/{{trip._id}}update" method="post">
+            <form action="/trip/{{trip._id}}/update" method="post">
                 <label for="departure_date">Ketish kuni:</label>
-                <input type="date" id="departure_date" value="{{trip.departure_date}}" required>
+                <input type="date" id="departure_date" name="departure_date" value="{{trip.departure_date}}" >
 
                 <label for="departure_time">Ketish vaqti:</label>
-                <input type="time" id="departure_time" value="{{trip.departure_time}}" required>
+                <input type="time" id="departure_time" name="departure_time" value="{{trip.departure_time}}" >
 
                 <label for="arrival_date">Kelish kuni:</label>
-                <input type="date" id="arrival_date" value="{{trip.arrival_date}}" required>
+                <input type="date" id="arrival_date" name="arrival_date" value="{{trip.arrival_date}}" >
 
                 <label for="arrival_time">Kelish vaqti:</label>
-                <input type="time" id="arrival_time" value="{{trip.arrival_time}}" required>
+                <input type="time" id="arrival_time" name="arrival_time" value="{{trip.arrival_time}}" >
 
                 <label for="ticket_price">Chipta narxi:</label>
-                <input type="number" id="ticket_price" value="{{trip.ticket_price}}" required>
+                <input type="number" id="ticket_price" name="ticket_price" value="{{trip.ticket_price}}" >
 
                 <label for="seat_class">Yo'nalish:</label>
-                <select id="seat_class" required>
+                <select id="seat_class" name="route" >
                     <option value="" disabled selected>Tanlang...</option>
                     {{#each route}}
                     <option value="{{_id}}">{{name}}</option>
                     {{/each}}
                 </select>
                 <label for="seat_class">Avtobus:</label>
-                <select id="seat_class" required>
+                <select id="seat_class" name="bus" >
                     <option value="" disabled selected>Tanlang...</option>
                     {{#each bus}}
                     <option value="{{_id}}">{{bus_model}}&nbsp;{{bus_number}}</option>
@@ -305,6 +336,21 @@
         function closeModal() {
             document.getElementById("editModal").style.display = "none";
         }
+
+        document.addEventListener("DOMContentLoaded", function () {
+            const errorModal = document.getElementById("errorModal");
+            const closeErrorModalBtn = document.getElementById("closeErrorModal");
+
+            closeErrorModalBtn.addEventListener("click", function () {
+                errorModal.style.display = "none";
+            });
+
+            window.addEventListener("click", function (event) {
+                if (event.target === errorModal) {
+                    errorModal.style.display = "none";
+                }
+            });
+        });
     </script>
 
 </body>

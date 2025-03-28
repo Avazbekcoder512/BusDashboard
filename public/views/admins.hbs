@@ -1,6 +1,6 @@
 <body>
     <div class="content-wrapper">
-        <div class="row"  style="width: 98%;">
+        <div class="row" style="width: 98%;">
             <div class="col-lg-12 grid-margin stretch-card">
                 <div class="card">
                     <div class="card-body">
@@ -44,6 +44,31 @@
         </div>
     </div>
 
+    <div class="modal fade" id="errorModal" tabindex="-1" role="dialog" aria-labelledby="errorModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="errorModalLabel">Xatolik</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Yopish">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <!-- errorFlash bir nechta xabar bo‘lishi mumkin, ularni birlashtirish uchun -->
+                    <p id="errorText">
+                        {{#if errorFlash}}
+                        {{{errorFlash.[0]}}}
+                        {{/if}}
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Yopish</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="modal fade" id="addAdminModal" tabindex="-1" aria-labelledby="addAdminModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content" style="border-radius: 12px; box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);">
@@ -56,17 +81,20 @@
                     <form action="/create-admin" method="POST" enctype="multipart/form-data">
                         <div class="mb-3">
                             <label class="form-label" for="name">To'liq ism</label>
-                            <input type="text" class="form-control" id="name" name="name" placeholder="Masalan: Jabbarov Samat" required
+                            <input type="text" class="form-control" id="name" name="name"
+                                placeholder="Masalan: Jabbarov Samat" required
                                 style="border: 2px solid #17c964; border-radius: 6px; padding: 10px; font-size: 16px; background-color: #f8f9fa; transition: 0.3s; height: 45px;">
                         </div>
                         <div class="mb-3">
                             <label class="form-label" for="username">Username</label>
-                            <input type="text" class="form-control" id="username" name="username" placeholder="Admin" required
+                            <input type="text" class="form-control" id="username" name="username" placeholder="Admin"
+                                required
                                 style="border: 2px solid #17c964; border-radius: 6px; padding: 10px; font-size: 16px; background-color: #f8f9fa; transition: 0.3s; height: 45px;">
                         </div>
                         <div class="mb-3">
                             <label class="form-label" for="password">Parol</label>
-                            <input type="password" class="form-control" id="password" name="password" placeholder="parol123" required
+                            <input type="password" class="form-control" id="password" name="password"
+                                placeholder="parol123" required
                                 style="border: 2px solid #17c964 ; border-radius: 6px; padding: 10px; font-size: 16px; background-color: #f8f9fa; transition: 0.3s; height: 45px;">
                         </div>
                         <div class="mb-3">
@@ -174,6 +202,13 @@
                 addText.classList.add("d-none");
                 addLoader.classList.remove("d-none");
             });
+        });
+
+        document.addEventListener("DOMContentLoaded", function () {
+            var errorText = document.getElementById("errorText").innerHTML.trim();
+            if (errorText) {
+                $('#errorModal').modal('show');
+            }
         });
     </script>
 

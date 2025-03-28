@@ -14,9 +14,7 @@ exports.roleAccessMiddleware = function (roles) {
             const { role } = verify(token, process.env.JWT_KEY);
 
             if (!roles.includes(role)) {
-                return res.status(403).send({
-                    error: "Sizga ruxsat yo'q",
-                });
+                return res.redirect('/403')
             }
 
             next();

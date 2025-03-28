@@ -14,31 +14,27 @@ exports.createAdmin = async (req, res) => {
     try {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
-            return res.status(400).send({
-                error: errors.array().map((error) => error.msg),
-            });
+            req.flash('error', errors.array().map(error => error.msg).join("<br>"));
+            return res.redirect('/routes');
         }
         const data = matchedData(req);
 
 
         const condidat = await adminModel.findOne({ username: data.username })
         if (condidat) {
-            return res.status(400).send({
-                error: "Bunday username allaqachon ro'yhatdan o'tgan!"
-            })
+            req.flash('error', "Bunday username allaqachon ro'yhatdan o'tgan!")
+            return res.redirect('/')
         }
 
         if (!req.file) {
-            return res.status(400).send({
-                error: "Iltimos, rasm faylni yuklang!",
-            });
+            req.flash('error', "Iltimos, rasm faylni yuklang!")
+            return res.redirect('/')
         }
 
         const maxFileSize = 5 * 1024 * 1024;
         if (req.file.size > maxFileSize) {
-            return res.status(400).send({
-                error: "Rasm hajmi 5 MB dan oshmasligi kerak!",
-            });
+            req.flash('error', "Rasm hajmi 5 MB dan oshmasligi kerak!")
+            return res.redirect('/')
         }
 
         const { buffer, originalname } = req.file;
@@ -73,9 +69,7 @@ exports.createAdmin = async (req, res) => {
         return res.redirect('/')
     } catch (error) {
         console.log(error);
-        return res.status(500).send({
-            error: "Serverda xatolik!"
-        })
+        return res.redirect('/500')
     }
 }
 
@@ -83,31 +77,30 @@ exports.getAllAdmin = async (req, res) => {
     try {
         const token = req.cookies.authToken
         const gender = req.cookies.gender
-        const user = jwt.verify(token, process.env.JWT_KEY)
+        const admin = jwt.verify(token, process.env.JWT_KEY)        
         if (!token) {
+            req.flash('error', 'Itimos qayta kirish qiling!')
             return res.redirect('/login')
         }
-        const admins = await adminModel.find()
+        const admins = await adminModel.find()        
 
         if (admins.length == 0) {
-            return res.status(404).send({
-                error: "Adminlar mavjud emas!"
-            })
+            req.flash('error', "Adminlar mavjud emas!")
+            return res.redirect('/')
         }
 
         return res.render("admins", {
             title: "Dashboard",
             admins,
+            admin,
             token,
             gender,
-            user
+            errorFlash: req.flash('error')
         })
 
     } catch (error) {
         console.log(error);
-        return res.status(500).send({
-            error: "Serverda xatolik!"
-        })
+        return res.redirect('/500')
     }
 }
 
@@ -116,16 +109,14 @@ exports.deleteAdmin = async (req, res) => {
         const { id } = req.params;
 
         if (!id.match(/^[0-9a-fA-F]{24}$/)) {
-            return res.status(400).send({
-                error: "Invalid ID format!"
-            });
+            req.flash('error', "Id noto'g'ri")
+            return res.redirect('/')
         }
 
         const admin = await adminModel.findById(id);
         if (!admin) {
-            return res.status(404).send({
-                error: "Admin not found!"
-            });
+            req.flash('error', 'Admin topilmadi!')
+            return res.redirect('/')
         }
 
         const fileUrl = admin.image
@@ -157,8 +148,6 @@ exports.deleteAdmin = async (req, res) => {
         return res.redirect('/')
     } catch (error) {
         console.error(error);
-        return res.status(500).send({
-            error: error.message || "An error occurred while deleting the admin!"
-        });
+        return res.redirect('/500')
     }
 }
