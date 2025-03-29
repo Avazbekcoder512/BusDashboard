@@ -2,7 +2,8 @@ const { validationResult, matchedData } = require("express-validator");
 const tripModel = require("../models/trip");
 const routeModel = require("../models/route");
 const busModel = require("../models/bus");
-const jwt = require('jsonwebtoken')
+const jwt = require('jsonwebtoken');
+const seatModel = require("../models/seat");
 require('dotenv')
 
 exports.createTrip = async (req, res) => {
@@ -28,6 +29,11 @@ exports.createTrip = async (req, res) => {
         await routeModel.findByIdAndUpdate(data.route, {
             $push: { trips: trip.id }
         })
+
+        await seatModel.updateMany(
+            { bus: data.bus },
+            { $set: { price: data.ticket_price } }
+        );
 
         // return res.status(201).send({ message: "Reys muvaffaqiyatli yaratildi!", trip: trip });
         return res.redirect('/trips')
