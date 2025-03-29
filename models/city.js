@@ -1,8 +1,8 @@
-const monggose = require('mongoose')
+const mongoose = require('mongoose')
 
-const citySchema = new monggose.Schema({
+const citySchema = new mongoose.Schema({
     name: String
-}, { timestamps: true }) 
+}, { timestamps: true })
 
-const cityModel = monggose.model("City", citySchema)
+const cityModel = mongoose.model("City", citySchema)
 module.exports = cityModel
