@@ -9,6 +9,7 @@ const session = require("express-session");
 const flash = require('connect-flash')
 const router = require('./router/router');
 const cors = require('cors');
+const { createWeeklyRoutes, deleteOldRoutes } = require('./middleware/cronjobMiddleware');
 
 Connect();
 
@@ -34,6 +35,9 @@ app.use(express.static("public"));
 app.engine("hbs", hbs.engine);
 app.set("view engine", "hbs");
 app.set("views", "./public/views");
+
+createWeeklyRoutes()
+deleteOldRoutes()
 
 app.use(session({ secret: "Admin", resave: false, saveUninitialized: false }));
 app.use(flash())

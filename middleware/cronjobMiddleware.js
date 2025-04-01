@@ -12,15 +12,15 @@ const createWeeklyRoutes = async () => {
             const newArrivalDate = moment(trip.arrival_date).add(7, "days").toISOString()
 
             const existingTrips = await tripModel.findOne({
-                routes: trip.routes,
-                bus_id: trip.bus_id,
+                route: trip.route,
+                bus: trip.bus,
                 departure_date: trip.departure_date
             })
 
             if (!existingTrips) {
                 await tripModel.create({
-                    routes: trip.routes,
-                    bus_id: trip.bus_id,
+                    route: trip.route,
+                    bus: trip.bus,
                     departure_date: newDepartureDate,
                     departure_time: trip.departure_time,
                     arrival_date: newArrivalDate,
