@@ -68,7 +68,7 @@ exports.login = async (req, res) => {
         }
 
         if (!user) {
-            req.flash('error', "Username xato!")
+            req.flash('error', "Bunday usernamega ega user topilmadi!")
             return res.redirect("/login")
         }
     } catch (error) {

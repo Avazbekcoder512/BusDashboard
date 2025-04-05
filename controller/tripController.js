@@ -16,6 +16,8 @@ exports.createTrip = async (req, res) => {
 
         const data = matchedData(req)
 
+        checkTrip = await tripModel.findOne({})
+
         const trip = await tripModel.create({
             route: data.route,
             bus: data.bus,
