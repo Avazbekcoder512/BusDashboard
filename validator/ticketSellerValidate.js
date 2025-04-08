@@ -25,8 +25,12 @@ exports.createTicketSellerSchema = {
             options: ["uz-UZ"],
             errorMessage: "Telefon raqamini to'g'ri formatda kiriting! (masalan, +998901234567)"
         },
+        matches: {
+            options: [/^(\+998)(99|98|97|95|93|91|90|33|77|88)\d{7}$/],
+            errorMessage: "Telefon raqami noto'g'ri kiritilgan, iltimos, to'g'ri formatda kiriting!"
+        },
         notEmpty: {
-            errorMessage: "Telefon raqamini kiritish shart!"
+            errorMessage: 'Telefon raqamni kiriting!'
         }
     },
     gender: {
@@ -72,8 +76,9 @@ exports.updateTicketSellerSchema = {
             options: ["uz-UZ"],
             errorMessage: "Telefon raqamini to'g'ri formatda kiriting! (masalan, +998901234567)"
         },
-        notEmpty: {
-            errorMessage: "Telefon raqamini kiritish shart!"
+        matches: {
+            options: [/^(\+998)(99|98|97|95|93|91|90|33|77|88)\d{7}$/],
+            errorMessage: "Telefon raqami noto'g'ri kiritilgan, iltimos, to'g'ri formatda kiriting!"
         }
     },
     gender: {

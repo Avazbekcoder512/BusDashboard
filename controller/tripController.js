@@ -32,6 +32,10 @@ exports.createTrip = async (req, res) => {
             $push: { trips: trip.id }
         })
 
+        await busModel.findByIdAndUpdate(data.bus, {
+            trip: trip._id
+        })
+
         await seatModel.updateMany(
             { bus: data.bus },
             { $set: { price: data.ticket_price } }
