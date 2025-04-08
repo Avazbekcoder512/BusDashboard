@@ -15,7 +15,7 @@ exports.createAdmin = async (req, res) => {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
             req.flash('error', errors.array().map(error => error.msg).join("<br>"));
-            return res.redirect('/routes');
+            return res.redirect('/');
         }
         const data = matchedData(req);
 
