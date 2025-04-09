@@ -153,6 +153,15 @@ exports.updateTrip = async (req, res) => {
 
         await tripModel.findByIdAndUpdate(id, newTrip, { new: true })
 
+        await busModel.findByIdAndUpdate(data.bus, {
+            trip: trip._id
+        })
+
+        await seatModel.updateMany(
+            { bus: data.bus },
+            { $set: { price: data.ticket_price } }
+        );
+
         return res.status(201).send({
             message: "Reys muvaffaqiyatli yangilandi!",
             data: newTrip

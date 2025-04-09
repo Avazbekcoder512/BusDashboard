@@ -63,7 +63,7 @@ exports.createBus = async (req, res) => {
 
         let seats = [];
         for (let i = 1; i <= seatsCount; i++) {
-            let seat = new seatModel({ seetNumber: i, bus: bus._id });
+            let seat = new seatModel({ seatNumber: i, bus: bus._id });
             await seat.save();
             seats.push(seat._id);
         }
