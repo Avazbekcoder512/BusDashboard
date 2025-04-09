@@ -38,7 +38,7 @@ exports.createTrip = async (req, res) => {
 
         await seatModel.updateMany(
             { bus: data.bus },
-            { $set: { price: data.ticket_price } }
+            { $set: { price: trip.ticket_price, departure_date: trip.departure_date } }
         );
 
         // return res.status(201).send({ message: "Reys muvaffaqiyatli yaratildi!", trip: trip });
@@ -159,13 +159,10 @@ exports.updateTrip = async (req, res) => {
 
         await seatModel.updateMany(
             { bus: data.bus },
-            { $set: { price: data.ticket_price } }
+            { $set: { price: trip.ticket_price, departure_date: trip.departure_date } }
         );
 
-        return res.status(201).send({
-            message: "Reys muvaffaqiyatli yangilandi!",
-            data: newTrip
-        })
+        return res.redirect('/trips')
     } catch (error) {
         console.log(error);
         return res.redirect('/500')
@@ -187,6 +184,10 @@ exports.deleteTrip = async (req, res) => {
             req.flash('error', 'Reys topilmadi!')
             return res.redirect('/trips')
         }
+
+        await routeModel.findByIdAndUpdate(trip.route, {
+            $pull: { trips: trip.id }
+        })
 
         await tripModel.findByIdAndDelete(id)
 
