@@ -21746,6 +21746,7 @@ dl li {
   width: 36px;
   height: 36px;
   border-radius: 100%;
+  object-fit: cover;
 }
 
 .table td .badge {

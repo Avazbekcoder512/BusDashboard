@@ -16,7 +16,20 @@ exports.createTrip = async (req, res) => {
 
         const data = matchedData(req)
 
-        checkTrip = await tripModel.findOne({})
+        const bus = await busModel.findById(data.bus)
+        const route = await routeModel.findById(data.route)
+
+        if (!bus) {
+            return res.status(407).send({
+                error: "Avtobus mavjud emas!"
+            })
+        }
+
+        if (!route) {
+            return res.status(404).send({
+                error: "Yo'nalish mavjud emas!"
+            })
+        }
 
         const trip = await tripModel.create({
             route: data.route,
@@ -26,20 +39,28 @@ exports.createTrip = async (req, res) => {
             arrival_date: data.arrival_date,
             arrival_time: data.arrival_time,
             ticket_price: data.ticket_price,
+            seats: []
         });
 
-        await routeModel.findByIdAndUpdate(data.route, {
+        const seatsCount = bus.seats_count
+
+        let seats = [];
+        for (let i = 1; i <= seatsCount; i++) {
+            let seat = new seatModel({ seatNumber: i, trip: trip._id, price: trip.ticket_price });
+            await seat.save();
+            seats.push(seat._id);
+        }
+
+        trip.seats = seats;
+        await trip.save();
+
+        await routeModel.findByIdAndUpdate(route._id, {
             $push: { trips: trip.id }
         })
 
-        await busModel.findByIdAndUpdate(data.bus, {
+        await busModel.findByIdAndUpdate(bus._id, {
             trip: trip._id
         })
-
-        await seatModel.updateMany(
-            { bus: data.bus },
-            { $set: { price: trip.ticket_price, departure_date: trip.departure_date } }
-        );
 
         // return res.status(201).send({ message: "Reys muvaffaqiyatli yaratildi!", trip: trip });
         return res.redirect('/trips')
@@ -52,7 +73,7 @@ exports.createTrip = async (req, res) => {
 
 exports.getAllTrips = async (req, res) => {
     try {
-        const trips = await tripModel.find().populate('route').populate('bus')
+        const trips = await tripModel.find().populate('route')
         const bus = await busModel.find()
         const route = await routeModel.find()
         const token = req.cookies.authToken
@@ -189,7 +210,9 @@ exports.deleteTrip = async (req, res) => {
             $pull: { trips: trip.id }
         })
 
-        await tripModel.findByIdAndDelete(id)
+        await seatModel.deleteMany({ trip: trip._id })
+
+        await tripModel.findByIdAndDelete(trip._id)
 
         return res.redirect('/trips')
     } catch (error) {

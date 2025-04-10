@@ -21,7 +21,7 @@ exports.createBusSchema = {
     seats_count: {
         isInt: {
             options: { min: 30, max: 100 },
-            errorMessage: "Avtobus o'rindiqlar sonini raqamda kiriting va 30 ta o'rindiqdan kam va 10 tadan kop bo'lmasligi kerak!",
+            errorMessage: "Avtobus o'rindiqlar sonini raqamda kiriting va 30 ta o'rindiqdan kam va 100 tadan ko'p bo'lmasligi kerak!",
         },
     },
     image: {
@@ -59,7 +59,7 @@ exports.updateBusSchema = {
     seats_count: {
         isInt: {
             options: { min: 30, max: 100 },
-            errorMessage: "Avtobus o'rindiqlar sonini raqamda kiriting va 30 ta o'rindiqdan kam va 10 tadan kop bo'lmasligi kerak!",
+            errorMessage: "Avtobus o'rindiqlar sonini raqamda kiriting va 30 ta o'rindiqdan kam va 100 tadan ko'p bo'lmasligi kerak!",
         },
     },
     image: {
