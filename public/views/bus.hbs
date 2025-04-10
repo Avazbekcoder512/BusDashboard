@@ -1,536 +1,363 @@
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Avtobus</title>
-    <link type="image/x-icon" href="../../favicon-3.png" rel="icon" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
-
-
-    <style>
-        body {
-            background-color: #f4f7fc;
-            font-family: Arial, sans-serif;
-            color: #333;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 20px;
-        }
-
-        .card {
-            background: white;
-            padding: 20px;
-            border-radius: 16px;
-            margin: 15px;
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
-            width: 100%;
-            max-width: 1100px;
-            position: relative;
-            transition: 0.3s;
-            border-left: 6px solid #007bff;
-        }
-
-        .card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
-        }
-
-        .route-info {
-            background: #eef4ff;
-            padding: 12px;
-            border-radius: 10px;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 15px;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .route-info p {
-            margin: 5px 0;
-            display: flex;
-            align-items: center;
-            font-weight: bold;
-        }
-
-        .route-info p i {
-            margin-right: 8px;
-            color: #007bff;
-        }
-
-        .buttons {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 12px;
-        }
-
-        .back-btn {
-            background-color: #007bff;
-            color: white;
-            padding: 10px 14px;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: 0.3s;
-            font-size: 14px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .back-btn:hover {
-            background-color: #0056b3;
-        }
-
-        .delete-btn {
-            background-color: red;
-            color: white;
-            padding: 10px 14px;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: 0.3s;
-            font-size: 14px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .delete-btn:hover {
-            background-color: darkred;
-        }
-
-        .edit-btn-container {
-            display: flex;
-            justify-content: flex-end;
-            margin-top: 8px;
-        }
-
-        .edit-btn {
-            background-color: #28a745;
-            color: white;
-            padding: 8px 12px;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: 0.3s;
-            font-size: 14px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        #editModal {
-            display: none;
-        }
-
-        #deleteModal {
-            display: none;
-        }
-
-        .edit-btn:hover {
-            background-color: #218838;
-        }
-
-        .edit-btn {
-            background-color: #28a745;
-            color: white;
-            padding: 8px 12px;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-
-        .edit-btn:hover {
-            background-color: #218838;
-        }
-
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 10;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.4);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            transition: opacity 0.3s ease;
-        }
-
-        .modal-content {
-            background-color: white;
-            padding: 20px;
-            border-radius: 12px;
-            width: 400px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            text-align: left;
-            position: relative;
-            animation: modalFade 0.3s;
-        }
-
-        @keyframes modalFade {
-            from {
-                opacity: 0;
-                transform: translateY(-20px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .modal-input {
-            width: 100%;
-            padding: 10px;
-            margin: 8px 0;
-            border: 1px solid #ccc;
-            border-radius: 6px;
-        }
-
-        .close-btn {
-            position: absolute;
-            top: 10px;
-            right: 15px;
-            font-size: 22px;
-            cursor: pointer;
-            color: #555;
-            transition: color 0.3s;
-        }
-
-        .close-btn:hover {
-            color: #d9534f;
-        }
-
-        .table-responsive {
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-            width: 100%;
-            max-width: 1100px;
-            margin: 15px auto;
-        }
-
-        .table-container {
-            background: white;
-            padding: 15px;
-            border-radius: 12px;
-            margin: 15px auto;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            width: 100%;
-            max-width: 1100px;
-            position: relative;
-            border-left: 5px solid #007bff;
-        }
-
-        .table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        .table thead {
-            background: linear-gradient(135deg, #007bff, #0056b3);
-            color: white;
-        }
-
-        .table thead th {
-            padding: 12px;
-            text-align: left;
-            font-weight: bold;
-        }
-
-        .table tbody tr {
-            transition: 0.3s;
-        }
-
-        .table tbody tr:nth-child(even) {
-            background: #f8f9fa;
-        }
-
-        .table tbody tr:hover {
-            background: rgba(0, 123, 255, 0.1);
-            transform: scale(1.02);
-        }
-
-        .table td {
-            padding: 12px;
-            border-bottom: 1px solid #ddd;
-        }
-
-        .table td:first-child {
-            font-weight: bold;
-            color: #007bff;
-        }
-
-        .table td:last-child {
-            font-weight: bold;
-            color: #28a745;
-        }
-
-        /* Modal konteyneri */
-        .modal-container {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            display: none;
-            align-items: center;
-            justify-content: center;
-            z-index: 9999;
-            color: white;
-            font-family: Arial, sans-serif;
-            text-align: center;
-        }
-
-        /* Modal ichidagi matnlar */
-        .modal-container h3 {
-            background: #d9534f;
-            padding: 10px;
-            border-radius: 5px;
-            display: inline-block;
-        }
-
-        .modal-container p {
-            color: white;
-            font-size: 16px;
-            margin: 10px 0;
-        }
-
-        /* Yopish tugmasi */
-        .modal-container .close-btn {
-            background: #d9534f;
-            color: white;
-            padding: 8px 15px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            margin-top: 10px;
-        }
-
-        .modal-container .close-btn:hover {
-            background: #c9302c;
-        }
-
-        .loader {
-            border: 3px solid #f3f3f3;
-            border-top: 3px solid #007bff;
-            border-radius: 50%;
-            width: 16px;
-            height: 16px;
-            animation: spin 1s linear infinite;
-            display: inline-block;
-            margin-left: 10px;
-            vertical-align: middle;
-        }
-
-        @keyframes spin {
-            0% {
-                transform: rotate(0deg);
-            }
-
-            100% {
-                transform: rotate(360deg);
-            }
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Avtobus</title>
+  <link type="image/x-icon" href="../../favicon-3.png" rel="icon" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+  
+  <style>
+    /* Global sozlamalar */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #2c3e50, #bdc3c7);
+      color: #ecf0f1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+    /* Avtobus kartasi: kengroq, ammo vertikal bo‘yicha ixcham */
+    .card {
+      background: #34495e;
+      border-radius: 12px;
+      overflow: hidden;
+      max-width: 800px; /* Kengroq karta */
+      width: 100%;
+      margin: 10px;
+      padding: 10px; /* Vertikal padding kamaytirildi */
+      position: relative;
+      border-left: 8px solid #e67e22;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+      transition: transform 0.3s ease;
+    }
+    .card:hover {
+      transform: translateY(-5px);
+    }
+    /* Rasm: kengligi to'liq, lekin vertikal bo‘yicha o‘lcham avtomatik */
+    .bus-image {
+      width: 100%;
+      height: auto;
+      display: block;
+      border-radius: 12px;
+    }
+    h3 {
+      text-align: center;
+      margin: 8px 0;
+      font-size: 26px;
+      color: #e67e22;
+    }
+    .route-info {
+      background: rgba(0, 0, 0, 0.2);
+      padding: 10px; /* Padding kamaytirildi */
+      margin: 0 10px 10px 10px; /* Margin ixchamlashtirildi */
+      border-radius: 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px; /* Elementlar orasidagi bo‘shliq kamaytirildi */
+    }
+    .route-info p {
+      font-size: 16px;
+      display: flex;
+      align-items: center;
+    }
+    .route-info p i {
+      margin-right: 8px;
+      color: #e67e22;
+    }
+    .edit-btn-container {
+      text-align: right;
+      margin: 0 10px 8px 10px;
+    }
+    .buttons .edit-btn {
+      background: #27ae60;
+      border: none;
+      padding: 8px 16px;
+      font-size: 14px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+      color: #ecf0f1;
+    }
+    .buttons .edit-btn:hover {
+      background: #1e8449;
+    }
+    .buttons {
+      display: flex;
+      justify-content: space-around;
+      margin: 10px;
+    }
+    .buttons button,
+    .buttons a button {
+      background: #e67e22;
+      border: none;
+      padding: 8px 16px;
+      font-size: 14px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+      color: #ecf0f1;
+    }
+    .buttons button:hover,
+    .buttons a button:hover {
+      background: #d35400;
+    }
+    /* Modal oynalari */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.7);
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+      padding: 20px;
+    }
+    .modal-content {
+      background: #2c3e50;
+      padding: 20px;
+      border-radius: 10px;
+      width: 100%;
+      max-width: 400px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+      position: relative;
+    }
+    .modal-content h3 {
+      margin-top: 0;
+      color: #e67e22;
+      text-align: center;
+    }
+    .modal-input {
+      width: 100%;
+      padding: 8px;
+      margin: 8px 0;
+      border: none;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+    .close-btn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      font-size: 24px;
+      color: #ecf0f1;
+      cursor: pointer;
+      transition: color 0.3s ease;
+    }
+    .close-btn:hover {
+      color: #e74c3c;
+    }
+    .loader {
+      border: 3px solid #ecf0f1;
+      border-top: 3px solid #e67e22;
+      border-radius: 50%;
+      width: 16px;
+      height: 16px;
+      animation: spin 1s linear infinite;
+      display: inline-block;
+      margin-left: 10px;
+      vertical-align: middle;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    /* Xatolik modal oynasi */
+    #errorModal {
+      display: {{#if errorFlash}}flex{{else}}none{{/if}};
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+    }
+    #errorModal > div {
+      background: #c0392b;
+      padding: 20px;
+      border-radius: 8px;
+      text-align: center;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+      max-width: 400px;
+      width: 90%;
+    }
+    #errorModal h3 {
+      margin: 0 0 10px;
+      color: #ecf0f1;
+    }
+    #errorModal p {
+      margin: 10px 0;
+      font-size: 16px;
+    }
+    #errorModal button {
+      background: #e74c3c;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-size: 14px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+      color: #ecf0f1;
+    }
+    #errorModal button:hover {
+      background: #c0392b;
+    }
+    /* Delete modal tugmalari uchun qo'shimcha stil */
+    #deleteModal .delete-btn {
+      background: #e74c3c;
+      color: #fff;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+    #deleteModal .delete-btn:hover {
+      background: #c0392b;
+    }
+    #deleteModal .back-btn {
+      background: #95a5a6;
+      color: #fff;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+    #deleteModal .back-btn:hover {
+      background: #7f8c8d;
+    }
+  </style>
 </head>
-
 <body>
-    <div class="card">
-        <h3>Avtobus</h3>
-        <div class="route-info">
-            <p><i class="fa-solid fa-bus"></i><strong>Avtobus modeli:</strong>&nbsp;{{bus.bus_model}}</p>
-            <p><i class="fa-solid fa-hashtag"></i><strong>Avtobus raqami:</strong>&nbsp;{{bus.bus_number}}</p>
-            <p><i class="fa-solid fa-chair"></i><strong>O'rindiqlar soni:</strong>&nbsp;{{bus.seats_count}}</p>
-            <div class="edit-btn-container">
-                <button class="edit-btn" id="editBtn"><i class="fa-solid fa-pen"></i> Tahrirlash</button>
-            </div>
-        </div>
-        <div class="buttons">
-            <a href="/buses" style="text-decoration: none;"><button class="back-btn"><i
-                        class="fa-solid fa-arrow-left"></i> Orqaga</button></a>
-            <button class="delete-btn"><i class="fa-solid fa-trash"></i>O'chirish</button>
-        </div>
+  <div class="card">
+    <!-- Avtobus rasmi (agar mavjud bo'lsa) -->
+    <img src="{{bus.image}}" alt="Avtobus Rasmi" class="bus-image">
+    <h3>Avtobus</h3>
+    <div class="route-info">
+      <p><i class="fa-solid fa-bus"></i><strong>Avtobus modeli:</strong>&nbsp;{{bus.bus_model}}</p>
+      <p><i class="fa-solid fa-hashtag"></i><strong>Avtobus raqami:</strong>&nbsp;{{bus.bus_number}}</p>
+      <p><i class="fa-solid fa-chair"></i><strong>O'rindiqlar soni:</strong>&nbsp;{{bus.seats_count}}</p>
+      <p><i class="fa-solid fa-clock"></i></i><strong>Reys nomi:</strong>&nbsp;{{bus.trip.route.name}}</p>
     </div>
-
-    <div id="errorModal" style="display: {{#if errorFlash}}flex{{else}}none{{/if}}; 
-           position: fixed; 
-           top: 0; 
-           left: 0; 
-           width: 100%; 
-           height: 100%; 
-           background: rgba(0, 0, 0, 0.5); 
-           align-items: center; 
-           justify-content: center; 
-           z-index: 9999;">
-
-        <div style="background: white; 
-                padding: 25px; 
-                border-radius: 8px; 
-                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); 
-                max-width: 450px; 
-                text-align: center;">
-
-            <h3 style="margin: 0 0 15px; font-size: 24px; font-weight: bold;">Xatolik yuz berdi</h3>
-
-            {{#each errorFlash}}
-            <p style=" 
-                  font-size: 18px; 
-                  font-weight: bold; 
-                  margin: 12px 0;">
-                <i class="fa-solid fa-triangle-exclamation" style="color: #c9302c;"></i> {{this}}
-            </p>
-            {{/each}}
-
-            <button type="button" id="closeErrorModal" style="background: #0056b3; 
-                       color: white; 
-                       font-size: 18px; 
-                       font-weight: bold;
-                       padding: 10px 18px; 
-                       border: none; 
-                       border-radius: 5px; 
-                       cursor: pointer; 
-                       margin-top: 12px;">
-                Yopish
-            </button>
+    <div class="buttons">
+      <a href="/buses" style="text-decoration: none;"><button class="back-btn"><i class="fa-solid fa-arrow-left"></i> Orqaga</button></a>
+        <div class="edit-btn-container">
+            <button class="edit-btn" id="editBtn"><i class="fa-solid fa-pen"></i> Tahrirlash</button>
         </div>
+      <button class="delete-btn"><i class="fa-solid fa-trash"></i> O'chirish</button>
     </div>
+  </div>
 
+  <div id="errorModal">
+    <div>
+      <h3>Xatolik yuz berdi</h3>
+      {{#each errorFlash}}
+      <p><i class="fa-solid fa-triangle-exclamation"></i> {{this}}</p>
+      {{/each}}
+      <button type="button" id="closeErrorModal">Yopish</button>
+    </div>
+  </div>
 
-    <div class="modal" id="editModal">
-        <form action="/bus/{{bus._id}}/update" method="post" enctype="multipart/form-data">
-            <div class="modal-content">
-                <span class="close-btn" id="closeModal">&times;</span>
-                <h3 style="text-align: center; color: #007bff;">Avtobusni tahrirlash</h3>
-                <label>Avtobus modeli:</label>
-                <input type="text" id="editBusModel" name="bus_model" class="modal-input" value="{{bus.bus_model}}">
-                <label>Avtobus raqami:</label>
-                <input type="text" id="editBusNumber" name="bus_number" class="modal-input" value="{{bus.bus_number}}">
-                <label>Rasm yuklash:</label>
-                <input type="file" id="busImage" name="image" class="modal-input">
-                <button class="edit-btn" id="saveChanges">
-                    <span id="btnText"><i class="fa-solid fa-save"></i> Saqlash</span>
-                    <span id="btnLoader" class="loader" style="display: none;"></span>
-                </button>
-            </div>
+  <div class="modal" id="editModal">
+    <form action="/bus/{{bus._id}}/update" method="post" enctype="multipart/form-data">
+      <div class="modal-content">
+        <span class="close-btn" id="closeModal">&times;</span>
+        <h3>Avtobusni tahrirlash</h3>
+        <label>Avtobus modeli:</label>
+        <input type="text" id="editBusModel" name="bus_model" class="modal-input" value="{{bus.bus_model}}">
+        <label>Avtobus raqami:</label>
+        <input type="text" id="editBusNumber" name="bus_number" class="modal-input" value="{{bus.bus_number}}">
+        <label>Rasm yuklash:</label>
+        <input type="file" id="busImage" name="image" class="modal-input">
+        <button class="edit-btn" id="saveChanges">
+          <span id="btnText"><i class="fa-solid fa-save"></i> Saqlash</span>
+          <span id="btnLoader" class="loader" style="display: none;"></span>
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <div class="modal" id="deleteModal">
+    <div class="modal-content">
+      <span class="close-btn" id="closeDeleteModal">&times;</span>
+      <h3 style="color: #e74c3c; text-align: center;">Haqiqatdan ham bu Avtobusni o'chirmoqchimisiz?</h3>
+      <p style="text-align: center;">Bu amalni qaytarib bo‘lmaydi.</p>
+      <div style="display: flex; justify-content: center; gap: 10px; margin-top: 10px;">
+        <form action="/bus/{{bus._id}}/delete" method="post">
+          <button class="delete-btn" id="confirmDelete">Ha, o'chir</button>
         </form>
+        <button class="back-btn" id="cancelDelete">Bekor qilish</button>
+      </div>
     </div>
+  </div>
 
-    <div class="modal" id="deleteModal">
-        <div class="modal-content">
-            <span class="close-btn" id="closeDeleteModal">&times;</span>
-            <h3 style="text-align: center; color: red;">Haqiqatdan ham bu Avtobusni o'chirmoqchimisiz?</h3>
-            <p style="text-align: center;">Bu amalni qaytarib bo‘lmaydi.</p>
-            <div style="display: flex; justify-content: center; gap: 10px; margin-top: 20px;">
-                <form action="/bus/{{bus._id}}/delete" method="post">
-                    <button class="delete-btn" id="confirmDelete">Ha, o'chir</button>
-                </form>
-                <div>
-                    <button class="back-btn" id="cancelDelete">Bekor qilish</button>
-                </div>
-            </div>
-        </div>
-    </div>
+  <script>
+    document.getElementById('editBtn').addEventListener('click', function () {
+      document.getElementById('editModal').style.display = 'flex';
+    });
+    document.getElementById('closeModal').addEventListener('click', function () {
+      document.getElementById('editModal').style.display = 'none';
+    });
+    document.addEventListener("DOMContentLoaded", function () {
+      const deleteBtn = document.querySelector(".delete-btn");
+      const deleteModal = document.getElementById("deleteModal");
+      const closeDeleteModal = document.getElementById("closeDeleteModal");
+      const cancelDelete = document.getElementById("cancelDelete");
+      const confirmDelete = document.getElementById("confirmDelete");
 
-    <div class="card">
-        <h4 class="card-title" style="text-align: center; font-size: 30px;">O'rindiqlar</h4>
-        <div class="table-responsive">
-            <table class="table table-striped">
-                <thead>
-                    <tr>
-                        <th>Chipta raqami</th>
-                        <th>Band qilgan odam</th>
-                        <th>Status</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {{#each bus.seats}}
-                    <tr>
-                        <td>{{seatNumber}}</td>
-                        <td>{{booked_by}}</td>
-                        <td>{{status}}</td>
-                    </tr>
-                    {{/each}}
-                </tbody>
-            </table>
-        </div>
-    </div>
-    <script>
-
-        document.getElementById('editBtn').addEventListener('click', function () {
-            document.getElementById('editModal').style.display = 'flex';
-        });
-
-        document.getElementById('closeModal').addEventListener('click', function () {
-            document.getElementById('editModal').style.display = 'none';
-        });
-
-        document.addEventListener("DOMContentLoaded", function () {
-            const deleteBtn = document.querySelector(".delete-btn");
-            const deleteModal = document.getElementById("deleteModal");
-            const closeDeleteModal = document.getElementById("closeDeleteModal");
-            const cancelDelete = document.getElementById("cancelDelete");
-            const confirmDelete = document.getElementById("confirmDelete");
-
-            deleteBtn.addEventListener("click", function () {
-                deleteModal.style.display = "flex";
-            });
-
-            closeDeleteModal.addEventListener("click", function () {
-                deleteModal.style.display = "none";
-            });
-
-            cancelDelete.addEventListener("click", function () {
-                deleteModal.style.display = "none";
-            });
-
-            confirmDelete.addEventListener("click", function () {
-                deleteModal.style.display = "none";
-            });
-            window.addEventListener("click", function (event) {
-                if (event.target === deleteModal) {
-                    deleteModal.style.display = "none";
-                }
-            });
-        });
-
-        document.getElementById("saveChanges").addEventListener("click", function (event) {
-            event.preventDefault();
-            let btnText = document.getElementById("btnText");
-            let btnLoader = document.getElementById("btnLoader");
-
-            btnText.style.display = "none";
-            btnLoader.style.display = "inline-block";
-
-            setTimeout(() => {
-                event.target.closest("form").submit();
-            }, 1000);
-        });
-
-        document.addEventListener("DOMContentLoaded", function () {
-            const errorModal = document.getElementById("errorModal");
-            const closeErrorModalBtn = document.getElementById("closeErrorModal");
-
-            closeErrorModalBtn.addEventListener("click", function () {
-                errorModal.style.display = "none";
-            });
-
-            window.addEventListener("click", function (event) {
-                if (event.target === errorModal) {
-                    errorModal.style.display = "none";
-                }
-            });
-        });
-    </script>
-    <script src="https://kit.fontawesome.com/YOUR_FONT_AWESOME_KIT.js" crossorigin="anonymous"></script>
+      deleteBtn.addEventListener("click", function () {
+        deleteModal.style.display = "flex";
+      });
+      closeDeleteModal.addEventListener("click", function () {
+        deleteModal.style.display = "none";
+      });
+      cancelDelete.addEventListener("click", function () {
+        deleteModal.style.display = "none";
+      });
+      confirmDelete.addEventListener("click", function () {
+        deleteModal.style.display = "none";
+      });
+      window.addEventListener("click", function (event) {
+        if (event.target === deleteModal) {
+          deleteModal.style.display = "none";
+        }
+      });
+    });
+    document.getElementById("saveChanges").addEventListener("click", function (event) {
+      event.preventDefault();
+      let btnText = document.getElementById("btnText");
+      let btnLoader = document.getElementById("btnLoader");
+      btnText.style.display = "none";
+      btnLoader.style.display = "inline-block";
+      setTimeout(() => {
+        event.target.closest("form").submit();
+      }, 1000);
+    });
+    document.addEventListener("DOMContentLoaded", function () {
+      const errorModal = document.getElementById("errorModal");
+      const closeErrorModalBtn = document.getElementById("closeErrorModal");
+      closeErrorModalBtn.addEventListener("click", function () {
+        errorModal.style.display = "none";
+      });
+      window.addEventListener("click", function (event) {
+        if (event.target === errorModal) {
+          errorModal.style.display = "none";
+        }
+      });
+    });
+  </script>
 </body>
-
 </html>

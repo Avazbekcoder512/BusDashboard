@@ -1,7 +1,6 @@
 const { validationResult, matchedData } = require("express-validator");
 const busModel = require("../models/bus");
 const { createClient } = require("@supabase/supabase-js");
-const seatModel = require("../models/seat");
 const routeModel = require("../models/route");
 const tripModel = require("../models/trip");
 const jwt = require('jsonwebtoken')
@@ -56,20 +55,7 @@ exports.createBus = async (req, res) => {
             bus_number: data.bus_number,
             seats_count: data.seats_count,
             image: fileUrl,
-            seats: [],
         })
-
-        const seatsCount = data.seats_count
-
-        let seats = [];
-        for (let i = 1; i <= seatsCount; i++) {
-            let seat = new seatModel({ seatNumber: i, bus: bus._id });
-            await seat.save();
-            seats.push(seat._id);
-        }
-
-        bus.seats = seats;
-        await bus.save();
 
         return res.redirect('/buses')
 
@@ -85,7 +71,7 @@ exports.createBus = async (req, res) => {
 
 exports.getAllBuses = async (req, res) => {
     try {
-        const buses = await busModel.find().populate('seats')
+        const buses = await busModel.find()
         const route = await routeModel.find()
         const gender = req.cookies.gender
         const token = req.cookies.authToken
@@ -121,7 +107,12 @@ exports.getOneBus = async (req, res) => {
             return res.redirect('/buses')
         }
 
-        const bus = await busModel.findById(id).populate("seats")
+        const bus = await busModel.findById(id).populate({
+            path: 'trip',
+            populate: [
+                { path: 'route' }
+            ]
+        })
 
         if (!bus) {
             req.flash('error', 'Avtobus topilmadi!')
@@ -286,8 +277,6 @@ exports.deleteOneBus = async (req, res) => {
                 }
             }
         }
-
-        await seatModel.deleteMany({ bus: id })
 
         await tripModel.updateOne({ _id: bus.trip }, { $unset: { bus: "" } })
 
