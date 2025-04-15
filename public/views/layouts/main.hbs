@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <title>{{title}}</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+  <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.7.2/css/all.css">
 
   <link rel="stylesheet" href="css/vertical-layout-light/style.css">
 
@@ -33,6 +34,13 @@
           <button type="button" class="btn btn-success mb-3" data-bs-toggle="modal" data-bs-target="#addBusesModel"
             style="margin-top: 16px;">
             + Avtobus qo‘shish
+          </button>
+          {{/if}}
+
+          {{#if stations}}
+          <button type="button" class="btn btn-success mb-3" data-bs-toggle="modal" data-bs-target="#addStationModal"
+            style="margin-top: 16px;">
+            + Bekat qo‘shish
           </button>
           {{/if}}
 
@@ -187,6 +195,22 @@
             <a class="nav-link" href="/ticketsellers">
               <i class="fas fa-user-tie ticket-seller" style="font-size: 20px; margin-right: 10px;"></i>
               <span class="menu-title">Chipta sotuvchilar</span>
+            </a>
+          </li>
+          {{/if}}
+
+          {{#if stations}}
+          <li class="nav-item">
+            <a class="nav-link" href="/stations" style="background-color: #007bff; color: white;">
+              <i class="fa-solid fa-circle-parking" style="font-size: 20px; margin-right: 10px;"></i>
+              <span class="menu-title">Bekatlar</span>
+            </a>
+          </li>
+          {{else}}
+          <li class="nav-item">
+            <a class="nav-link" href="/stations">
+              <i class="fa-solid fa-circle-parking" style="font-size: 20px; margin-right: 10px;"></i>
+              <span class="menu-title">Bekatlar</span>
             </a>
           </li>
           {{/if}}

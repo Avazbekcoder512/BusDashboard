@@ -1,8 +1,8 @@
 const { validationResult, matchedData } = require("express-validator");
 const routeModel = require("../models/route");
 const tripModel = require("../models/trip");
-const cityModel = require("../models/city");
-const jwt = require('jsonwebtoken')
+const jwt = require('jsonwebtoken');
+const stationModel = require("../models/station");
 
 
 exports.createRoute = async (req, res) => {
@@ -20,17 +20,6 @@ exports.createRoute = async (req, res) => {
             from: data.from,
             to: data.to
         });
-
-        const [existingFromCity, existingToCity] = await Promise.all([
-            cityModel.findOne({ name: data.from }),
-            cityModel.findOne({ name: data.to })
-        ]);
-
-        await Promise.all([
-            !existingFromCity && cityModel.create({ name: data.from }),
-            !existingToCity && cityModel.create({ name: data.to })
-        ]);
-
         return res.redirect('/routes');
     } catch (error) {
         console.log(error);
@@ -41,12 +30,14 @@ exports.createRoute = async (req, res) => {
 exports.getAllRoutes = async (req, res) => {
     try {
         const routes = await routeModel.find().populate("trips")
+        const station = await stationModel.find()
         const token = req.cookies.authToken
         const gender = req.cookies.gender
         const admin = jwt.verify(token, process.env.JWT_KEY)
 
         return res.render('routes', {
             routes,
+            station,
             token,
             gender,
             title: "Yo'nalishlar",
@@ -124,14 +115,6 @@ exports.updateRoute = async (req, res) => {
             name: data.name || route.name,
             from: data.from || route.from,
             to: data.to || route.to
-        }
-
-        const existingCity = await cityModel.findOne({ name: data.from })
-
-        if (!existingCity) {
-            const city = await cityModel.create({
-                name: data.from
-            })
         }
 
         await routeModel.findByIdAndUpdate(id, newRoute)

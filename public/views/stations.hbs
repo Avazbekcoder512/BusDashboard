@@ -1,5 +1,5 @@
 {{#if token}}
-{{#if routes}}
+{{#if stations}}
 <div class="content-wrapper">
     <div class="row" style="width: 94%;">
         <div class="col-lg-12 grid-margin stretch-card">
@@ -10,23 +10,18 @@
                         <table class="table table-striped">
                             <thead>
                                 <tr style="text-align: center;">
-                                    <th>Yo'nalish nomi</th>
-                                    <th>Qayerdan</th>
-                                    <th>Qayerga</th>
-                                    <th>Action</th>
+                                    <th>Bekat nomi</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {{#each routes}}
+                                {{#each stations}}
                                 <tr style="text-align: center; cursor: pointer;"
-                                    onclick="window.location='/route/{{_id}}'">
+                                    onclick="window.location='/station/{{_id}}'">
                                     <td>{{name}}</td>
-                                    <td>{{from}}</td>
-                                    <td>{{to}}</td>
                                     <td>
                                         <button class="btn btn-danger btn-sm delete-btn"
                                             onclick="event.stopPropagation()" data-bs-toggle="modal"
-                                            data-bs-target="#deleteRouteModal" data-id="{{_id}}">
+                                            data-bs-target="#deleteStationModal" data-id="{{_id}}">
                                             <i class="fa-solid fa-trash-can"></i>
                                         </button>
                                     </td>
@@ -45,8 +40,8 @@
 <div class="content-wrapper" style="display: flex; justify-content: center; align-items: center; height: 300px;">
     <div
         style="width: 400px; padding: 30px; border: 1px solid #ddd; border-radius: 10px; box-shadow: 2px 2px 15px rgba(0, 0, 0, 0.1); text-align: center; background: #fff;">
-        <h2 style="margin: 0; color: #333; font-size: 28px;">Yo'nalishlar mavjud emas!</h2>
-        <p style="color: #777; margin: 15px 0; font-size: 20px;">Yangi yo'nalish qo'shing</p>
+        <h2 style="margin: 0; color: #333; font-size: 28px;">Bekatlar mavjud emas!</h2>
+        <p style="color: #777; margin: 15px 0; font-size: 20px;">Yangi bekat qo'shing</p>
         <button type="button" data-bs-toggle="modal" data-bs-target="#addRouteModal"
             style="padding: 12px 25px; border: none; background: #17c964; color: white; font-size: 20px; border-radius: 8px; cursor: pointer; transition: 0.3s; box-shadow: 0 4px 10px rgba(23, 201, 100, 0.3);"
             onmouseover="this.style.background='#13a856'; this.style.boxShadow='0 6px 15px rgba(23, 201, 100, 0.5)';"
@@ -86,41 +81,21 @@
     </div>
 </div>
 
-<div class="modal fade" id="addRouteModal" tabindex="-1" aria-labelledby="addRouteModalLabel" aria-hidden="true">
+<div class="modal fade" id="addStationModal" tabindex="-1" aria-labelledby="addStationModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content" style="border-radius: 12px; box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);">
             <div class="modal-header">
-                <h4 class="modal-title text-success" id="addRouteModalLabel">Yangi Yo'nalish Qo‘shish</h4>
+                <h4 class="modal-title text-success" id="addStationModalLabel">Yangi Bekat Qo‘shish</h4>
                 <button style="border: none" type="button" class="btn-close" data-bs-dismiss="modal"
                     aria-label="Close">x</button>
             </div>
             <div class="modal-body">
-                <form action="/create-route" method="POST">
+                <form action="/create-station" method="POST">
                     <div class="mb-3">
-                        <label class="form-label" for="name">Yo'nalish nomi</label>
+                        <label class="form-label" for="name">Bekat nomi</label>
                         <input type="text" class="form-control" name="name" id="name"
-                            placeholder="Masalan: Toshkent-Xorazm" required
+                            placeholder="Masalan: Toshkent" required
                             style="border: 2px solid #17c964; border-radius: 6px; padding: 10px; font-size: 16px; background-color: #f8f9fa; transition: 0.3s; height: 45px;">
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label" for="from">Qayerdan</label>
-                        <select class="form-select" id="from" name="from" required
-                            style="width: 100%; border: 2px solid #17c964; border-radius: 6px; padding: 10px; font-size: 16px; background-color: #f8f9fa; transition: 0.3s; height: 45px;">
-                            <option value="" disabled selected>Tanlang...</option>
-                            {{#each station}}
-                            <option value="{{name}}">{{name}}</option>
-                            {{/each}}
-                        </select>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label" for="to">Qayerga</label>
-                        <select class="form-select" id="to" name="to" required
-                            style="width: 100%; border: 2px solid #17c964; border-radius: 6px; padding: 10px; font-size: 16px; background-color: #f8f9fa; transition: 0.3s; height: 45px;">
-                            <option value="" disabled selected>Tanlang...</option>
-                            {{#each station}}
-                            <option value="{{name}}">{{name}}</option>
-                            {{/each}}
-                        </select>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
@@ -134,15 +109,15 @@
     </div>
 </div>
 
-<div class="modal fade" id="deleteRouteModal" tabindex="-1" aria-labelledby="deleteRouteModalLabel" aria-hidden="true">
+<div class="modal fade" id="deleteStationModal" tabindex="-1" aria-labelledby="deleteStationModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content" style="border-radius: 12px; box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);">
             <div class="modal-header">
-                <h5 class="modal-title text-danger" id="deleteRouteModalLabel">Yo'nalilshni o‘chirish</h5>
+                <h5 class="modal-title text-danger" id="deleteStationModalLabel">Bekatni o‘chirish</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">x</button>
             </div>
             <div class="modal-body">
-                <p>Haqiqatdan ham ushbu yo'nalishni o‘chirmoqchimisiz?</p>
+                <p>Haqiqatdan ham ushbu bekatni o‘chirmoqchimisiz?</p>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Bekor qilish</button>
@@ -169,8 +144,8 @@
 
         deleteButtons.forEach(button => {
             button.addEventListener("click", function () {
-                const routeId = this.getAttribute("data-id");
-                deleteForm.setAttribute("action", `/route/${routeId}/delete`);
+                const stationId = this.getAttribute("data-id");
+                deleteForm.setAttribute("action", `/station/${stationId}/delete`);
             });
         });
 
@@ -180,7 +155,7 @@
             deleteLoader.classList.remove("d-none");
         });
 
-        const addForm = document.querySelector("#addRouteModal form");
+        const addForm = document.querySelector("#addStationModal form");
         const addButton = addForm.querySelector("button[type='submit']");
 
         const addText = document.createElement("span");

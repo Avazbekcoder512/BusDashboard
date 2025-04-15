@@ -1,12 +1,12 @@
 const busModel = require("../models/bus")
-const cityModel = require("../models/city")
+const stationModel = require("../models/station")
 const routeModel = require("../models/route")
 const jwt = require('jsonwebtoken')
 require('dotenv')
 
 exports.searchRoute = async (req, res) => {
     try {
-        const city = await cityModel.find()
+        const city = await stationModel.find()
         const token = req.cookies.authToken
         const gender = req.cookies.gender
         const from = req.query.from
@@ -47,7 +47,7 @@ exports.getTicket = async (req, res) => {
         const token = req.cookies.authToken
         const gender = req.cookies.gender
         const user = jwt.verify(token, process.env.JWT_KEY)
-        const city = await cityModel.find()
+        const city = await stationModel.find()
         const tickets = await routeModel.find().populate('trips')
 
         if (user.role === "ticket_seller") {

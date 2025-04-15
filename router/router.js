@@ -18,6 +18,8 @@ const { jwtAccessMiddleware } = require("../middleware/jwt-accessMiddleware")
 const { getTicket, searchRoute, getSeats } = require("../controller/ticket")
 const { roleAccessMiddleware } = require("../middleware/role-accessMidleware")
 const { ServerError, notFound, forbidden } = require("../controller/errorController")
+const { getStations, createStation, deleteStation } = require("../controller/stationController")
+const { stationCreateSchema } = require("../validator/stationValidate")
 const upload = multer()
 
 const router = require("express").Router()
@@ -66,6 +68,11 @@ router
 .get('/ticketseller/:id', jwtAccessMiddleware, roleAccessMiddleware(['superAdmin', 'admin']), getOneTicketSeller)
 .post('/ticketseller/:id/update', jwtAccessMiddleware, roleAccessMiddleware(['superAdmin', 'admin']), upload.single('image'), checkSchema(updateTicketSellerSchema), updateTicketSeller)
 .post('/ticketseller/:id/delete', jwtAccessMiddleware, roleAccessMiddleware('superAdmin'), deleteTicketSeller)
+
+// Station router
+.get('/stations', jwtAccessMiddleware, roleAccessMiddleware(['superAdmin', 'admin']), getStations)
+.post('/create-station', jwtAccessMiddleware, roleAccessMiddleware(['superAdmin', 'admin']), checkSchema(stationCreateSchema), createStation)
+.post('/station/:id/delete', jwtAccessMiddleware, roleAccessMiddleware(['superAdmin']), deleteStation)
 
 // Ticket router
 .get('/tickets', getTicket)
