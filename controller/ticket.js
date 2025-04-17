@@ -2,6 +2,7 @@ const busModel = require("../models/bus")
 const stationModel = require("../models/station")
 const routeModel = require("../models/route")
 const jwt = require('jsonwebtoken')
+const tripModel = require("../models/trip")
 require('dotenv')
 
 exports.searchRoute = async (req, res) => {
@@ -90,15 +91,19 @@ exports.getSeats = async (req, res) => {
             return res.redirect('/tickets')
         }
 
-        const bus = await busModel.findById(id).populate("seats")
 
-        if (!bus) {
-            req.flash('error', 'Avtobus topilmadi!')
-            return res.redirect('/tickets')
+        const trip = await tripModel
+            .findById(id)
+            .populate('seats')      // reserved o’rindiqlar
+            .populate('route');     // yo’nalish
+
+        if (!trip) {
+            req.flash('error', 'Reys topilmadi!');
+            return res.redirect('/tickets');
         }
 
         return res.render('seats', {
-            bus,
+            trip,
             token,
             layout: false
         })

@@ -154,35 +154,29 @@
                             </tr>
                         </thead>
                         <tbody>
-                            {{#each data}}
                             <tr style="text-align: center;">
-                                <td>{{name}}</td>
+                                <td>{{data.name}}</td>
+                                {{#each data.trips}}
                                 <td>
-                                    {{#each trips}}
-                                    <a href="/seats/{{bus}}"
+                                    <a href="/seats/{{_id}}"
                                         style="text-decoration: none; color: inherit; display: block; width: 100%;">
                                         {{departure_date}}
                                     </a>
-                                    {{/each}}
                                 </td>
                                 <td>
-                                    {{#each trips}}
                                     <a href="/seats/{{_id}}"
                                         style="text-decoration: none; color: inherit; display: block; width: 100%;">
                                         {{departure_time}}
                                     </a>
-                                    {{/each}}
                                 </td>
                                 <td>
-                                    {{#each trips}}
                                     <a href="/seats/{{_id}}"
                                         style="text-decoration: none; color: inherit; display: block; width: 100%;">
                                         {{ticket_price}}
                                     </a>
-                                    {{/each}}
                                 </td>
+                                {{/each}}
                             </tr>
-                            {{/each}}
                         </tbody>
                     </table>
                 </div>
