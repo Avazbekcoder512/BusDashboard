@@ -1,12 +1,35 @@
 {{#if token}}
 {{#if stations}}
 <div class="content-wrapper">
-    <div class="row" style="width: 50%;">
+    <div class="row" style="width: 100%;">
         <div class="col-lg-12 grid-margin stretch-card">
             <div class="card">
                 <div class="card-body">
-                    <h4 class="card-title" style="text-align: center; font-size: 30px;">Yo'nalishlar</h4>
+                    <h4 class="card-title" style="text-align: center; font-size: 30px;">Bekatlar</h4>
                     <div class="table-responsive">
+                        {{!-- <table class="table table-striped">
+                            <thead>
+                                <tr style="text-align: center;">
+                                    <th>Bekat nomi</th>
+                                    <th>action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {{#each stations}}
+                                <tr style="text-align: center; cursor: pointer;">
+                                    <td>{{name}}</td>
+                                    <td>
+                                        <button class="btn btn-danger btn-sm delete-btn"
+                                            onclick="event.stopPropagation()" data-bs-toggle="modal"
+                                            data-bs-target="#deleteStationModal" data-id="{{_id}}">
+                                            <i class="fa-solid fa-trash-can"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                {{/each}}
+                            </tbody>
+                        </table>
+
                         <table class="table table-striped">
                             <thead>
                                 <tr style="text-align: center;">
@@ -28,8 +51,44 @@
                                 </tr>
                                 {{/each}}
                             </tbody>
+                        </table> --}}
+                        <div>
 
-                        </table>
+                            <div
+                                style="position: sticky; width: 100%; top: 0; left: 0; display: flex; justify-content: space-around; ">
+                                <div
+                                    style="width: 100%; display: flex; justify-content: space-evenly; align-items: center;">
+                                    <h2>Bekatlar</h2>
+                                    <h2>Action</h2>
+                                </div>
+                                <div
+                                    style="width: 100%; display: flex; justify-content: space-evenly; align-items: center;">
+                                    <h2>Bekatlar</h2>
+                                    <h2>Action</h2>
+                                </div>
+                            </div>
+                            <ul
+                                style="position: relative; display: grid; grid-template-columns: repeat(2, 1fr); column-gap: 30px; row-gap: 12px; list-style: none; padding: 0;">
+                                <div
+                                    style="position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 1px; height: 100%; background-color: gray; ">
+                                </div>
+                                {{#each stations}}
+                                <li
+                                    style="display: flex; justify-content: center; align-items: center; padding-block: 10px; background-color: #e8eff9;">
+                                    <div style="width: 50%; display: flex; justify-content: space-between; align-items: baseline;">
+                                        <h4>{{name}}</h4>
+                                        <button class="btn btn-danger btn-sm delete-btn"
+                                            onclick="event.stopPropagation()" data-bs-toggle="modal"
+                                            data-bs-target="#deleteStationModal" data-id="{{_id}}">
+                                            <i class="fa-solid fa-trash-can"></i>
+                                        </button>
+                                    </div>
+                                </li>
+                                {{/each}}
+                            </ul>
+
+
+                        </div>
                     </div>
                 </div>
             </div>
@@ -93,8 +152,8 @@
                 <form action="/create-station" method="POST">
                     <div class="mb-3">
                         <label class="form-label" for="name">Bekat nomi</label>
-                        <input type="text" class="form-control" name="name" id="name"
-                            placeholder="Masalan: Toshkent" required
+                        <input type="text" class="form-control" name="name" id="name" placeholder="Masalan: Toshkent"
+                            required
                             style="border: 2px solid #17c964; border-radius: 6px; padding: 10px; font-size: 16px; background-color: #f8f9fa; transition: 0.3s; height: 45px;">
                     </div>
                     <div class="modal-footer">
@@ -109,7 +168,8 @@
     </div>
 </div>
 
-<div class="modal fade" id="deleteStationModal" tabindex="-1" aria-labelledby="deleteStationModalLabel" aria-hidden="true">
+<div class="modal fade" id="deleteStationModal" tabindex="-1" aria-labelledby="deleteStationModalLabel"
+    aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content" style="border-radius: 12px; box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);">
             <div class="modal-header">
