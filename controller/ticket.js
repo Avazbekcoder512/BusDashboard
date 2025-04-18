@@ -3,6 +3,10 @@ const stationModel = require("../models/station")
 const routeModel = require("../models/route")
 const jwt = require('jsonwebtoken')
 const tripModel = require("../models/trip")
+const seatModel = require("../models/seat")
+const ticketModel = require("../models/ticket")
+const ticketSellerModel = require("../models/ticket_seller")
+const { validationResult, matchedData } = require("express-validator")
 require('dotenv')
 
 exports.searchRoute = async (req, res) => {
@@ -18,7 +22,7 @@ exports.searchRoute = async (req, res) => {
 
         if (!from || !to || !departure_date) {
             req.flash('error', 'Iltimos, 3 ta maydonni ham kiriting!')
-            return res.redirect('/tickets')
+            return res.redirect('/search-trip')
         }
 
         const data = await routeModel.findOne({ from: from, to: to }).populate({
@@ -26,7 +30,7 @@ exports.searchRoute = async (req, res) => {
             match: { departure_date }
         })
 
-        return res.render('ticket', {
+        return res.render('ticketBooked', {
             token,
             gender,
             data,
@@ -43,29 +47,29 @@ exports.searchRoute = async (req, res) => {
     }
 }
 
-exports.getTicket = async (req, res) => {
+exports.getTrips = async (req, res) => {
     try {
         const token = req.cookies.authToken
         const gender = req.cookies.gender
         const user = jwt.verify(token, process.env.JWT_KEY)
         const city = await stationModel.find()
-        const tickets = await routeModel.find().populate('trips')
+        const trip = await routeModel.find().populate('trips')
 
         if (user.role === "ticket_seller") {
-            return res.render('ticket', {
+            return res.render('ticketBooked', {
                 token,
                 gender,
                 city,
-                tickets,
+                trip,
                 user,
                 errorFlash: req.flash('error')
             })
         } else {
-            return res.render('ticket', {
+            return res.render('ticketBooked', {
                 token,
                 gender,
                 city,
-                tickets,
+                trip,
                 admin: user,
                 errorFlash: req.flash('error')
             })
@@ -88,18 +92,18 @@ exports.getSeats = async (req, res) => {
 
         if (!id.match(/^[0-9a-fA-F]{24}$/)) {
             req.flash('error', "Id noto'g'ri")
-            return res.redirect('/tickets')
+            return res.redirect('/search-trip')
         }
 
 
         const trip = await tripModel
             .findById(id)
-            .populate('seats')      // reserved o’rindiqlar
-            .populate('route');     // yo’nalish
+            .populate('seats')
+            .populate('route');
 
         if (!trip) {
             req.flash('error', 'Reys topilmadi!');
-            return res.redirect('/tickets');
+            return res.redirect('/search-trip');
         }
 
         return res.render('seats', {
@@ -116,3 +120,83 @@ exports.getSeats = async (req, res) => {
         return res.redirect('/500')
     }
 }
+
+exports.seatBooked = async (req, res) => {
+    try {
+        const { id } = req.params
+        const token = req.cookies.authToken
+
+        const decoded = jwt.verify(token, process.env.JWT_KEY)
+
+        const userId = decoded.id
+
+        if (!id.match(/^[0-9a-fA-F]{24}$/)) {
+            req.flash('error', "Id noto'g'ri!")
+            return res.redirect('/search-trip')
+        }
+
+        const errors = validationResult(req)
+        if (!errors.isEmpty()) {
+            req.flash('error', errors.array().map((error) => error.msg).join("<br>"))
+            return res.redirect('/search-trip')
+        }
+
+        const data = matchedData(req)
+        console.log(data);
+
+        const seat = await seatModel.findById(id)
+
+        if (!seat) {
+            req.flash('error', "O'rindiq topilmadi!")
+            return res.redirect('/search-trip')
+        }
+        const trip = await tripModel.findById(seat.trip)
+
+        if (!trip) {
+            req.flash('error', "Reys topilmadi!")
+            return res.redirect('/search-trip')
+        }
+
+        const bus = await busModel.findById(trip.bus)
+
+        if (!bus) {
+            req.flash('error', "Avtobus topilmadi!")
+            return res.redirect('/search-trip')
+        }
+
+        const route = await routeModel.findById(trip.route)
+
+        if (!route) {
+            req.flash('error', "Yo'nalish topilmadi!")
+            return res.redirect('/search-trip')
+        }
+
+        const ticket = await ticketModel.create({
+            passenger: data.passenger,
+            birthday: data.birthday,
+            passport: data.passport,
+            phoneNumber: data.phoneNumber,
+            seat_number: seat.seatNumber,
+            seat: seat._id,
+            bus_number: bus.bus_number,
+            from: route.from,
+            to: route.to,
+            departure_date: trip.departure_date,
+            departure_time: trip.departure_time,
+            price: seat.price
+        })
+
+        await ticketSellerModel.findByIdAndUpdate(userId, {
+            $push: { tickets: ticket._id }
+        })
+
+        await seatModel.findByIdAndUpdate(seat._id, {
+            status: "busy"
+        })
+
+        return res.redirect('/search-trip')
+    } catch (error) {
+        console.log(error);
+        return res.redirect('/500')
+    }
+}   
