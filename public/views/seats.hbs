@@ -1,22 +1,21 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="uz">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Avtobus O'rindiqlari</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Avtobus O‘rindiqlari</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
     <style>
         :root {
             --primary: #5A67D8;
             --danger: #E53E3E;
-            --danger-light: rgba(229, 62, 62, 0.2);
-            --bg-gradient: linear-gradient(135deg, #667eea, #764ba2);
-            --card-bg: rgba(255, 255, 255, 0.15);
-            --blur: 10px;
-            --text-light: #FFF;
+            --danger-light: rgba(229, 62, 62, 0.1);
+            --bg-gradient: #ffffff;
+            --card-bg: #ffffff;
+            --text-light: #ffffff;
             --text-dark: #2D3748;
-            --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 12px 24px rgba(0, 0, 0, 0.15);
         }
 
         * {
@@ -27,6 +26,7 @@
             margin: 0;
             min-height: 100vh;
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
             background: var(--bg-gradient);
@@ -41,21 +41,24 @@
             gap: 20px;
             width: 100%;
             max-width: 1000px;
+            margin-bottom: 30px;
         }
 
         .grid-item {
             position: relative;
             background: var(--card-bg);
             border-radius: 16px;
-            backdrop-filter: blur(var(--blur));
             box-shadow: var(--shadow-lg);
             padding: 16px;
             text-align: center;
-            transition: transform 0.3s ease;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            color: var(--text-dark);
+            cursor: pointer;
         }
 
         .grid-item:hover {
             transform: translateY(-5px);
+            box-shadow: 0 16px 32px rgba(0, 0, 0, 0.2);
         }
 
         .grid-item .seat-number {
@@ -75,32 +78,122 @@
             background: var(--primary);
         }
 
+        .grid-item[data-status="band"] {
+            background: var(--danger-light);
+            color: var(--danger);
+            pointer-events: none;
+        }
+
         .grid-item[data-status="band"] .badge {
             background: var(--danger);
         }
 
-        .grid-item .select {
-            margin-top: 8px;
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.4);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 999;
         }
 
-        input[type="checkbox"] {
-            width: 1.2em;
-            height: 1.2em;
-            accent-color: var(--primary);
+        .modal {
+            background: white;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: var(--shadow-lg);
+            max-width: 400px;
+            width: 90%;
+            position: relative;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal h2 {
+            margin-top: 0;
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            color: var(--text-dark);
+        }
+
+        .modal form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .modal input {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+
+        .modal .actions {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+
+        .modal .actions button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 1rem;
             cursor: pointer;
-            transform: scale(1.2);
+            transition: all 0.2s ease;
         }
 
-        /* Rezerv qilingan o'rin */
-        .grid-item[data-status="band"] {
-            background: var(--danger-light);
-            color: var(--text-light);
+        .modal .cancel-btn {
+            background: #e2e8f0;
+            color: #2d3748;
         }
 
-        .grid-item[data-status="band"] input[type="checkbox"] {
-            pointer-events: none;
-            opacity: 0.6;
-            cursor: not-allowed;
+        .modal .save-btn {
+            background: var(--primary);
+            color: white;
+            position: relative;
+        }
+
+        .modal .spinner {
+            width: 20px;
+            height: 20px;
+            border: 3px solid #fff;
+            border-top: 3px solid transparent;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            display: none;
+            margin: auto;
+        }
+
+        .modal .save-btn.loading .text {
+            display: none;
+        }
+
+        .modal .save-btn.loading .spinner {
+            display: inline-block;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
         }
     </style>
 </head>
@@ -108,15 +201,126 @@
 <body>
     <div class="container">
         {{#each trip.seats}}
-        <div class="grid-item" data-status="{{status}}">
+        <div class="grid-item" data-status="{{status}}" data-id="{{_id}}">
             <div class="seat-number">{{seatNumber}}</div>
-            <div class="badge">{{status}}</div>
-            <div class="select">
-                <input type="checkbox">
+            <div class="badge">
+                {{#if (eq status "empty")}}Bo'sh{{else}}{{status}}{{/if}}
             </div>
         </div>
         {{/each}}
     </div>
+
+    <!-- Modal -->
+    <!-- Modal Overlay -->
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal" id="seatModal">
+            <h2>Yo'lovchi ma'lumotlari</h2>
+            <form id="modalForm">
+                <label for="passenger">To'liq ism</label>
+                <input type="text" name="passenger" id="passenger" placeholder="Masalan:Davronov Davron Davronovich"
+                    required />
+
+                <label for="birthday">Tug'ilgan sana</label>
+                <input type="date" name="birthday" id="birthday" required />
+
+                <label for="passport">Pasport raqam</label>
+                <input type="text" name="passport" id="passport" placeholder="AA1234567" required />
+
+                <label for="phoneNumber">Telefon raqam</label>
+                <input type="tel" name="phoneNumber" id="phoneNumber" placeholder="+998991234567" required />
+                <div class="actions">
+                    <button type="button" class="cancel-btn" id="cancelBtn">Bekor qilish</button>
+                    <button type="submit" class="save-btn" id="saveBtn">
+                        <span class="text">Saqlash</span>
+                        <span class="spinner"></span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+    <script>
+
+        function formatPassportNumber(value) {
+            let cleaned = value.replace(/[^a-zA-Z0-9]/g, '');
+            let letters = cleaned.slice(0, 2).replace(/[^a-zA-Z]/g, '').toUpperCase();
+            let digits = cleaned.slice(2).replace(/\D/g, '').slice(0, 7);
+            return letters + digits;
+        }
+
+        // Inputga real vaqtli formatlashni qo‘shish
+        const passportInput = document.getElementById("passport");
+        passportInput.addEventListener("input", function (e) {
+            const formatted = formatPassportNumber(e.target.value);
+            e.target.value = formatted;
+        });
+
+        const birthDateInput = document.getElementById("birthday");
+        const today = new Date();
+
+        const maxDateStr = today.toISOString().split('T')[0];
+
+        const minDate = new Date(today.getFullYear() - 100, today.getMonth(), today.getDate());
+        const minDateStr = minDate.toISOString().split('T')[0];
+
+        birthDateInput.max = maxDateStr;
+        birthDateInput.min = minDateStr;
+
+        const modal = document.getElementById("modalOverlay");
+        const modalForm = document.getElementById("modalForm");
+        const saveBtn = document.getElementById("saveBtn");
+        const cancelBtn = document.getElementById("cancelBtn");
+        let currentSeatId = null;
+
+        document.querySelectorAll('.grid-item[data-status="empty"]').forEach(item => {
+            item.addEventListener("click", () => {
+                currentSeatId = item.getAttribute("data-id"); // ID ni olish
+                console.log("Booking seat:", currentSeatId);
+                modal.style.display = "flex";
+            });
+        });
+
+        cancelBtn.addEventListener("click", () => {
+            modal.style.display = "none";
+            modalForm.reset();
+        });
+
+        modalForm.addEventListener("submit", function (e) {
+            e.preventDefault();
+            saveBtn.classList.add("loading");
+
+            const formData = new FormData(modalForm);
+            const payload = {
+                passenger: formData.get("passenger"),
+                birthday: formData.get("birthday"),
+                passport: formData.get("passport"),
+                phoneNumber: formData.get("phoneNumber")
+            };
+
+            fetch(`http://localhost:7000/seatbooked/${currentSeatId}`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(payload)
+            })
+                .then(res => {
+                    if (res.ok) {
+                        alert("Muvaffaqiyatli saqlandi!");
+                        modal.style.display = "none";
+                        modalForm.reset();
+                    } else {
+                        alert("Xatolik yuz berdi!");
+                    }
+                })
+                .catch(() => alert("Tarmoqda xatolik!"))
+                .finally(() => {
+                    saveBtn.classList.remove("loading");
+                });
+        });
+    </script>
+
 </body>
 
 </html>

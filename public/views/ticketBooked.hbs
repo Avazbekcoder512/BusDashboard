@@ -133,7 +133,7 @@
     </div>
 </div>
 
-{{#if tickets}}
+{{#if trip}}
 {{/if}}
 
 {{#if data}}
@@ -158,19 +158,19 @@
                                 <td>{{data.name}}</td>
                                 {{#each data.trips}}
                                 <td>
-                                    <a href="/seats/{{_id}}"
+                                    <a href="/trip/{{_id}}"
                                         style="text-decoration: none; color: inherit; display: block; width: 100%;">
                                         {{departure_date}}
                                     </a>
                                 </td>
                                 <td>
-                                    <a href="/seats/{{_id}}"
+                                    <a href="/trip/{{_id}}"
                                         style="text-decoration: none; color: inherit; display: block; width: 100%;">
                                         {{departure_time}}
                                     </a>
                                 </td>
                                 <td>
-                                    <a href="/seats/{{_id}}"
+                                    <a href="/trip/{{_id}}"
                                         style="text-decoration: none; color: inherit; display: block; width: 100%;">
                                         {{ticket_price}}
                                     </a>

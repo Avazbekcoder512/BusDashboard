@@ -15,11 +15,12 @@ const { createDriverSchema, updateDriverSchema } = require("../validator/driverV
 const { createTicketSeller, getAllTicketSellers, getOneTicketSeller, updateTicketSeller, deleteTicketSeller } = require("../controller/ticketSellerController")
 const { createTicketSellerSchema, updateTicketSellerSchema } = require("../validator/ticketSellerValidate")
 const { jwtAccessMiddleware } = require("../middleware/jwt-accessMiddleware")
-const { getTicket, searchRoute, getSeats } = require("../controller/ticket")
+const { searchRoute, getSeats,  getTrips, seatBooked } = require("../controller/ticket")
 const { roleAccessMiddleware } = require("../middleware/role-accessMidleware")
 const { ServerError, notFound, forbidden } = require("../controller/errorController")
 const { getStations, createStation, deleteStation } = require("../controller/stationController")
 const { stationCreateSchema } = require("../validator/stationValidate")
+const { createTicketSchema } = require("../validator/ticketValidate")
 const upload = multer()
 
 const router = require("express").Router()
@@ -52,7 +53,7 @@ router
 // Trip router
 .post('/create-trip', jwtAccessMiddleware, roleAccessMiddleware(['superAdmin', 'admin']), checkSchema(createTripSchema), createTrip)
 .get('/trips', jwtAccessMiddleware, roleAccessMiddleware(['superAdmin', 'admin']), getAllTrips)
-.get('/trip/:id', jwtAccessMiddleware, roleAccessMiddleware(['superAdmin', 'admin']), getOneTrip)
+// .get('/trip/:id', jwtAccessMiddleware, roleAccessMiddleware(['superAdmin', 'admin']), getOneTrip)
 .post('/trip/:id/update', jwtAccessMiddleware, roleAccessMiddleware(['superAdmin', 'admin']), checkSchema(updateTripSchema), updateTrip)
 .post('/trip/:id/delete', jwtAccessMiddleware, roleAccessMiddleware(['superAdmin', 'admin']), deleteTrip)
 
@@ -75,9 +76,10 @@ router
 .post('/station/:id/delete', jwtAccessMiddleware, roleAccessMiddleware(['superAdmin']), deleteStation)
 
 // Ticket router
-.get('/tickets', getTicket)
+.get('/search-trip', getTrips)
 .get('/search-route', searchRoute)
-.get('/seats/:id', getSeats)
+.get('/trip/:id', getSeats)
+.post('/seatbooked/:id', checkSchema(createTicketSchema), seatBooked)
 
 // Error router
 .get('/403', forbidden)

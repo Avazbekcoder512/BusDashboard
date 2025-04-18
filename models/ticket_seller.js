@@ -7,7 +7,8 @@ const ticketSellerSchema = new mongoose.Schema({
     phoneNumber: String,
     gender: String,
     role: { type: String, default: "ticket_seller" },
-    image: String
+    image: String,
+    tickets: [{type: mongoose.Schema.Types.ObjectId, ref: "Ticket"}]
 }, { timestamps: true })
 
 const ticketSellerModel = mongoose.model('ticket seller', ticketSellerSchema)
