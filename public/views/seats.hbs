@@ -6,11 +6,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Avtobus O‘rindiqlari</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.7.2/css/all.css">
     <style>
         :root {
             --primary: #5A67D8;
             --danger: #E53E3E;
-            --danger-light: rgba(229, 62, 62, 0.1);
+            --success: #38A169;
             --bg-gradient: #ffffff;
             --card-bg: #ffffff;
             --text-light: #ffffff;
@@ -52,7 +55,6 @@
             padding: 16px;
             text-align: center;
             transition: transform 0.3s ease, box-shadow 0.3s ease;
-            color: var(--text-dark);
             cursor: pointer;
         }
 
@@ -61,13 +63,13 @@
             box-shadow: 0 16px 32px rgba(0, 0, 0, 0.2);
         }
 
-        .grid-item .seat-number {
+        .seat-number {
             font-size: 1.4rem;
             font-weight: 600;
             margin-bottom: 8px;
         }
 
-        .grid-item .badge {
+        .badge {
             display: inline-block;
             padding: 4px 10px;
             border-radius: 12px;
@@ -78,17 +80,19 @@
             background: var(--primary);
         }
 
-        .grid-item[data-status="band"] {
-            background: var(--danger-light);
+        .grid-item[data-status="busy"] {
+            background: rgba(229, 62, 62, 0.1);
             color: var(--danger);
             pointer-events: none;
         }
 
-        .grid-item[data-status="band"] .badge {
+        .grid-item[data-status="busy"] .badge {
             background: var(--danger);
         }
 
-        .modal-overlay {
+        /* Modal for form */
+        .modal-overlay,
+        .notif-overlay {
             position: fixed;
             top: 0;
             left: 0;
@@ -101,7 +105,8 @@
             z-index: 999;
         }
 
-        .modal {
+        .modal,
+        .notif {
             background: white;
             padding: 30px;
             border-radius: 16px;
@@ -110,13 +115,18 @@
             width: 90%;
             position: relative;
             animation: fadeIn 0.3s ease;
+            text-align: left;
         }
 
-        .modal h2 {
+        .notif {
+            text-align: center;
+        }
+
+        .modal h2,
+        .notif h2 {
             margin-top: 0;
             font-size: 1.5rem;
             margin-bottom: 20px;
-            color: var(--text-dark);
         }
 
         .modal form {
@@ -178,6 +188,34 @@
             display: inline-block;
         }
 
+        /* Notification popup */
+        .notif .icon i {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+
+        .notif .icon i.success {
+            color: var(--success);
+        }
+
+        .notif .icon i.error {
+            color: var(--danger);
+        }
+
+        .notif .message {
+            margin-bottom: 20px;
+            font-size: 1.1rem;
+        }
+
+        .notif .close-btn {
+            padding: 8px 16px;
+            background: #e2e8f0;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
         @keyframes spin {
             to {
                 transform: rotate(360deg);
@@ -195,37 +233,55 @@
                 transform: scale(1);
             }
         }
+
+        .back-button {
+            align-self: flex-start;
+            margin-bottom: 20px;
+            padding: 10px 16px;
+            background-color: var(--primary);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            box-shadow: var(--shadow-lg);
+            transition: background-color 0.3s ease;
+        }
+
+        .back-button:hover {
+            background-color: #434190;
+        }
     </style>
 </head>
 
 <body>
+    <a href="javascript:history.back()" class="back-button">
+        <i class="fa fa-arrow-left"></i> Orqaga
+    </a>
     <div class="container">
         {{#each trip.seats}}
         <div class="grid-item" data-status="{{status}}" data-id="{{_id}}">
             <div class="seat-number">{{seatNumber}}</div>
             <div class="badge">
-                {{#if (eq status "empty")}}Bo'sh{{else}}{{status}}{{/if}}
+                {{#if (eq status "empty")}}Bo'sh{{else}}{{#if (eq status "busy")}}Band{{else}}{{status}}{{/if}}{{/if}}
             </div>
         </div>
         {{/each}}
     </div>
 
-    <!-- Modal -->
-    <!-- Modal Overlay -->
+
+
+    <!-- Booking Modal -->
     <div class="modal-overlay" id="modalOverlay">
         <div class="modal" id="seatModal">
             <h2>Yo'lovchi ma'lumotlari</h2>
             <form id="modalForm">
                 <label for="passenger">To'liq ism</label>
-                <input type="text" name="passenger" id="passenger" placeholder="Masalan:Davronov Davron Davronovich"
+                <input type="text" name="passenger" id="passenger" placeholder="Masalan: Davronov Davron Davronovich"
                     required />
-
                 <label for="birthday">Tug'ilgan sana</label>
                 <input type="date" name="birthday" id="birthday" required />
-
                 <label for="passport">Pasport raqam</label>
                 <input type="text" name="passport" id="passport" placeholder="AA1234567" required />
-
                 <label for="phoneNumber">Telefon raqam</label>
                 <input type="tel" name="phoneNumber" id="phoneNumber" placeholder="+998991234567" required />
                 <div class="actions">
@@ -239,9 +295,35 @@
         </div>
     </div>
 
+    <!-- Notification Popup -->
+    <div class="notif-overlay" id="notifOverlay">
+        <div class="notif" id="notifPopup">
+            <div class="icon" id="notifIcon"><i class="fa fa-check-circle success"></i></div>
+            <div class="message" id="notifMessage">Message here</div>
+            <button class="close-btn" id="notifCloseBtn">Yopish</button>
+        </div>
+    </div>
 
     <script>
+        // Helper: show notification
+        function showNotification(type, text) {
+            const overlay = document.getElementById('notifOverlay');
+            const iconEl = document.getElementById('notifIcon');
+            const msgEl = document.getElementById('notifMessage');
 
+            iconEl.innerHTML = type === 'success'
+                ? '<i class="fa fa-check-circle success"></i>'
+                : '<i class="fa fa-times-circle error"></i>';
+            msgEl.textContent = text;
+            overlay.style.display = 'flex';
+        }
+
+        document.getElementById('notifCloseBtn').addEventListener('click', () => {
+            document.getElementById('notifOverlay').style.display = 'none';
+            location.reload()
+        });
+
+        // Passport formatting
         function formatPassportNumber(value) {
             let cleaned = value.replace(/[^a-zA-Z0-9]/g, '');
             let letters = cleaned.slice(0, 2).replace(/[^a-zA-Z]/g, '').toUpperCase();
@@ -249,78 +331,66 @@
             return letters + digits;
         }
 
-        // Inputga real vaqtli formatlashni qo‘shish
-        const passportInput = document.getElementById("passport");
-        passportInput.addEventListener("input", function (e) {
-            const formatted = formatPassportNumber(e.target.value);
-            e.target.value = formatted;
+        document.getElementById('passport').addEventListener('input', e => {
+            e.target.value = formatPassportNumber(e.target.value);
         });
 
-        const birthDateInput = document.getElementById("birthday");
+        // Date limits
+        const birthInput = document.getElementById('birthday');
         const today = new Date();
+        birthInput.max = today.toISOString().split('T')[0];
+        birthInput.min = new Date(today.getFullYear() - 100, today.getMonth(), today.getDate()).toISOString().split('T')[0];
 
-        const maxDateStr = today.toISOString().split('T')[0];
-
-        const minDate = new Date(today.getFullYear() - 100, today.getMonth(), today.getDate());
-        const minDateStr = minDate.toISOString().split('T')[0];
-
-        birthDateInput.max = maxDateStr;
-        birthDateInput.min = minDateStr;
-
-        const modal = document.getElementById("modalOverlay");
-        const modalForm = document.getElementById("modalForm");
-        const saveBtn = document.getElementById("saveBtn");
-        const cancelBtn = document.getElementById("cancelBtn");
+        // Modal logic
+        const modalOverlay = document.getElementById('modalOverlay');
+        const modalForm = document.getElementById('modalForm');
+        const saveBtn = document.getElementById('saveBtn');
+        const cancelBtn = document.getElementById('cancelBtn');
         let currentSeatId = null;
 
         document.querySelectorAll('.grid-item[data-status="empty"]').forEach(item => {
-            item.addEventListener("click", () => {
-                currentSeatId = item.getAttribute("data-id"); // ID ni olish
-                console.log("Booking seat:", currentSeatId);
-                modal.style.display = "flex";
+            item.addEventListener('click', () => {
+                currentSeatId = item.dataset.id;
+                modalOverlay.style.display = 'flex';
             });
         });
 
-        cancelBtn.addEventListener("click", () => {
-            modal.style.display = "none";
+        cancelBtn.addEventListener('click', () => {
+            modalOverlay.style.display = 'none';
             modalForm.reset();
         });
 
-        modalForm.addEventListener("submit", function (e) {
+        modalForm.addEventListener('submit', e => {
             e.preventDefault();
-            saveBtn.classList.add("loading");
+            saveBtn.classList.add('loading');
 
-            const formData = new FormData(modalForm);
-            const payload = {
-                passenger: formData.get("passenger"),
-                birthday: formData.get("birthday"),
-                passport: formData.get("passport"),
-                phoneNumber: formData.get("phoneNumber")
+            const data = {
+                passenger: modalForm.passenger.value,
+                birthday: modalForm.birthday.value,
+                passport: modalForm.passport.value,
+                phoneNumber: modalForm.phoneNumber.value
             };
 
             fetch(`http://localhost:7000/seatbooked/${currentSeatId}`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify(payload)
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
             })
-                .then(res => {
+                .then(res => res.json().then(resp => {
+                    modalOverlay.style.display = 'none';
+                    modalForm.reset();
                     if (res.ok) {
-                        alert("Muvaffaqiyatli saqlandi!");
-                        modal.style.display = "none";
-                        modalForm.reset();
+                        showNotification('success', resp.message || 'Muvaffaqiyatli saqlandi!');
                     } else {
-                        alert("Xatolik yuz berdi!");
+                        showNotification('error', resp.error || 'Xatolik yuz berdi!');
                     }
+                }))
+                .catch(() => {
+                    showNotification('error', 'Tarmoqda xatolik!');
                 })
-                .catch(() => alert("Tarmoqda xatolik!"))
-                .finally(() => {
-                    saveBtn.classList.remove("loading");
-                });
+                .finally(() => saveBtn.classList.remove('loading'));
         });
     </script>
-
 </body>
 
 </html>
