@@ -127,48 +127,43 @@ exports.seatBooked = async (req, res) => {
         const token = req.cookies.authToken
 
         const decoded = jwt.verify(token, process.env.JWT_KEY)
-
         const userId = decoded.id
 
         if (!id.match(/^[0-9a-fA-F]{24}$/)) {
-            req.flash('error', "Id noto'g'ri!")
-            return res.redirect('/search-trip')
+            return res.status(400).send({ error: "Id noto'g'ri!" })
         }
 
         const errors = validationResult(req)
         if (!errors.isEmpty()) {
-            req.flash('error', errors.array().map((error) => error.msg).join("<br>"))
-            return res.redirect('/search-trip')
+            const errorMessages = errors.array().map((error) => error.msg)
+            return res.status(400).send({ error: errorMessages })
         }
 
         const data = matchedData(req)
-        console.log(data);
+        console.log(data)
 
         const seat = await seatModel.findById(id)
-
         if (!seat) {
-            req.flash('error', "O'rindiq topilmadi!")
-            return res.redirect('/search-trip')
+            return res.status(404).send({ error: "O'rindiq topilmadi!" })
         }
-        const trip = await tripModel.findById(seat.trip)
 
+        if (seat.status === 'busy') {
+            return res.status(409).send({ error: "Bu o'rindiq allaqachon band qilingan!" })
+        }
+
+        const trip = await tripModel.findById(seat.trip)
         if (!trip) {
-            req.flash('error', "Reys topilmadi!")
-            return res.redirect('/search-trip')
+            return res.status(404).send({ error: "Reys topilmadi!" })
         }
 
         const bus = await busModel.findById(trip.bus)
-
         if (!bus) {
-            req.flash('error', "Avtobus topilmadi!")
-            return res.redirect('/search-trip')
+            return res.status(404).send({ error: "Avtobus topilmadi!" })
         }
 
         const route = await routeModel.findById(trip.route)
-
         if (!route) {
-            req.flash('error', "Yo'nalish topilmadi!")
-            return res.redirect('/search-trip')
+            return res.status(404).send({ error: "Yo'nalish topilmadi!" })
         }
 
         const ticket = await ticketModel.create({
@@ -194,7 +189,7 @@ exports.seatBooked = async (req, res) => {
             status: "busy"
         })
 
-        return res.redirect('/search-trip')
+        return res.status(200).send({ message: "Chipta muvaffaqiyatli band qilindi!", ticket })
     } catch (error) {
         console.log(error);
         return res.redirect('/500')

@@ -1,5 +1,5 @@
 exports.createTicketSchema = {
-    passengers: {
+    passenger: {
         notEmpty: {
             errorMessage: "Yo‘lovchi ismi bo‘lishi shart!"
         },
