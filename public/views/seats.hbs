@@ -83,7 +83,6 @@
         .grid-item[data-status="busy"] {
             background: rgba(229, 62, 62, 0.1);
             color: var(--danger);
-            pointer-events: none;
         }
 
         .grid-item[data-status="busy"] .badge {
@@ -250,6 +249,98 @@
         .back-button:hover {
             background-color: #434190;
         }
+
+        /* ————— View Modal Overlay ————— */
+        #viewModalOverlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(6px);
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        /* ————— View Modal Container ————— */
+        #viewModal {
+            background: rgba(255, 255, 255, 0.98);
+            border-radius: 2rem;
+            box-shadow: 0 24px 60px rgba(0, 0, 0, 0.12);
+            max-width: 500px;
+            /* Kengaytirildi */
+            width: 95%;
+            padding: 2.5rem 2rem;
+            /* Kattaroq padding */
+            position: relative;
+            animation: fadeScale 0.3s ease-out both;
+            text-align: left;
+        }
+
+        /* ————— Animatsiya ————— */
+        @keyframes fadeScale {
+            from {
+                opacity: 0;
+                transform: scale(0.85);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        /* ————— Sarlavha ————— */
+        #viewModal h2 {
+            font-size: 2rem;
+            /* Kattaroq sarlavha */
+            font-weight: 700;
+            color: var(--primary);
+            text-align: center;
+            margin-bottom: 1.75rem;
+            letter-spacing: 0.5px;
+        }
+
+        /* ————— Ma’lumot satrlari ————— */
+        #viewModal p {
+            margin: 0.75rem 0;
+            font-size: 1.1rem;
+            /* Biroz kattaroq matn */
+            line-height: 1.6;
+            display: flex;
+        }
+
+        #viewModal p strong {
+            width: 130px;
+            /* Label kengaytirildi */
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        #viewModal p span {
+            flex: 1;
+            color: #333;
+        }
+
+        /* ————— Yopish tugmasi ————— */
+        #closeViewModal {
+            display: inline-block;
+            margin: 2rem auto 0;
+            padding: 0.75rem 1.5rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #fff;
+            border: none;
+            border-radius: 1rem;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        #closeViewModal:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(118, 75, 162, 0.3);
+        }
     </style>
 </head>
 
@@ -268,7 +359,18 @@
         {{/each}}
     </div>
 
-
+    <!-- View Booking Modal -->
+    <div class="modal-overlay" id="viewModalOverlay">
+        <div class="modal" id="viewModal">
+            <h2>Chipta tafsilotlari</h2>
+            <p><strong>Yo‘lovchi:</strong> <span id="viewPassenger">–</span></p>
+            <p><strong>Tug‘ilgan sana:</strong> <span id="viewBirthday">–</span></p>
+            <p><strong>Pasport:</strong> <span id="viewPassport">–</span></p>
+            <p><strong>Telefon:</strong> <span id="viewPhone">–</span></p>
+            <p><strong>O'rindiq raqami:</strong> <span id="viewSeatNumber">–</span></p>
+            <button type="button" class="cancel-btn" id="closeViewModal">Yopish</button>
+        </div>
+    </div>
 
     <!-- Booking Modal -->
     <div class="modal-overlay" id="modalOverlay">
@@ -305,6 +407,34 @@
     </div>
 
     <script>
+        document.querySelectorAll('.grid-item[data-status="busy"]').forEach(item => {
+            item.addEventListener('click', () => {
+                const seatId = item.dataset.id;
+                fetch(`http://localhost:7000/seat/${seatId}`)
+                    .then(res => {
+                        if (!res.ok) throw new Error('Serverda xatolik');
+                        return res.json();
+                    })
+                    .then(data => {
+                        document.getElementById('viewPassenger').textContent = data.ticket.passenger;
+                        document.getElementById('viewBirthday').textContent = data.ticket.birthday;
+                        document.getElementById('viewPassport').textContent = data.ticket.passport;
+                        document.getElementById('viewPhone').textContent = data.ticket.phoneNumber;
+                        document.getElementById('viewSeatNumber').textContent = data.ticket.seat_number;
+                        // modalni ochish
+                        document.getElementById('viewModalOverlay').style.display = 'flex';
+                    })
+                    .catch(err => {
+                        console.error(err);
+                        showNotification('error', 'Ma’lumotni yuklashda xatolik yuz berdi');
+                    });
+            });
+        });
+
+        document.getElementById('closeViewModal').addEventListener('click', () => {
+            document.getElementById('viewModalOverlay').style.display = 'none';
+        });
+
         // Helper: show notification
         function showNotification(type, text) {
             const overlay = document.getElementById('notifOverlay');
