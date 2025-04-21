@@ -15,7 +15,7 @@ const { createDriverSchema, updateDriverSchema } = require("../validator/driverV
 const { createTicketSeller, getAllTicketSellers, getOneTicketSeller, updateTicketSeller, deleteTicketSeller } = require("../controller/ticketSellerController")
 const { createTicketSellerSchema, updateTicketSellerSchema } = require("../validator/ticketSellerValidate")
 const { jwtAccessMiddleware } = require("../middleware/jwt-accessMiddleware")
-const { searchRoute, getSeats,  getTrips, seatBooked } = require("../controller/ticket")
+const { searchRoute, getSeats,  getTrips, seatBooked, getOneSeats } = require("../controller/ticket")
 const { roleAccessMiddleware } = require("../middleware/role-accessMidleware")
 const { ServerError, notFound, forbidden } = require("../controller/errorController")
 const { getStations, createStation, deleteStation } = require("../controller/stationController")
@@ -80,6 +80,7 @@ router
 .get('/search-route', searchRoute)
 .get('/trip/:id', getSeats)
 .post('/seatbooked/:id', checkSchema(createTicketSchema), seatBooked)
+.get('/seat/:id', getOneSeats)
 
 // Error router
 .get('/403', forbidden)
