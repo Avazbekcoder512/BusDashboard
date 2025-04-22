@@ -2,7 +2,6 @@ const jwt = require("jsonwebtoken")
 const adminModel = require("../models/admin")
 require('dotenv').config()
 const bcrypt = require("bcrypt")
-const driverModel = require("../models/driver")
 const { validationResult, matchedData } = require("express-validator")
 const ticketSellerModel = require("../models/ticket_seller")
 
