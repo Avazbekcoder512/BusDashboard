@@ -64,7 +64,7 @@ exports.login = async (req, res) => {
             res.cookie("authToken", authToken, { secure: true })
             res.cookie('gender', gender)
 
-            return res.redirect("/tickets")
+            return res.redirect("/search-route")
         }
 
         if (!user) {
