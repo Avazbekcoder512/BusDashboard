@@ -30,14 +30,14 @@ exports.searchRoute = async (req, res) => {
             match: { departure_date }
         })
 
-        return res.render('ticketBooked', {
-            token,
-            gender,
-            data,
-            city,
-            user,
-            admin,
-            errorFlash: req.flash('error')
+        if (!data) {
+            return res.status(404).send({
+                error: "Reys topilmadi!"
+            })
+        }
+
+        return res.status(200).send({
+            data
         })
 
 
@@ -62,7 +62,8 @@ exports.getTrips = async (req, res) => {
                 city,
                 trip,
                 user,
-                errorFlash: req.flash('error')
+                errorFlash: req.flash('error'),
+                layout: false
             })
         } else {
             return res.render('ticketBooked', {

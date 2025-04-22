@@ -15,7 +15,6 @@
 
 <body>
   {{#if token}}
-  {{#if admin}}
   <div class="container-scroller">
     <nav class="navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
       <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-between"
@@ -130,7 +129,6 @@
       </div>
     </nav>
 
-    {{#if admin}}
     <div class="container-fluid page-body-wrapper">
       <nav class="sidebar sidebar-offcanvas" id="sidebar">
         {{#if (eq admin.role "superAdmin" 'admin')}}
@@ -247,67 +245,14 @@
             </a>
           </li>
           {{/if}}
-
-
-          {{#if passengers}}
-          <li class="nav-item">
-            <a class="nav-link" href="/#passengers" style="background-color: #007bff; color: white;">
-              <i class="fa-solid fa-users" style="font-size: 20px; margin-right: 10px;"></i>
-              <span class="menu-title">Yo'lovchilar</span>
-            </a>
-          </li>
-          {{else}}
-          <li class="nav-item">
-            <a class="nav-link" href="/#passengers">
-              <i class="fa-solid fa-users" style="font-size: 20px; margin-right: 10px;"></i>
-              <span class="menu-title">Yo'lovchilar</span>
-            </a>
-          </li>
-          {{/if}}
-
-          {{#if tickets}}
-          <li class="nav-item">
-            <a class="nav-link" href="/search-trip" style="background-color: #007bff; color: white;">
-              <i class="fa-solid fa-ticket" style="font-size: 20px; margin-right: 10px;"></i>
-              <span class="menu-title">Chipta band qilish</span>
-            </a>
-          </li>
-          {{else}}
-          <li class="nav-item">
-            <a class="nav-link" href="/search-trip">
-              <i class="fa-solid fa-ticket" style="font-size: 20px; margin-right: 10px;"></i>
-              <span class="menu-title">Chipta band qilish</span>
-            </a>
-          </li>
-          {{/if}}
         </ul>
         {{/if}}
 
-        {{#if (eq user.role "ticket_seller")}}
-        <ul class="nav">
-          {{#if tickets}}
-          <li class="nav-item">
-            <a class="nav-link" href="/search-trip" style="background-color: #007bff; color: white;">
-              <i class="fa-solid fa-ticket" style="font-size: 20px; margin-right: 10px;"></i>
-              <span class="menu-title">Chipta band qilish</span>
-            </a>
-          </li>
-          {{else}}
-          <li class="nav-item">
-            <a class="nav-link" href="/search-trip">
-              <i class="fa-solid fa-ticket" style="font-size: 20px; margin-right: 10px;"></i>
-              <span class="menu-title">Chipta band qilish</span>
-            </a>
-          </li>
-          {{/if}}
-        </ul>
-        {{/if}}
       </nav>
       <div class="main-panel">
         {{{body}}}
       </div>
     </div>
-    {{/if}}
   </div>
 
   <script>
@@ -324,7 +269,6 @@
       }
     });
   </script>
-  {{/if}}
   {{else}}
   <script>
     window.location.href = './login'

@@ -1,212 +1,263 @@
-<style>
-    .search-container {
-        background: white;
-        padding: 25px;
-        border-radius: 12px;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        margin: auto;
-    }
+<!DOCTYPE html>
+<html lang="uz">
 
-    h2 {
-        text-align: center;
-        margin-bottom: 15px;
-        font-size: 26px;
-        font-weight: bold;
-        color: #333;
-    }
-
-    form {
-        display: flex;
-        gap: 40px;
-        align-items: center;
-        justify-content: center;
-        width: 100%;
-    }
-
-    select,
-    input {
-        padding: 10px;
-        font-size: 18px;
-        border: none;
-        border-radius: 12px;
-        background: #f5f5f5;
-        width: 100%;
-        max-width: 320px;
-        outline: none;
-        transition: 0.3s;
-        cursor: pointer;
-        box-shadow: 0 0 5px rgba(34, 197, 94, 0.5);
-        /* Yashil box-shadow */
-    }
-
-    select:focus,
-    input:focus {
-        background: #ebebeb;
-        box-shadow: 0 0 10px rgba(34, 197, 94, 0.7);
-        /* Yorqinroq yashil effekt */
-    }
-
-    button {
-        background: linear-gradient(135deg, #22c55e, #16a34a);
-        /* Yashil gradient */
-        color: white;
-        cursor: pointer;
-        border: none;
-        font-size: 20px;
-        padding: 10px 35px;
-        border-radius: 12px;
-        transition: 0.3s;
-        white-space: nowrap;
-        box-shadow: 0 4px 8px rgba(34, 197, 94, 0.5);
-        /* Yashil soyali effekt */
-    }
-
-    button:hover {
-        background: linear-gradient(135deg, #16a34a, #0f8b3a);
-        box-shadow: 0 4px 12px rgba(34, 197, 94, 0.7);
-        /* Yorqinroq effekt */
-    }
-
-    @media (max-width: 1000px) {
-        form {
-            flex-direction: column;
-            gap: 12px;
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reys Qidirish</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.7.2/css/all.css">
+    <style>
+        body {
+            background: linear-gradient(to right, #f8fafc, #e2e8f0);
+            font-family: 'Segoe UI', sans-serif;
+            padding: 30px 0;
         }
 
-        select,
-        input,
-        button {
-            max-width: 100%;
+        .search-container {
+            background: #ffffff;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.07);
+            margin: auto;
+            max-width: 1000px;
+            width: 90%;
         }
-    }
-</style>
 
-<div class="content-wrapper">
+        .search-container h2 {
+            font-size: 30px;
+            font-weight: bold;
+            color: #1e293b;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .search-container form {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+        }
+
+        .search-container select,
+        .search-container input {
+            flex: 1 1 240px;
+            padding: 14px 16px;
+            font-size: 16px;
+            border: 1px solid #cbd5e1;
+            border-radius: 14px;
+            background: #f8fafc;
+            transition: all 0.3s ease;
+        }
+
+        .search-container select:hover,
+        .search-container input:hover {
+            border-color: #10b981;
+        }
+
+        .search-container button {
+            background: linear-gradient(to right, #10b981, #059669);
+            color: #fff;
+            font-size: 18px;
+            padding: 12px 32px;
+            border: none;
+            border-radius: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .search-container button:hover {
+            background: linear-gradient(to right, #059669, #047857);
+            transform: translateY(-1px);
+        }
+
+        #resultsContainer {
+            margin-top: 50px;
+            max-width: 1000px;
+            margin-left: auto;
+            margin-right: auto;
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+        }
+
+        #resultsContainer .card-title {
+            font-size: 24px;
+            font-weight: 600;
+            color: #0f172a;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        #resultsContainer .table thead {
+            background: #f1f5f9;
+        }
+
+        #resultsContainer .table th {
+            color: #1e293b;
+            text-transform: uppercase;
+        }
+
+        #resultsContainer .table tbody tr {
+            cursor: pointer;
+        }
+
+        #resultsContainer .table tbody tr:hover {
+            background-color: #f9fafb;
+        }
+
+        #errorModal .modal-content {
+            border-radius: 16px;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        #errorModal .modal-header {
+            background: linear-gradient(to right, #ef4444, #dc2626);
+            color: white;
+        }
+
+        #errorModal .btn-danger {
+            border-radius: 10px;
+            padding: 10px 20px;
+        }
+
+        @media (max-width: 768px) {
+            .search-container form {
+                flex-direction: column;
+            }
+        }
+
+        .logout-btn {
+            display: inline-block;
+            text-decoration: none;
+            background: linear-gradient(to right, #f87171, #ef4444);
+            color: #fff;
+            padding: 10px 22px;
+            font-size: 16px;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .logout-btn:hover {
+            background: linear-gradient(to right, #dc2626, #b91c1c);
+            transform: scale(1.05);
+            color: #fff;
+            text-decoration: none;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="text-right" style="max-width: 1000px; margin: 0 auto 20px auto; padding: 0 15px;">
+        <a href="/logout" class="logout-btn"><i class="fa-solid fa-left-to-bracket"></i> Chiqish</a>
+    </div>
+
+
+
     <div class="search-container">
         <h2>Reys qidirish</h2>
-        <form action="/search-route" method="GET">
+        <form id="searchForm">
             <select name="from" required>
                 <option value="" disabled selected>Qayerdan</option>
                 {{#each city}}
                 <option value="{{name}}">{{name}}</option>
                 {{/each}}
             </select>
-
             <select name="to" required>
                 <option value="" disabled selected>Qayerga</option>
                 {{#each city}}
                 <option value="{{name}}">{{name}}</option>
                 {{/each}}
             </select>
-
             <input type="date" name="departure_date" id="dateInput" required>
             <button type="submit">Qidirish</button>
         </form>
     </div>
-</div>
 
-<div class="modal fade" id="errorModal" tabindex="-1" role="dialog" aria-labelledby="errorModalLabel"
-    aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="errorModalLabel">Xatolik</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Yopish">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <p id="errorText">
-                    {{#if errorFlash}}
-                    {{{errorFlash.[0]}}}
-                    {{/if}}
-                </p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-danger" data-dismiss="modal">Yopish</button>
+    <div id="resultsContainer"></div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="errorModal" tabindex="-1" role="dialog" aria-labelledby="errorModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="errorModalLabel">Xatolik</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Yopish">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body text-center" id="errorText">
+                    <!-- {{#if errorFlash}} {{{errorFlash.[0]}}} {{/if}} -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Yopish</button>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
-{{#if trip}}
-{{/if}}
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const form = document.getElementById('searchForm');
+            const resultsDiv = document.getElementById('resultsContainer');
 
-{{#if data}}
-<div class="content-wrapper">
-    <div class="col-lg-12 grid-margin stretch-card">
-        <div class="card">
-            {{#if data.trips}}
-            <div class="card-body">
-                <h4 class="card-title" style="text-align: center;">Yo'nalishlar</h4>
-                <div class="table-responsive">
-                    <table class="table table-striped">
-                        <thead>
-                            <tr style="text-align: center;">
-                                <th>Yo'nalish nomi</th>
-                                <th>Ketish kuni</th>
-                                <th>Ketish vaqti</th>
-                                <th>Chipta narxi</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr style="text-align: center;">
-                                <td>{{data.name}}</td>
-                                {{#each data.trips}}
-                                <td>
-                                    <a href="/trip/{{_id}}"
-                                        style="text-decoration: none; color: inherit; display: block; width: 100%;">
-                                        {{departure_date}}
-                                    </a>
-                                </td>
-                                <td>
-                                    <a href="/trip/{{_id}}"
-                                        style="text-decoration: none; color: inherit; display: block; width: 100%;">
-                                        {{departure_time}}
-                                    </a>
-                                </td>
-                                <td>
-                                    <a href="/trip/{{_id}}"
-                                        style="text-decoration: none; color: inherit; display: block; width: 100%;">
-                                        {{ticket_price}}
-                                    </a>
-                                </td>
-                                {{/each}}
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            {{else}}
-            <div class="content-wrapper"
-                style="display: flex; justify-content: center; align-items: center; height: 300px;">
-                <div
-                    style="width: 400px; padding: 30px; border: 1px solid #ddd; border-radius: 10px; box-shadow: 2px 2px 15px rgba(0, 0, 0, 0.1); text-align: center; background: #fff;">
-                    <h2 style="margin: 0; color: #333; font-size: 28px;">Bu sanada reyslar mavjud emas!</h2>
-                </div>
-            </div>
-            {{/if}}
-        </div>
-    </div>
-</div>
+            function showPopup(message) {
+                const errorText = document.getElementById('errorText');
+                errorText.innerText = message;
+                $('#errorModal').modal('show');
+            }
 
-{{/if}}
+            form.addEventListener('submit', async function (e) {
+                e.preventDefault();
+                resultsDiv.innerHTML = '';
+                const params = new URLSearchParams(new FormData(form));
+                try {
+                    const resp = await fetch(`http://localhost:7000/search-route?${params.toString()}`);
+                    if (resp.ok) {
+                        const data = await resp.json();
+                        if (data.data.trips && data.data.trips.length) {
+                            let html = `<h3 class="card-title">Topilgan yo'nalishlar</h3>
+                        <div class="table-responsive">
+                        <table class="table table-bordered text-center">
+                        <thead><tr>
+                        <th>Yo'nalish nomi</th>
+                        <th>Ketish kuni</th>
+                        <th>Ketish vaqti</th>
+                        <th>Chipta narxi</th>
+                        </tr></thead><tbody>`;
+                            data.data.trips.forEach(trip => {
+                                html += `<tr data-href="/trip/${trip._id}">
+                            <td>${data.data.name}</td>
+                            <td>${trip.departure_date}</td>
+                            <td>${trip.departure_time}</td>
+                            <td>${trip.ticket_price}</td>
+                            </tr>`;
+                            });
+                            html += `</tbody></table></div>`;
+                            resultsDiv.innerHTML = html;
+                            document.querySelectorAll('tbody tr').forEach(row => {
+                                row.addEventListener('click', () => {
+                                    window.location = row.dataset.href;
+                                });
+                            });
+                        } else {
+                            showPopup("Bu sanada reyslar mavjud emas!");
+                        }
+                    } else {
+                        showPopup("Server xatosi: " + resp.status);
+                    }
+                } catch (err) {
+                    showPopup("So‘rov yuborishda xatolik: " + err.message);
+                }
+            });
+        });
+    </script>
+</body>
 
-<script>
-    // let today = new Date();
-
-    // let minDate = today.toISOString().split("T")[0];
-
-    // document.getElementById("dateInput").setAttribute("min", minDate);
-
-    document.addEventListener("DOMContentLoaded", function () {
-        var errorText = document.getElementById("errorText").innerHTML.trim();
-        if (errorText) {
-            $('#errorModal').modal('show');
-        }
-    });
-</script>
+</html>
