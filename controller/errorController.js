@@ -21,3 +21,9 @@ exports.forbidden = async ( req, res) => {
         layout: false
     })
 }
+
+exports.toManyRequest = async (req, res) => {
+    return  res.render('429', {
+        layout: false
+    })
+}

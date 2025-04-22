@@ -17,17 +17,18 @@ const { createTicketSellerSchema, updateTicketSellerSchema } = require("../valid
 const { jwtAccessMiddleware } = require("../middleware/jwt-accessMiddleware")
 const { searchRoute, getSeats, getTrips, seatBooked, getOneSeats } = require("../controller/ticket")
 const { roleAccessMiddleware } = require("../middleware/role-accessMidleware")
-const { ServerError, notFound, forbidden } = require("../controller/errorController")
+const { ServerError, notFound, forbidden, toManyRequest } = require("../controller/errorController")
 const { getStations, createStation, deleteStation } = require("../controller/stationController")
 const { stationCreateSchema } = require("../validator/stationValidate")
 const { createTicketSchema } = require("../validator/ticketValidate")
+const { limiter } = require("../middleware/limiter")
 const upload = multer()
 
 const router = require("express").Router()
 
 router
     // login router
-    .get('/login', loginPage)
+    .get('/login', limiter, loginPage)
     .post('/login', checkSchema(loginValidate), login)
     .get('/logout', logout)
 
@@ -86,5 +87,6 @@ router
     .get('/403', forbidden)
     .get('/404', notFound)
     .get('/500', ServerError)
+    .get('/429', toManyRequest)
 
 module.exports = router
