@@ -69,13 +69,39 @@ const createNextThreeTrips = async () => {
 
 const deleteExpiredTrips = async () => {
     try {
+        // 1) cutoff vaqtini aniqlaymiz
         const cutoff = moment().subtract(1, 'days').toISOString();
-        const result = await tripModel.deleteMany({ departure_date: { $lt: cutoff } });
-        console.log(`${result.deletedCount} ta eskirgan reys o‘chirildi.`);
+
+        // 2) eskirgan trip hujjatlarini olib kelamiz
+        const expiredTrips = await tripModel.find({ departure_date: { $lt: cutoff } });
+        if (!expiredTrips.length) {
+            console.log("Eskirgan reyslar topilmadi.");
+            return;
+        }
+
+        // 3) ularning ID’larini array kunga olish
+        const expiredIds = expiredTrips.map(t => t._id);
+
+        // 4) shu triplarga tegishli seats’larni o‘chirib tashlash
+        const seatsResult = await seatModel.deleteMany({ trip: { $in: expiredIds } });
+        console.log(`${seatsResult.deletedCount} ta o‘rin­diq o‘chirildi.`);
+
+        // 5) shu tripId’larni route hujjatining trips arrayidan olib tashlash
+        const routesResult = await routeModel.updateMany(
+            { trips: { $in: expiredIds } },
+            { $pull: { trips: { $in: expiredIds } } }
+        );
+        console.log(`${routesResult.nModified} ta route yangilandi.`);
+
+        // 6) nihoyat, eskirgan trip’larni o‘chirish
+        const tripsResult = await tripModel.deleteMany({ _id: { $in: expiredIds } });
+        console.log(`${tripsResult.deletedCount} ta eskirgan reys o‘chirildi.`);
+
     } catch (error) {
         console.error("❌ Eskirgan reyslarni o'chirish xatosi:", error);
     }
 };
+
 
 const deleteExpiredTempTickets = async () => {
     try {

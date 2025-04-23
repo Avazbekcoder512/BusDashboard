@@ -7,51 +7,6 @@
                 <div class="card-body">
                     <h4 class="card-title" style="text-align: center; font-size: 30px;">Bekatlar</h4>
                     <div class="table-responsive">
-                        {{!-- <table class="table table-striped">
-                            <thead>
-                                <tr style="text-align: center;">
-                                    <th>Bekat nomi</th>
-                                    <th>action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {{#each stations}}
-                                <tr style="text-align: center; cursor: pointer;">
-                                    <td>{{name}}</td>
-                                    <td>
-                                        <button class="btn btn-danger btn-sm delete-btn"
-                                            onclick="event.stopPropagation()" data-bs-toggle="modal"
-                                            data-bs-target="#deleteStationModal" data-id="{{_id}}">
-                                            <i class="fa-solid fa-trash-can"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                                {{/each}}
-                            </tbody>
-                        </table>
-
-                        <table class="table table-striped">
-                            <thead>
-                                <tr style="text-align: center;">
-                                    <th>Bekat nomi</th>
-                                    <th>action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {{#each stations}}
-                                <tr style="text-align: center; cursor: pointer;">
-                                    <td>{{name}}</td>
-                                    <td>
-                                        <button class="btn btn-danger btn-sm delete-btn"
-                                            onclick="event.stopPropagation()" data-bs-toggle="modal"
-                                            data-bs-target="#deleteStationModal" data-id="{{_id}}">
-                                            <i class="fa-solid fa-trash-can"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                                {{/each}}
-                            </tbody>
-                        </table> --}}
                         <div>
 
                             <div
@@ -101,11 +56,11 @@
         style="width: 400px; padding: 30px; border: 1px solid #ddd; border-radius: 10px; box-shadow: 2px 2px 15px rgba(0, 0, 0, 0.1); text-align: center; background: #fff;">
         <h2 style="margin: 0; color: #333; font-size: 28px;">Bekatlar mavjud emas!</h2>
         <p style="color: #777; margin: 15px 0; font-size: 20px;">Yangi bekat qo'shing</p>
-        <button type="button" data-bs-toggle="modal" data-bs-target="#addRouteModal"
+        <button type="button" data-bs-toggle="modal" data-bs-target="#addStationModal"
             style="padding: 12px 25px; border: none; background: #17c964; color: white; font-size: 20px; border-radius: 8px; cursor: pointer; transition: 0.3s; box-shadow: 0 4px 10px rgba(23, 201, 100, 0.3);"
             onmouseover="this.style.background='#13a856'; this.style.boxShadow='0 6px 15px rgba(23, 201, 100, 0.5)';"
             onmouseout="this.style.background='#17c964'; this.style.boxShadow='0 4px 10px rgba(23, 201, 100, 0.3)';">
-            + Yo'nalish qo'shish
+            + Bekat qo'shish
         </button>
     </div>
 </div>
