@@ -42,9 +42,9 @@ app.use(session({ secret: "Admin", resave: false, saveUninitialized: false }));
 app.use(flash())
 app.use('/', router);
 
-// createWeeklyRoutes()
-// deleteOldRoutes()
-// deleteExpiredTempTickets()
+createWeeklyRoutes()
+deleteOldRoutes()
+deleteExpiredTempTickets()
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
