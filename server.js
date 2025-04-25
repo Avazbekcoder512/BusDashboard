@@ -9,7 +9,7 @@ const session = require("express-session");
 const flash = require('connect-flash')
 const router = require('./router/router');
 const cors = require('cors');
-const { createWeeklyRoutes, deleteOldRoutes, deleteExpiredTempTickets } = require('./middleware/cronjobMiddleware');
+const { deleteExpiredTempTickets, createNextThreeTrips, deleteExpiredTrips } = require('./middleware/cronjobMiddleware');
 const https = require('https')
 
 Connect();
@@ -42,8 +42,8 @@ app.use(session({ secret: "Admin", resave: false, saveUninitialized: false }));
 app.use(flash())
 app.use('/', router);
 
-createWeeklyRoutes()
-deleteOldRoutes()
+createNextThreeTrips()
+deleteExpiredTrips()
 deleteExpiredTempTickets()
 
 const PORT = process.env.PORT || 5000;

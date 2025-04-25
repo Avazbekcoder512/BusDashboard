@@ -251,7 +251,8 @@
                             showPopup("Bu sanada reyslar mavjud emas!");
                         }
                     } else {
-                        showPopup("Server xatosi: " + resp.status);
+                        const data = await resp.json();
+                        showPopup(data.error);
                     }
                 } catch (err) {
                     showPopup("So‘rov yuborishda xatolik: " + err.message);
