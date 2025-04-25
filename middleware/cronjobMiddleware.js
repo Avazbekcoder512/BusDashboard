@@ -17,13 +17,14 @@ const createNextThreeTrips = async () => {
             for (let dayOffset = 1; dayOffset <= 3; dayOffset++) {
                 const newDepartureMoment = moment().add(dayOffset, 'days');
                 const newArrivalMoment = moment(newDepartureMoment).add(tripDuration, 'milliseconds');
-                const newDepISO = newDepartureMoment.toISOString();
-                const newArrISO = newArrivalMoment.toISOString();
+                const newDepDate = newDepartureMoment.format('YYYY-MM-DD');
+                const newArrDate = newArrivalMoment.format('YYYY-MM-DD');
+
 
                 const exists = await tripModel.findOne({
                     route: trip.route,
                     bus: trip.bus,
-                    departure_date: newDepISO,
+                    departure_date: newDepDate,
                     departure_time: trip.departure_time
                 });
                 if (exists) continue;
@@ -38,14 +39,14 @@ const createNextThreeTrips = async () => {
                 const createdTrip = await tripModel.create({
                     route: trip.route,
                     bus: trip.bus,
-                    departure_date: newDepISO,
+                    departure_date: newDepDate,
                     departure_time: trip.departure_time,
-                    arrival_date: newArrISO,
+                    arrival_date: newArrDate,
                     arrival_time: trip.arrival_time,
                     ticket_price: trip.ticket_price,
                     seats: []
                 });
-
+                
                 const seats = [];
                 for (let i = 1; i <= bus.seats_count; i++) {
                     const seat = await seatModel.create({ seatNumber: i, trip: createdTrip._id, price: trip.ticket_price });

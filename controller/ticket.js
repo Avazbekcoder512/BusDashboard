@@ -25,6 +25,9 @@ exports.searchRoute = async (req, res) => {
             return res.redirect('/search-trip')
         }
 
+        const now = new Date();
+        const todayISO = now.toISOString().split('T')[0];
+
         const data = await routeModel.findOne({ from: from, to: to }).populate({
             path: 'trips',
             match: { departure_date }
@@ -36,8 +39,29 @@ exports.searchRoute = async (req, res) => {
             })
         }
 
+        // Agar qidirilayotgan sana bugun bo'lsa, faqat hozirgi vaqtdan keyingi reyslarni ajratish
+        let validTrips = data.trips;
+        if (departure_date === todayISO) {
+            validTrips = data.trips.filter(trip => {
+                // trip.departure_time formatini 'HH:mm' deb hisoblaymiz
+                const [hh, mm] = trip.departure_time.split(':').map(Number);
+                const departureDateTime = new Date(now);
+                departureDateTime.setHours(hh, mm, 0, 0);
+                return departureDateTime >= now;
+            });
+        }
+
+        if (!validTrips.length) {
+            return res.status(404).send({ error: 'Bunday reys mavjud emas!' });
+        }
+
+        // Faqat haqiqiy reyslarni qaytarish
+        const result = data.toObject();
+        result.trips = validTrips;
+
+
         return res.status(200).send({
-            data
+            data: result
         })
 
 
@@ -213,7 +237,7 @@ exports.getOneSeats = async (req, res) => {
             })
         }
 
-        const ticket = await ticketModel.findOne({seat: seat._id})
+        const ticket = await ticketModel.findOne({ seat: seat._id })
 
         if (!ticket) {
             return res.status(404).send({
