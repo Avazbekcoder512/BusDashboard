@@ -53,7 +53,7 @@ exports.createBus = async (req, res) => {
         const bus = await busModel.create({
             bus_model: data.bus_model,
             bus_number: data.bus_number,
-            seats_count: data.seats_count,
+            seats_count: 51,
             image: fileUrl,
         })
 
@@ -224,7 +224,6 @@ exports.updateOneBus = async (req, res) => {
         const updateBus = {
             bus_number: data.bus_number || bus.bus_number,
             bus_model: data.bus_model || bus.bus_model,
-            seats_count: data.seats_count || bus.seats_count,
             image: fileUrl || bus.image
         }
 

@@ -14,21 +14,16 @@ exports.createTrip = async (req, res) => {
             return res.redirect('/trips');
         }
 
-        const data = matchedData(req)
+        const data = matchedData(req);
 
-        const bus = await busModel.findById(data.bus)
-        const route = await routeModel.findById(data.route)
+        const bus = await busModel.findById(data.bus);
+        const route = await routeModel.findById(data.route);
 
         if (!bus) {
-            return res.status(407).send({
-                error: "Avtobus mavjud emas!"
-            })
+            return res.status(407).send({ error: "Avtobus mavjud emas!" });
         }
-
         if (!route) {
-            return res.status(404).send({
-                error: "Yo'nalish mavjud emas!"
-            })
+            return res.status(404).send({ error: "Yo'nalish mavjud emas!" });
         }
 
         const trip = await tripModel.create({
@@ -38,15 +33,37 @@ exports.createTrip = async (req, res) => {
             departure_time: data.departure_time,
             arrival_date: data.arrival_date,
             arrival_time: data.arrival_time,
-            ticket_price: data.ticket_price,
             seats: []
         });
 
-        const seatsCount = bus.seats_count
+        const seatsCount = 51;
 
-        let seats = [];
+        const vipPrice = data.ticket_price;
+        const premiumPrice = vipPrice - 50000;
+        const economyPrice = premiumPrice - 50000;
+
+        const seats = [];
         for (let i = 1; i <= seatsCount; i++) {
-            let seat = new seatModel({ seatNumber: i, trip: trip._id, price: trip.ticket_price });
+            let seatClass;
+            let price;
+            if (i >= 1 && i <= 8) {
+                seatClass = 'vip';
+                price = vipPrice;
+            } else if (i >= 9 && i <= 26) {
+                seatClass = 'premium';
+                price = premiumPrice;
+            } else {
+                seatClass = 'economy';
+                price = economyPrice;
+            }
+
+            const seat = new seatModel({
+                seatNumber: i,
+                trip: trip._id,
+                price: price,
+                class: seatClass
+            });
+
             await seat.save();
             seats.push(seat._id);
         }
@@ -54,20 +71,13 @@ exports.createTrip = async (req, res) => {
         trip.seats = seats;
         await trip.save();
 
-        await routeModel.findByIdAndUpdate(route._id, {
-            $push: { trips: trip.id }
-        })
+        await routeModel.findByIdAndUpdate(route._id, { $push: { trips: trip.id } });
+        await busModel.findByIdAndUpdate(bus._id, { trip: trip._id });
 
-        await busModel.findByIdAndUpdate(bus._id, {
-            trip: trip._id
-        })
-
-        // return res.status(201).send({ message: "Reys muvaffaqiyatli yaratildi!", trip: trip });
-        return res.redirect('/trips')
-
+        return res.redirect('/trips');
     } catch (error) {
         console.error(error);
-        return res.redirect('/500')
+        return res.redirect('/500');
     }
 };
 

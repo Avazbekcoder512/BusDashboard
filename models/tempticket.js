@@ -3,7 +3,7 @@ const mongoose = require('mongoose')
 const tempTicketSchema = new mongoose.Schema({
     passenger_Id: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
     passenger: String,
-    birthday: String,
+    gender: String,
     passport: String,
     phoneNumber: String,
     seat_number: Number,

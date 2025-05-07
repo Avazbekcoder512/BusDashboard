@@ -3,7 +3,7 @@ const mongoose = require('mongoose')
 const ticketSchema = new mongoose.Schema({
     passenger_Id: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
     passenger: String,
-    birthday: String,
+    gender: String,
     passport: String,
     phoneNumber: String,
     seat_number: Number,
@@ -15,6 +15,7 @@ const ticketSchema = new mongoose.Schema({
     departure_time: String,
     price: Number,
     status: { type: String, enum: ["booked", "canceled"], default: "booked" },
+    condition_status: { type: String, enum: ['arrived'] }
 }, { timestamps: true })
 
 const ticketModel = mongoose.model("Ticket", ticketSchema)

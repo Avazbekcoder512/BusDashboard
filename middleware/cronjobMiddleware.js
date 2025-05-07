@@ -43,15 +43,42 @@ const createNextThreeTrips = async () => {
                     departure_time: trip.departure_time,
                     arrival_date: newArrDate,
                     arrival_time: trip.arrival_time,
-                    ticket_price: trip.ticket_price,
                     seats: []
                 });
-                
+
+                const seatsCount = 51;
+
+                const vipPrice = data.ticket_price;
+                const premiumPrice = vipPrice - 50000;
+                const economyPrice = premiumPrice - 50000;
+
+
                 const seats = [];
-                for (let i = 1; i <= bus.seats_count; i++) {
-                    const seat = await seatModel.create({ seatNumber: i, trip: createdTrip._id, price: trip.ticket_price });
+                for (let i = 1; i <= seatsCount; i++) {
+                    let seatClass;
+                    let price;
+                    if (i >= 1 && i <= 8) {
+                        seatClass = 'vip';
+                        price = vipPrice;
+                    } else if (i >= 9 && i <= 26) {
+                        seatClass = 'premium';
+                        price = premiumPrice;
+                    } else {
+                        seatClass = 'economy';
+                        price = economyPrice;
+                    }
+
+                    const seat = new seatModel({
+                        seatNumber: i,
+                        trip: trip._id,
+                        price: price,
+                        class: seatClass
+                    });
+
+                    await seat.save();
                     seats.push(seat._id);
                 }
+                
                 createdTrip.seats = seats;
                 await createdTrip.save();
 

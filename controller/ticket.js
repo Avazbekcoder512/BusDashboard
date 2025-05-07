@@ -193,7 +193,7 @@ exports.seatBooked = async (req, res) => {
 
         const ticket = await ticketModel.create({
             passenger: data.passenger,
-            birthday: data.birthday,
+            gender: data.gender,
             passport: data.passport,
             phoneNumber: data.phoneNumber,
             seat_number: seat.seatNumber,
@@ -211,7 +211,8 @@ exports.seatBooked = async (req, res) => {
         })
 
         await seatModel.findByIdAndUpdate(seat._id, {
-            status: "busy"
+            status: "busy",
+            passenger_gender: data.gender
         })
 
         return res.status(200).send({ message: "Chipta muvaffaqiyatli band qilindi!", ticket })
