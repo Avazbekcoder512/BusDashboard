@@ -33,12 +33,13 @@ exports.createTrip = async (req, res) => {
             departure_time: data.departure_time,
             arrival_date: data.arrival_date,
             arrival_time: data.arrival_time,
+            ticket_price: data.ticket_price,
             seats: []
         });
 
         const seatsCount = 51;
 
-        const vipPrice = data.ticket_price;
+        const vipPrice = trip.ticket_price;
         const premiumPrice = vipPrice - 50000;
         const economyPrice = premiumPrice - 50000;
 

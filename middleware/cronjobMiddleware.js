@@ -8,93 +8,79 @@ const tempTicketModel = require("../models/tempticket");
 
 const createNextThreeTrips = async () => {
     try {
-        const baseTrips = await tripModel.find();
-        let createdCount = 0;
-
-        for (const trip of baseTrips) {
-            const tripDuration = moment(trip.arrival_date).diff(moment(trip.departure_date));
-
-            for (let dayOffset = 1; dayOffset <= 3; dayOffset++) {
-                const newDepartureMoment = moment().add(dayOffset, 'days');
-                const newArrivalMoment = moment(newDepartureMoment).add(tripDuration, 'milliseconds');
-                const newDepDate = newDepartureMoment.format('YYYY-MM-DD');
-                const newArrDate = newArrivalMoment.format('YYYY-MM-DD');
-
-
-                const exists = await tripModel.findOne({
-                    route: trip.route,
-                    bus: trip.bus,
-                    departure_date: newDepDate,
-                    departure_time: trip.departure_time
-                });
-                if (exists) continue;
-
-                const bus = await busModel.findById(trip.bus);
-                const route = await routeModel.findById(trip.route);
-                if (!bus || !route) {
-                    console.warn('Bus yoki route topilmadi, ID:', trip.bus, trip.route);
-                    continue;
-                }
-
-                const createdTrip = await tripModel.create({
-                    route: trip.route,
-                    bus: trip.bus,
-                    departure_date: newDepDate,
-                    departure_time: trip.departure_time,
-                    arrival_date: newArrDate,
-                    arrival_time: trip.arrival_time,
-                    seats: []
-                });
-
-                const seatsCount = 51;
-
-                const vipPrice = data.ticket_price;
-                const premiumPrice = vipPrice - 50000;
-                const economyPrice = premiumPrice - 50000;
-
-
-                const seats = [];
-                for (let i = 1; i <= seatsCount; i++) {
-                    let seatClass;
-                    let price;
-                    if (i >= 1 && i <= 8) {
-                        seatClass = 'vip';
-                        price = vipPrice;
-                    } else if (i >= 9 && i <= 26) {
-                        seatClass = 'premium';
-                        price = premiumPrice;
-                    } else {
-                        seatClass = 'economy';
-                        price = economyPrice;
-                    }
-
-                    const seat = new seatModel({
-                        seatNumber: i,
-                        trip: trip._id,
-                        price: price,
-                        class: seatClass
-                    });
-
-                    await seat.save();
-                    seats.push(seat._id);
-                }
-                
-                createdTrip.seats = seats;
-                await createdTrip.save();
-
-                await routeModel.findByIdAndUpdate(route._id, { $push: { trips: createdTrip._id } });
-                await busModel.findByIdAndUpdate(bus._id, { trip: createdTrip._id });
-
-                createdCount++;
-            }
+      const baseTrips = await tripModel.find();
+      let createdCount = 0;
+  
+      for (const trip of baseTrips) {
+        const tripDuration = moment(trip.arrival_date).diff(moment(trip.departure_date));
+  
+        for (let dayOffset = 1; dayOffset <= 3; dayOffset++) {
+          const newDepartureMoment = moment().add(dayOffset, 'days');
+          const newArrivalMoment  = moment(newDepartureMoment).add(tripDuration, 'milliseconds');
+          const newDepDate        = newDepartureMoment.format('YYYY-MM-DD');
+          const newArrDate        = newArrivalMoment.format('YYYY-MM-DD');
+  
+          // tekshiruv
+          const exists = await tripModel.findOne({
+            route: trip.route,
+            bus: trip.bus,
+            departure_date: newDepDate,
+            departure_time: trip.departure_time
+          });
+          if (exists) continue;
+  
+          const bus   = await busModel.findById(trip.bus);
+          const route = await routeModel.findById(trip.route);
+          if (!bus || !route) {
+            console.warn('Bus yoki route topilmadi, ID:', trip.bus, trip.route);
+            continue;
+          }
+  
+          // yangi reys
+          const createdTrip = await tripModel.create({
+            route: trip.route,
+            bus: trip.bus,
+            departure_date: newDepDate,
+            departure_time: trip.departure_time,
+            arrival_date: newArrDate,
+            arrival_time: trip.arrival_time,
+            seats: []
+          });
+  
+          // joylarni yaratish
+          const seats = [];
+          for (let i = 1; i <= 51; i++) {
+            let seatClass, price;
+            if (i <= 8)            { seatClass = 'vip';     price = trip.ticket_price; }
+            else if (i <= 26)      { seatClass = 'premium'; price = trip.ticket_price - 50000; }
+            else                   { seatClass = 'economy'; price = trip.ticket_price - 100000; }
+  
+            const seat = new seatModel({
+              seatNumber: i,
+              trip: createdTrip._id,    // <-- tuzatildi
+              price,
+              class: seatClass
+            });
+            await seat.save();
+            seats.push(seat._id);
+          }
+  
+          // saqlash va yangilashlar
+          createdTrip.seats = seats;
+          await createdTrip.save();
+          await routeModel.findByIdAndUpdate(route._id, { $push: { trips: createdTrip._id } });
+          await busModel.findByIdAndUpdate(bus._id, { trip: createdTrip._id });
+  
+          createdCount++;
         }
-
-        console.log(`${createdCount} ta yangi reys yaratildi.`);
+      }
+  
+      console.log(`${createdCount} ta yangi reys yaratildi.`);
     } catch (error) {
-        console.error("❌ Yangi reyslar yaratishda xatolik:", error);
+      console.error("❌ Yangi reyslar yaratishda xatolik:", error);
     }
-};
-
+  };
+  
 const deleteExpiredTrips = async () => {
     try {
         // 1) cutoff vaqtini aniqlaymiz
