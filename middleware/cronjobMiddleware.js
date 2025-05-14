@@ -44,6 +44,7 @@ const createNextThreeTrips = async () => {
             departure_time: trip.departure_time,
             arrival_date: newArrDate,
             arrival_time: trip.arrival_time,
+            ticket_price: trip.ticket_price,
             seats: []
           });
   
