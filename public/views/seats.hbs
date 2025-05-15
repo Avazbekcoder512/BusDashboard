@@ -65,6 +65,87 @@
             box-shadow: 0 16px 32px rgba(0, 0, 0, 0.2);
         }
 
+        /* VIP: oltin */
+        .grid-item[data-category="vip"] {
+            background: #FFD70020;
+            /* 20% shaffof oltin fon */
+            border: 2px solid #FFD700;
+            /* oltin ramka */
+        }
+
+        .grid-item[data-category="vip"] .badge {
+            background: #FFD700;
+            /* oltin badge */
+            color: #2D3748;
+            /* matn uchun quyuq rang */
+        }
+
+        /* PREMIUM: to‘q moviy (royal blue) */
+        .grid-item[data-category="premium"] {
+            background: #4169E120;
+            /* 20% shaffof moviy fon */
+            border: 2px solid #4169E1;
+            /* moviy ramka */
+        }
+
+        .grid-item[data-category="premium"] .badge {
+            background: #4169E1;
+            /* moviy badge */
+            color: #ffffff;
+            /* oq matn */
+        }
+
+        /* ECONOMY: to‘q yashil (forest green) */
+        .grid-item[data-category="econom"] {
+            background: #228B2220;
+            /* 20% shaffof yashil fon */
+            border: 2px solid #228B22;
+            /* yashil ramka */
+        }
+
+        .grid-item[data-category="econom"] .badge {
+            background: #228B22;
+            /* yashil badge */
+            color: #ffffff;
+            /* oq matn */
+        }
+
+        /* ————— VIP va PREMIUM uchun quyosh nuri effekti ————— */
+
+        /* Umumiy sozlash: grid-item allaqachon position: relative */
+        .grid-item[data-category="vip"]::before,
+        .grid-item[data-category="premium"]::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -150%;
+            width: 150%;
+            height: 100%;
+            background: linear-gradient(45deg,
+                    rgba(255, 255, 255, 0) 30%,
+                    rgba(255, 255, 255, 0.5) 50%,
+                    rgba(255, 255, 255, 0) 70%);
+            transform: skewX(-25deg);
+            pointer-events: none;
+            animation: shine 2s ease-in-out infinite;
+        }
+
+        /* Quyosh nurini chapdan o‘ngga harakatlantiradi */
+        @keyframes shine {
+            0% {
+                left: -150%;
+            }
+
+            50% {
+                left: 150%;
+            }
+
+            100% {
+                left: 150%;
+            }
+        }
+
+
         .seat-number {
             font-size: 1.4rem;
             font-weight: 600;
@@ -343,6 +424,11 @@
             transform: translateY(-2px);
             box-shadow: 0 8px 20px rgba(118, 75, 162, 0.3);
         }
+
+        .gender-icon {
+            width: 20px;
+            height: 20px;
+        }
     </style>
 </head>
 
@@ -352,14 +438,25 @@
     </a>
     <div class="container">
         {{#each trip.seats}}
-        <div class="grid-item" data-status="{{status}}" data-id="{{_id}}">
+        <div class="grid-item" data-status="{{status}}" data-category="{{class}}" data-id="{{_id}}">
             <div class="seat-number">{{seatNumber}}</div>
             <div class="badge">
-                {{#if (eq status "empty")}}Bo'sh{{else}}{{#if (eq status "busy")}}Band{{else}}{{status}}{{/if}}{{/if}}
+                {{#if (eq status "empty")}}
+                Bo'sh
+                {{else if (eq status "busy")}}
+                {{#if (eq passenger_gender "male")}}
+                <img src="../icons/male.png" alt="erkak" class="gender-icon" />
+                {{else}}
+                <img src="../icons/female.png" alt="ayol" class="gender-icon" />
+                {{/if}}
+                {{else}}
+                {{status}}
+                {{/if}}
             </div>
         </div>
         {{/each}}
     </div>
+
 
     <!-- View Booking Modal -->
     <div class="modal-overlay" id="viewModalOverlay">
