@@ -191,7 +191,25 @@ exports.seatBooked = async (req, res) => {
             return res.status(404).send({ error: "Yo'nalish topilmadi!" })
         }
 
+        const generateUniqueTicketId = async () => {
+            let unique = false;
+            let ticketId;
+
+            while (!unique) {
+                ticketId = '#' + Math.floor(100000 + Math.random() * 900000);
+                const existing = await ticketModel.findOne({ ticketId });
+                if (!existing) {
+                    unique = true;
+                }
+            }
+
+            return ticketId;
+        };
+
+        const ticketId = await generateUniqueTicketId()
+
         const ticket = await ticketModel.create({
+            ticketId: ticketId,
             passenger: data.passenger,
             gender: data.gender,
             passport: data.passport,

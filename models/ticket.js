@@ -1,6 +1,7 @@
 const mongoose = require('mongoose')
 
 const ticketSchema = new mongoose.Schema({
+    ticketId: String,
     passenger_Id: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
     passenger: String,
     gender: String,
