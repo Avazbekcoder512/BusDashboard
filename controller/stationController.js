@@ -14,7 +14,7 @@ exports.createStation = async (req, res) => {
 
         const data = matchedData(req);
 
-        const checkStation = await stationModel.findOne({ name: data.name })
+        const checkStation = await stationModel.findOne({ uz_name: data.uz_name })
 
         if (checkStation) {
             req.flash('error', "Bunday bekat allaqachon yaratilgan!");
@@ -22,7 +22,9 @@ exports.createStation = async (req, res) => {
         }
 
         const station = await stationModel.create({
-            name: data.name
+            uz_name: data.uz_name,
+            ru_name: data.ru_name,
+            en_name: data.en_name
         })
 
         return res.redirect('/stations')

@@ -1,5 +1,21 @@
 exports.createRouteSchema = {
-    name: {
+    uz_name: {
+        isString: {
+            errorMessage: "Yon'alish nomi stringda kiritilishi shart!",
+        },
+        notEmpty: {
+            errorMessage: "Yo'nalish nomi kiritilishi shart!"
+        }
+    },
+    ru_name: {
+        isString: {
+            errorMessage: "Yon'alish nomi stringda kiritilishi shart!",
+        },
+        notEmpty: {
+            errorMessage: "Yo'nalish nomi kiritilishi shart!"
+        }
+    },
+    en_name: {
         isString: {
             errorMessage: "Yon'alish nomi stringda kiritilishi shart!",
         },
@@ -26,7 +42,17 @@ exports.createRouteSchema = {
 };
 
 exports.updateRouteSchema = {
-    name: {
+    uz_name: {
+        isString: {
+            errorMessage: "Yon'alish nomi stringda kiritilishi shart!",
+        }
+    },
+    ru_name: {
+        isString: {
+            errorMessage: "Yon'alish nomi stringda kiritilishi shart!",
+        }
+    },
+    en_name: {
         isString: {
             errorMessage: "Yon'alish nomi stringda kiritilishi shart!",
         }

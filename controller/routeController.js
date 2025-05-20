@@ -16,7 +16,9 @@ exports.createRoute = async (req, res) => {
         const data = matchedData(req);
 
         const route = await routeModel.create({
-            name: data.name,
+            uz_name: data.uz_name,
+            ru_name: data.ru_name,
+            en_name: data.en_name,
             from: data.from,
             to: data.to
         });
@@ -112,7 +114,9 @@ exports.updateRoute = async (req, res) => {
         const data = matchedData(data)
 
         const newRoute = {
-            name: data.name || route.name,
+            uz_name: data.uz_name || route.uz_name,
+            ru_name: data.ru_name || route.ru_name,
+            en_name: data.en_name || route.en_name,
             from: data.from || route.from,
             to: data.to || route.to
         }
