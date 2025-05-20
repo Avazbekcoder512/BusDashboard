@@ -20,7 +20,7 @@
                                 {{#each routes}}
                                 <tr style="text-align: center; cursor: pointer;"
                                     onclick="window.location='/route/{{_id}}'">
-                                    <td>{{name}}</td>
+                                    <td>{{uz_name}}</td>
                                     <td>{{from}}</td>
                                     <td>{{to}}</td>
                                     <td>
@@ -97,9 +97,21 @@
             <div class="modal-body">
                 <form action="/create-route" method="POST">
                     <div class="mb-3">
-                        <label class="form-label" for="name">Yo'nalish nomi</label>
-                        <input type="text" class="form-control" name="name" id="name"
+                        <label class="form-label" for="uz_name">Yo'nalish uz_nomi</label>
+                        <input type="text" class="form-control" name="uz_name" id="uz_name"
                             placeholder="Masalan: Toshkent-Xorazm" required
+                            style="border: 2px solid #17c964; border-radius: 6px; padding: 10px; font-size: 16px; background-color: #f8f9fa; transition: 0.3s; height: 45px;">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" for="ru_name">Yo'nalish ru_nomi</label>
+                        <input type="text" class="form-control" name="ru_name" id="ru_name"
+                            placeholder="Masalan: Ташкент-Хорезм" required
+                            style="border: 2px solid #17c964; border-radius: 6px; padding: 10px; font-size: 16px; background-color: #f8f9fa; transition: 0.3s; height: 45px;">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" for="en_name">Yo'nalish en_nomi</label>
+                        <input type="text" class="form-control" name="en_name" id="en_name"
+                            placeholder="Masalan: Tashkent-Khorezm" required
                             style="border: 2px solid #17c964; border-radius: 6px; padding: 10px; font-size: 16px; background-color: #f8f9fa; transition: 0.3s; height: 45px;">
                     </div>
                     <div class="mb-3">
@@ -108,7 +120,7 @@
                             style="width: 100%; border: 2px solid #17c964; border-radius: 6px; padding: 10px; font-size: 16px; background-color: #f8f9fa; transition: 0.3s; height: 45px;">
                             <option value="" disabled selected>Tanlang...</option>
                             {{#each station}}
-                            <option value="{{name}}">{{name}}</option>
+                            <option value="{{uz_name}}">{{uz_name}}</option>
                             {{/each}}
                         </select>
                     </div>
@@ -118,7 +130,7 @@
                             style="width: 100%; border: 2px solid #17c964; border-radius: 6px; padding: 10px; font-size: 16px; background-color: #f8f9fa; transition: 0.3s; height: 45px;">
                             <option value="" disabled selected>Tanlang...</option>
                             {{#each station}}
-                            <option value="{{name}}">{{name}}</option>
+                            <option value="{{uz_name}}">{{uz_name}}</option>
                             {{/each}}
                         </select>
                     </div>

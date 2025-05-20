@@ -264,7 +264,7 @@
       <div class="card">
             <h3>Yo'nalish</h3>
             <div class="route-info">
-                  <p><strong>Yo'nalish nomi:</strong> {{route.name}}</p>
+                  <p><strong>Yo'nalish nomi:</strong> {{route.uz_name}}</p>
                   <p><strong>Qayerdan:</strong> {{route.from}}</p>
                   <p><strong>Qayerga:</strong> {{route.to}}</p>
                   <div class="edit-btn-container">
@@ -303,8 +303,18 @@
                   <h3>Yo'nalishni tahrirlash</h3>
                   <form id="editForm" action="/route/{{route._id}}/update" method="post">
                         <div class="input-group">
-                              <label for="routeName">Yo'nalish nomi:</label>
-                              <input type="text" id="routeName" value="{{route.name}}">
+                              <label for="routeName">Yo'nalish uz_nomi:</label>
+                              <input type="text" id="routeName" name="uz_name" value="{{route.uz_name}}">
+                        </div>
+
+                        <div class="input-group">
+                              <label for="routeName">Yo'nalish ru_nomi:</label>
+                              <input type="text" id="routeName" name="ru_name" value="{{route.ru_name}}">
+                        </div>
+
+                        <div class="input-group">
+                              <label for="routeName">Yo'nalish en_nomi:</label>
+                              <input type="text" id="routeName" name="en_name" value="{{route.en_name}}">
                         </div>
 
                         <div class="input-group">

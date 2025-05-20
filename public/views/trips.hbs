@@ -23,7 +23,7 @@
                                 {{#each trips}}
                                 <tr style="text-align: center; cursor: pointer;"
                                     onclick="window.location='/onetrip/{{_id}}'">
-                                    <td>{{route.name}}</td>
+                                    <td>{{route.uz_name}}</td>
                                     <td>{{departure_date}}</td>
                                     <td>{{departure_time}}</td>
                                     <td>{{arrival_date}}</td>
@@ -104,7 +104,7 @@
                             style="width: 100%; border: 2px solid #17c964; border-radius: 6px; padding: 10px; font-size: 16px; background-color: #f8f9fa; transition: 0.3s; height: 45px;">
                             <option value="" disabled selected>Tanlang...</option>
                             {{#each route}}
-                            <option value="{{_id}}">{{name}}</option>
+                            <option value="{{_id}}">{{uz_name}}</option>
                             {{/each}}
                         </select>
                     </div>

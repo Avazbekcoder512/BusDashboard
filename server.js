@@ -10,7 +10,6 @@ const flash = require('connect-flash')
 const router = require('./router/router');
 const cors = require('cors');
 const { deleteExpiredTempTickets, createNextThreeTrips, deleteExpiredTrips } = require('./middleware/cronjobMiddleware');
-const https = require('https')
 
 Connect();
 
@@ -50,11 +49,3 @@ const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
     console.log(`Server ${PORT}-portda ishga tushdi...`);
 });
-
-setInterval(() => {
-    https.get('https://dashboard-mbus.onrender.com', (res) => {
-        console.log(`Status Code: ${res.statusCode}`);
-    }).on('error', (e) => {
-        console.error(`Error: ${e.message}`);
-    })
-}, 5 * 60 * 1000);
