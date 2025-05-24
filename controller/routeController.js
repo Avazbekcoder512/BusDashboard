@@ -19,8 +19,12 @@ exports.createRoute = async (req, res) => {
             uz_name: data.uz_name,
             ru_name: data.ru_name,
             en_name: data.en_name,
-            from: data.from,
-            to: data.to
+            uz_from: data.uz_from,
+            uz_to: data.uz_to,
+            ru_from: data.ru_from,
+            ru_to: data.ru_to,
+            en_from: data.en_from,
+            en_to: data.en_to
         });
         return res.redirect('/routes');
     } catch (error) {
