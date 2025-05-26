@@ -470,6 +470,7 @@
             <p><strong>Jins:</strong> <span id="viewGender">–</span></p>
             <p><strong>Pasport:</strong> <span id="viewPassport">–</span></p>
             <p><strong>Telefon:</strong> <span id="viewPhone">–</span></p>
+            <p><strong>Chipta raqami:</strong> <span id="viewTickedId">–</span></p>
             <p><strong>O'rindiq raqami:</strong> <span id="viewSeatNumber">–</span></p>
             <button type="button" class="cancel-btn" id="closeViewModal">Yopish</button>
         </div>
@@ -526,6 +527,7 @@
                         document.getElementById('viewGender').textContent = data.ticket.gender;
                         document.getElementById('viewPassport').textContent = data.ticket.passport;
                         document.getElementById('viewPhone').textContent = data.ticket.phoneNumber;
+                        document.getElementById('viewTickedId').textContent = data.ticket.ticketId;
                         document.getElementById('viewSeatNumber').textContent = data.ticket.seat_number;
                         // modalni ochish
                         document.getElementById('viewModalOverlay').style.display = 'flex';
