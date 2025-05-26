@@ -21,8 +21,8 @@
                                 <tr style="text-align: center; cursor: pointer;"
                                     onclick="window.location='/route/{{_id}}'">
                                     <td>{{uz_name}}</td>
-                                    <td>{{uz_from}}</td>
-                                    <td>{{uz_to}}</td>
+                                    <td>{{from}}</td>
+                                    <td>{{to}}</td>
                                     <td>
                                         <button class="btn btn-danger btn-sm delete-btn"
                                             onclick="event.stopPropagation()" data-bs-toggle="modal"
@@ -115,8 +115,8 @@
                             style="border: 2px solid #17c964; border-radius: 6px; padding: 10px; font-size: 16px; background-color: #f8f9fa; transition: 0.3s; height: 45px;">
                     </div>
                     <div class="mb-3">
-                        <label class="form-label" for="uz_from">Qayerdan_uz</label>
-                        <select class="form-select" id="uz_from" name="uz_from" required
+                        <label class="form-label" for="from">Qayerdan</label>
+                        <select class="form-select" id="from" name="from" required
                             style="width: 100%; border: 2px solid #17c964; border-radius: 6px; padding: 10px; font-size: 16px; background-color: #f8f9fa; transition: 0.3s; height: 45px;">
                             <option value="" disabled selected>Tanlang...</option>
                             {{#each station}}
@@ -125,52 +125,12 @@
                         </select>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label" for="uz_to">Qayerga_uz</label>
-                        <select class="form-select" id="uz_to" name="uz_to" required
+                        <label class="form-label" for="to">Qayerga</label>
+                        <select class="form-select" id="to" name="to" required
                             style="width: 100%; border: 2px solid #17c964; border-radius: 6px; padding: 10px; font-size: 16px; background-color: #f8f9fa; transition: 0.3s; height: 45px;">
                             <option value="" disabled selected>Tanlang...</option>
                             {{#each station}}
                             <option value="{{uz_name}}">{{uz_name}}</option>
-                            {{/each}}
-                        </select>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label" for="ru_from">Qayerdan_ru</label>
-                        <select class="form-select" id="ru_from" name="ru_from" required
-                            style="width: 100%; border: 2px solid #17c964; border-radius: 6px; padding: 10px; font-size: 16px; background-color: #f8f9fa; transition: 0.3s; height: 45px;">
-                            <option value="" disabled selected>Tanlang...</option>
-                            {{#each station}}
-                            <option value="{{ru_name}}">{{ru_name}}</option>
-                            {{/each}}
-                        </select>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label" for="ru_to">Qayerga_ru</label>
-                        <select class="form-select" id="ru_to" name="ru_to" required
-                            style="width: 100%; border: 2px solid #17c964; border-radius: 6px; padding: 10px; font-size: 16px; background-color: #f8f9fa; transition: 0.3s; height: 45px;">
-                            <option value="" disabled selected>Tanlang...</option>
-                            {{#each station}}
-                            <option value="{{ru_name}}">{{ru_name}}</option>
-                            {{/each}}
-                        </select>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label" for="en_from">Qayerdan_en</label>
-                        <select class="form-select" id="en_from" name="en_from" required
-                            style="width: 100%; border: 2px solid #17c964; border-radius: 6px; padding: 10px; font-size: 16px; background-color: #f8f9fa; transition: 0.3s; height: 45px;">
-                            <option value="" disabled selected>Tanlang...</option>
-                            {{#each station}}
-                            <option value="{{en_name}}">{{en_name}}</option>
-                            {{/each}}
-                        </select>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label" for="en_to">Qayerga_en</label>
-                        <select class="form-select" id="en_to" name="en_to" required
-                            style="width: 100%; border: 2px solid #17c964; border-radius: 6px; padding: 10px; font-size: 16px; background-color: #f8f9fa; transition: 0.3s; height: 45px;">
-                            <option value="" disabled selected>Tanlang...</option>
-                            {{#each station}}
-                            <option value="{{en_name}}">{{en_name}}</option>
                             {{/each}}
                         </select>
                     </div>
