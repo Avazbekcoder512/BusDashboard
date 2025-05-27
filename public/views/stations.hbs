@@ -31,7 +31,7 @@
                                 <li
                                     style="display: flex; justify-content: center; align-items: center; padding-block: 10px; background-color: #e8eff9;">
                                     <div style="width: 50%; display: flex; justify-content: space-between; align-items: baseline;">
-                                        <h4>{{uz_name}}</h4>
+                                        <h4>{{name}}</h4>
                                         <button class="btn btn-danger btn-sm delete-btn"
                                             onclick="event.stopPropagation()" data-bs-toggle="modal"
                                             data-bs-target="#deleteStationModal" data-id="{{_id}}">
@@ -106,20 +106,8 @@
             <div class="modal-body">
                 <form action="/create-station" method="POST">
                     <div class="mb-3">
-                        <label class="form-label" for="uz_name">Bekat uz_nomi</label>
-                        <input type="text" class="form-control" name="uz_name" id="uz_name" placeholder="Masalan: Toshkent"
-                            required
-                            style="border: 2px solid #17c964; border-radius: 6px; padding: 10px; font-size: 16px; background-color: #f8f9fa; transition: 0.3s; height: 45px;">
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label" for="ru_name">Bekat ru_nomi</label>
-                        <input type="text" class="form-control" name="ru_name" id="ru_name" placeholder="Masalan: Ташкент"
-                            required
-                            style="border: 2px solid #17c964; border-radius: 6px; padding: 10px; font-size: 16px; background-color: #f8f9fa; transition: 0.3s; height: 45px;">
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label" for="en_name">Bekat en_nomi</label>
-                        <input type="text" class="form-control" name="en_name" id="en_name" placeholder="Masalan: Tashkent"
+                        <label class="form-label" for="name">Bekat nomi</label>
+                        <input type="text" class="form-control" name="name" id="name" placeholder="Masalan: Toshkent"
                             required
                             style="border: 2px solid #17c964; border-radius: 6px; padding: 10px; font-size: 16px; background-color: #f8f9fa; transition: 0.3s; height: 45px;">
                     </div>
