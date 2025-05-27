@@ -9,7 +9,7 @@ const session = require("express-session");
 const flash = require('connect-flash')
 const router = require('./router/router');
 const cors = require('cors');
-const { deleteExpiredTempTickets, createNextThreeTrips, deleteExpiredTrips } = require('./middleware/cronjobMiddleware');
+const { deleteExpiredTempTickets, createNextThreeTrips, deleteExpiredTrips, deleteInactiveUsers } = require('./middleware/cronjobMiddleware');
 
 Connect();
 
@@ -44,6 +44,7 @@ app.use('/', router);
 createNextThreeTrips()
 deleteExpiredTrips()
 deleteExpiredTempTickets()
+deleteInactiveUsers()
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
