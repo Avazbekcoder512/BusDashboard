@@ -3,6 +3,7 @@ const routeModel = require("../models/route");
 const tripModel = require("../models/trip");
 const jwt = require('jsonwebtoken');
 const stationModel = require("../models/station");
+const seatModel = require("../models/seat");
 
 
 exports.createRoute = async (req, res) => {
@@ -144,6 +145,8 @@ exports.deleteRoute = async (req, res) => {
             req.flash('error', "Yo'nalish topilmadi")
             return res.redirect('/routes')
         }
+
+        await seatModel.deleteMany({ trip: route.trips._id })
 
         await tripModel.deleteMany({ route: id })
 
