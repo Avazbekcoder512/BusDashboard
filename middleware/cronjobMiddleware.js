@@ -138,7 +138,7 @@ const deleteInactiveUsers = async () => {
     });
 
     console.log(
-      `${result.deletedCount} ta foydalanuvchi oxirgi marta tizimga 6 oy yoki undan oldin kirganligi uchun o‘chirildi.`
+      `${result.deletedCount} ta foydalanuvchi tizimga 1 yil davomida kirmaganligi uchun o‘chirildi.`
     );
   } catch (error) {
     console.error("❌ Faol bo‘lmagan foydalanuvchilarni o‘chirishda xatolik:", error);
