@@ -517,7 +517,7 @@
         document.querySelectorAll('.grid-item[data-status="busy"]').forEach(item => {
             item.addEventListener('click', () => {
                 const seatId = item.dataset.id;
-                fetch(`http://localhost:7000/seat/${seatId}`)
+                fetch(`http://www.dashboard.atr.uz/seat/${seatId}`)
                     .then(res => {
                         if (!res.ok) throw new Error('Serverda xatolik');
                         return res.json();
@@ -603,7 +603,7 @@
                 phoneNumber: modalForm.phoneNumber.value
             };
 
-            fetch(`http://localhost:7000/seatbooked/${currentSeatId}`, {
+            fetch(`http://www.dashboard.atr.uz/seatbooked/${currentSeatId}`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(data)
