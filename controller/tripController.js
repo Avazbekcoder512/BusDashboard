@@ -33,15 +33,13 @@ exports.createTrip = async (req, res) => {
             departure_time: data.departure_time,
             arrival_date: data.arrival_date,
             arrival_time: data.arrival_time,
-            ticket_price: data.ticket_price,
+            vip_price: data.vip_price,
+            premium_price: data.premium_price,
+            ekonom_price: data.ekonom_price,
             seats: []
         });
 
         const seatsCount = 51;
-
-        const vipPrice = trip.ticket_price;
-        const premiumPrice = vipPrice - 50000;
-        const economyPrice = premiumPrice - 50000;
 
         const seats = [];
         for (let i = 1; i <= seatsCount; i++) {
@@ -49,13 +47,13 @@ exports.createTrip = async (req, res) => {
             let price;
             if (i >= 1 && i <= 8) {
                 seatClass = 'vip';
-                price = vipPrice;
+                price = data.vip_price;
             } else if (i >= 9 && i <= 26) {
                 seatClass = 'premium';
-                price = premiumPrice;
+                price = data.premium_price;
             } else {
                 seatClass = 'economy';
-                price = economyPrice;
+                price = data.ekonom_price;
             }
 
             const seat = new seatModel({

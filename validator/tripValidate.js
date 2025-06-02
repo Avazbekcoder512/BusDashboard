@@ -55,9 +55,27 @@ exports.createTripSchema = ({
             errorMessage: "Kelish vaqti HH:mm formatida bo‘lishi kerak!"
         }
     },
-    ticket_price: {
+    vip_price: {
         notEmpty: {
-            errorMessage: "Chipta narxi kiritilishi shart!"
+            errorMessage: "Vip chipta narxi kiritilishi shart!"
+        },
+        isInt: {
+            options: { min: 50000 },
+            errorMessage: "Chipta narxi kamida 50000 so'm bo'lishi kerak!"
+        }
+    },
+    premium_price: {
+        notEmpty: {
+            errorMessage: "Premium chipta narxi kiritilishi shart!"
+        },
+        isInt: {
+            options: { min: 50000 },
+            errorMessage: "Chipta narxi kamida 50000 so'm bo'lishi kerak!"
+        }
+    },
+    ekonom_price: {
+        notEmpty: {
+            errorMessage: "Ekonom chipta narxi kiritilishi shart!"
         },
         isInt: {
             options: { min: 50000 },
@@ -114,7 +132,28 @@ exports.updateTripSchema = {
             errorMessage: "Kelish vaqti HH:mm formatida bo‘lishi kerak!"
         }
     },
-    ticket_price: {
+    vip_price: {
+        notEmpty: {
+            errorMessage: "Vip chipta narxi kiritilishi shart!"
+        },
+        isInt: {
+            options: { min: 50000 },
+            errorMessage: "Chipta narxi kamida 50000 so'm bo'lishi kerak!"
+        }
+    },
+    premium_price: {
+        notEmpty: {
+            errorMessage: "Premium chipta narxi kiritilishi shart!"
+        },
+        isInt: {
+            options: { min: 50000 },
+            errorMessage: "Chipta narxi kamida 50000 so'm bo'lishi kerak!"
+        }
+    },
+    ekonom_price: {
+        notEmpty: {
+            errorMessage: "Ekonom chipta narxi kiritilishi shart!"
+        },
         isInt: {
             options: { min: 50000 },
             errorMessage: "Chipta narxi kamida 50000 so'm bo'lishi kerak!"
