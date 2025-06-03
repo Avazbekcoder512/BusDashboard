@@ -40,7 +40,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   try {
     showPreloader();
-    const response = await fetch(`http://www.dashboard.atr.uz/trip/${tripId}`, {
+    const response = await fetch(`https://www.dashboard.atr.uz/trip/${tripId}`, {
       method: "GET",
       headers: {
         Authorization: `Bearer ${token}`
