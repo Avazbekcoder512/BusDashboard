@@ -15,7 +15,6 @@ exports.createTrip = async (req, res) => {
         }
 
         const data = matchedData(req);
-
         const bus = await busModel.findById(data.bus);
         const route = await routeModel.findById(data.route);
 
@@ -40,7 +39,6 @@ exports.createTrip = async (req, res) => {
         });
 
         const seatsCount = 51;
-
         const seats = [];
         for (let i = 1; i <= seatsCount; i++) {
             let seatClass;
@@ -62,16 +60,82 @@ exports.createTrip = async (req, res) => {
                 price: price,
                 class: seatClass
             });
-
             await seat.save();
             seats.push(seat._id);
         }
-
         trip.seats = seats;
         await trip.save();
 
-        await routeModel.findByIdAndUpdate(route._id, { $push: { trips: trip.id } });
+        await routeModel.findByIdAndUpdate(route._id, { $push: { trips: trip._id } });
         await busModel.findByIdAndUpdate(bus._id, { trip: trip._id });
+
+        const reverseRoute = await routeModel.findOne({
+            from: route.to,
+            to: route.from
+        });
+
+        if (reverseRoute) {
+            const forwardDepDT = new Date(`${data.departure_date}T${data.departure_time}:00`);
+            const forwardArrDT = new Date(`${data.arrival_date}T${data.arrival_time}:00`);
+
+            const durationMs = forwardArrDT.getTime() - forwardDepDT.getTime();
+
+            const reverseDepDT = new Date(forwardArrDT.getTime() + 60 * 60 * 1000);
+
+            const reverseArrDT = new Date(reverseDepDT.getTime() + durationMs);
+
+            const isoReverseDep = reverseDepDT.toISOString();
+            const isoReverseArr = reverseArrDT.toISOString();
+
+            const reverse_departure_date = isoReverseDep.split('T')[0];
+            const reverse_departure_time = isoReverseDep.split('T')[1].substr(0, 5);
+            const reverse_arrival_date = isoReverseArr.split('T')[0];
+            const reverse_arrival_time = isoReverseArr.split('T')[1].substr(0, 5);
+
+            const reverseTrip = await tripModel.create({
+                route: reverseRoute._id,
+                bus: data.bus,
+                departure_date: reverse_departure_date,
+                departure_time: reverse_departure_time,
+                arrival_date: reverse_arrival_date,
+                arrival_time: reverse_arrival_time,
+                vip_price: data.vip_price,
+                premium_price: data.premium_price,
+                ekonom_price: data.ekonom_price,
+                seats: []
+            });
+
+            const reverseSeats = [];
+            for (let i = 1; i <= seatsCount; i++) {
+                let seatClass;
+                let price;
+                if (i >= 1 && i <= 8) {
+                    seatClass = 'vip';
+                    price = data.vip_price;
+                } else if (i >= 9 && i <= 26) {
+                    seatClass = 'premium';
+                    price = data.premium_price;
+                } else {
+                    seatClass = 'economy';
+                    price = data.ekonom_price;
+                }
+
+                const seat = new seatModel({
+                    seatNumber: i,
+                    trip: reverseTrip._id,
+                    price: price,
+                    class: seatClass
+                });
+                await seat.save();
+                reverseSeats.push(seat._id);
+            }
+            reverseTrip.seats = reverseSeats;
+            await reverseTrip.save();
+
+            await routeModel.findByIdAndUpdate(reverseRoute._id, { $push: { trips: reverseTrip._id } });
+            await busModel.findByIdAndUpdate(bus._id, { $push: { trip: reverseTrip._id } });
+
+        }
 
         return res.redirect('/trips');
     } catch (error) {

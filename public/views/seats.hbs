@@ -217,7 +217,8 @@
             gap: 4px;
         }
 
-        .modal input, select {
+        .modal input,
+        select {
             padding: 10px;
             border: 1px solid #ccc;
             border-radius: 8px;
@@ -517,7 +518,7 @@
         document.querySelectorAll('.grid-item[data-status="busy"]').forEach(item => {
             item.addEventListener('click', () => {
                 const seatId = item.dataset.id;
-                fetch(`http://www.dashboard.atr.uz/seat/${seatId}`)
+                fetch(`https://www.dashboard.atr.uz/seat/${seatId}`)
                     .then(res => {
                         if (!res.ok) throw new Error('Serverda xatolik');
                         return res.json();
@@ -603,7 +604,8 @@
                 phoneNumber: modalForm.phoneNumber.value
             };
 
-            fetch(`http://www.dashboard.atr.uz/seatbooked/${currentSeatId}`, {
+            fetch(`https://www.dashboard.atr.uz/seatbooked/${currentSeatId}`, {
+            // fetch(`http://localhost:7000/seatbooked/${currentSeatId}`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(data)

@@ -224,7 +224,8 @@
                 resultsDiv.innerHTML = '';
                 const params = new URLSearchParams(new FormData(form));
                 try {
-                    const resp = await fetch(`http://www.dashboard.atr.uz/search-route?${params.toString()}`);
+                    const resp = await fetch(`https://www.dashboard.atr.uz/search-route?${params.toString()}`);
+                   // const resp = await fetch(`http://localhost:7000/search-route?${params.toString()}`);
                     if (resp.ok) {
                         const data = await resp.json();
                         if (data.data.trips && data.data.trips.length) {
