@@ -25,6 +25,7 @@ exports.createTrip = async (req, res) => {
             return res.status(404).send({ error: "Yo'nalish mavjud emas!" });
         }
 
+        // Asosiy yo'nalish uchun reys yaratamiz
         const trip = await tripModel.create({
             route: data.route,
             bus: data.bus,
@@ -38,6 +39,7 @@ exports.createTrip = async (req, res) => {
             seats: []
         });
 
+        // Joylarni yaratish
         const seatsCount = 51;
         const seats = [];
         for (let i = 1; i <= seatsCount; i++) {
@@ -66,32 +68,46 @@ exports.createTrip = async (req, res) => {
         trip.seats = seats;
         await trip.save();
 
+        // Yo'nalish va avtobusga forward tripni qo'shamiz
         await routeModel.findByIdAndUpdate(route._id, { $push: { trips: trip._id } });
         await busModel.findByIdAndUpdate(bus._id, { trip: trip._id });
 
+        // Orqaga qaytish yo'nalishini tekshiramiz
         const reverseRoute = await routeModel.findOne({
             from: route.to,
             to: route.from
         });
 
         if (reverseRoute) {
+            // Yordamchi funksiyalar: mahalliy sanani va vaqtni formatlaydi
+            function formatDateLocal(dateObj) {
+                const yyyy = dateObj.getFullYear();
+                const mm = String(dateObj.getMonth() + 1).padStart(2, '0');
+                const dd = String(dateObj.getDate()).padStart(2, '0');
+                return `${yyyy}-${mm}-${dd}`;
+            }
+            function formatTimeLocal(dateObj) {
+                const hh = String(dateObj.getHours()).padStart(2, '0');
+                const min = String(dateObj.getMinutes()).padStart(2, '0');
+                return `${hh}:${min}`;
+            }
+
+            // Forward reysning boshlanish va yetib borish vaqtlarini olish
             const forwardDepDT = new Date(`${data.departure_date}T${data.departure_time}:00`);
             const forwardArrDT = new Date(`${data.arrival_date}T${data.arrival_time}:00`);
-
             const durationMs = forwardArrDT.getTime() - forwardDepDT.getTime();
 
+            // Orqaga qaytish reysi: forwardArrDT + 1 soat
             const reverseDepDT = new Date(forwardArrDT.getTime() + 60 * 60 * 1000);
-
             const reverseArrDT = new Date(reverseDepDT.getTime() + durationMs);
 
-            const isoReverseDep = reverseDepDT.toISOString();
-            const isoReverseArr = reverseArrDT.toISOString();
+            // Mahalliy formatdagi sanalar va vaqtlarga ajratamiz
+            const reverse_departure_date = formatDateLocal(reverseDepDT);
+            const reverse_departure_time = formatTimeLocal(reverseDepDT);
+            const reverse_arrival_date = formatDateLocal(reverseArrDT);
+            const reverse_arrival_time = formatTimeLocal(reverseArrDT);
 
-            const reverse_departure_date = isoReverseDep.split('T')[0];
-            const reverse_departure_time = isoReverseDep.split('T')[1].substr(0, 5);
-            const reverse_arrival_date = isoReverseArr.split('T')[0];
-            const reverse_arrival_time = isoReverseArr.split('T')[1].substr(0, 5);
-
+            // Orqaga qaytish reysini yaratamiz
             const reverseTrip = await tripModel.create({
                 route: reverseRoute._id,
                 bus: data.bus,
@@ -105,6 +121,7 @@ exports.createTrip = async (req, res) => {
                 seats: []
             });
 
+            // Orqaga qaytish reysi uchun joylarni yaratish
             const reverseSeats = [];
             for (let i = 1; i <= seatsCount; i++) {
                 let seatClass;
@@ -132,9 +149,9 @@ exports.createTrip = async (req, res) => {
             reverseTrip.seats = reverseSeats;
             await reverseTrip.save();
 
+            // Yo'nalish va avtobusga reverse tripni qo'shamiz
             await routeModel.findByIdAndUpdate(reverseRoute._id, { $push: { trips: reverseTrip._id } });
             await busModel.findByIdAndUpdate(bus._id, { $push: { trip: reverseTrip._id } });
-
         }
 
         return res.redirect('/trips');
