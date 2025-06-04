@@ -45,6 +45,9 @@ const createNextThreeTrips = async () => {
           departure_time: trip.departure_time,
           arrival_date: newArrDate,
           arrival_time: trip.arrival_time,
+          vip_price: trip.vip_price,
+          premium_price: trip.premium_price,
+          ekonom_price: trip.ekonom_price,
           seats: []
         });
 
@@ -58,7 +61,7 @@ const createNextThreeTrips = async () => {
 
           const seat = new seatModel({
             seatNumber: i,
-            trip: createdTrip._id,    // <-- tuzatildi
+            trip: createdTrip._id,
             price,
             class: seatClass
           });
